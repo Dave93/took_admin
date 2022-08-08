@@ -8,7 +8,7 @@ import {
 } from "@pankod/refine-antd";
 import "@pankod/refine-antd/dist/styles.min.css";
 import routerProvider from "@pankod/refine-react-location";
-import dataProvider, { GraphQLClient } from "@pankod/refine-graphql";
+import dataProvider, { GraphQLClient } from "@pankod/refine-strapi-graphql";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";

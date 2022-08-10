@@ -6,14 +6,15 @@ import {
 } from "@pankod/refine-antd";
 import "@pankod/refine-antd/dist/styles.min.css";
 import routerProvider from "@pankod/refine-react-location";
-import dataProvider, { GraphQLClient } from "@pankod/refine-strapi-graphql";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";
 import { Header } from "components/layout";
 import { authProvider } from "./authProvider";
 import { Login } from "pages/login";
-const API_URL = process.env.GRAPHQL_API_URL!;
+import dataProvider, { GraphQLClient } from "./dataprovider";
+import { PermissionsList } from "pages/permissions/list";
+const API_URL = process.env.REACT_APP_GRAPHQL_API_URL!;
 
 const client = new GraphQLClient(API_URL);
 const gqlDataProvider = dataProvider(client);
@@ -44,6 +45,10 @@ function App() {
         resources={[
           {
             name: "home",
+          },
+          {
+            name: "permissions",
+            list: PermissionsList,
           },
         ]}
       />

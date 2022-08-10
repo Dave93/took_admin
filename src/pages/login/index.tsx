@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useLogin } from "@pankod/refine-core";
-import { request, GraphQLClient, gql } from "graphql-request";
+import { useLogin, useNotification } from "@pankod/refine-core";
+import { GraphQLClient, gql } from "graphql-request";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 import {
   Row,
@@ -15,48 +16,69 @@ import {
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-const client = new GraphQLClient(process.env.GRAPHQL_API_URL!, { headers: {} });
+const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_API_URL!, {
+  headers: {},
+});
 
-const { PhoneOutlined, NumberOutlined } = Icons;
+const { NumberOutlined } = Icons;
 export interface ILoginForm {
-  gsmNumber: string;
+  phone: string;
   code: string;
+  otpSecret: string;
 }
 
 export const Login: React.FC = () => {
   const [current, setCurrent] = useState<"gsmNumber" | "code">("gsmNumber");
+  const [otpSecret, setOtpSecret] = useState("");
   const [gsmNumber, setGsmNumber] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
+  const { open } = useNotification();
+
   const { mutate: login, isLoading } = useLogin<ILoginForm>();
 
-  const onGsmFormSubmit = async (values: Pick<ILoginForm, "gsmNumber">) => {
-    console.log(process.env.DAVR_API!);
+  const onGsmFormSubmit = async (values: Pick<ILoginForm, "phone">) => {
+    console.log(process.env.REACT_APP_GRAPHQL_API_URL!);
     setLoading(true);
-    setGsmNumber(`+${values.gsmNumber}`);
-    let query = gql`
-      mutation {
-        sendOtp(phone: $phone) {
-          details
+    setGsmNumber(`+${values.phone}`);
+    let phone = `+${values.phone}`;
+    try {
+      let query = gql`
+        mutation {
+          sendOtp(phone: "${phone}") {
+            details
+          }
         }
+      `;
+      const data = await client.request(query);
+      if (data.sendOtp && data.sendOtp.details) {
+        setOtpSecret(data.sendOtp.details);
       }
-    `;
-    let variables = {
-      phone: `+${values.gsmNumber}`,
-    };
-    const data = await client.request(query, variables);
-    console.log(data);
-    setTimeout(() => setCurrent("code"), 1000);
+      setLoading(false);
+      setCurrent("code");
+    } catch (e: any) {
+      setLoading(false);
+      open &&
+        open({
+          type: "error",
+          message: e.message,
+          key: "login",
+        });
+    }
+  };
+
+  const setAnotherNumber = () => {
+    setCurrent("gsmNumber");
   };
 
   const onCodeFormSubmit = async (values: Pick<ILoginForm, "code">) => {
-    login({ gsmNumber, code: values.code });
+    login({ phone: gsmNumber, code: values.code, otpSecret });
   };
 
   const renderGSMForm = () => (
     <Form layout="vertical" requiredMark={false} onFinish={onGsmFormSubmit}>
       <Form.Item
-        name="gsmNumber"
+        name="phone"
         label="Phone"
         rules={[
           {
@@ -82,35 +104,49 @@ export const Login: React.FC = () => {
   );
 
   const renderCodeForm = () => (
-    <Form layout="vertical" requiredMark={false} onFinish={onCodeFormSubmit}>
-      <Form.Item
-        name="code"
-        label="Code"
-        rules={[
-          {
-            required: true,
-            message: "Code is required",
-          },
-        ]}
+    <>
+      <Row
+        style={{
+          marginBottom: "1rem",
+        }}
       >
-        <Input
-          type="password"
-          maxLength={4}
-          prefix={<NumberOutlined style={{ color: "#00000040" }} />}
-        />
-      </Form.Item>
-      <Form.Item noStyle>
-        <Button
-          type="primary"
-          size="large"
-          htmlType="submit"
-          block
-          loading={isLoading}
+        <Col span={24}>
+          <Button
+            shape="circle"
+            icon={<ArrowLeftOutlined />}
+            onClick={setAnotherNumber}
+          />
+        </Col>
+      </Row>
+      <Form layout="vertical" requiredMark={false} onFinish={onCodeFormSubmit}>
+        <Form.Item
+          name="code"
+          label="Code"
+          rules={[
+            {
+              required: true,
+              message: "Code is required",
+            },
+          ]}
         >
-          Login
-        </Button>
-      </Form.Item>
-    </Form>
+          <Input
+            maxLength={6}
+            prefix={<NumberOutlined style={{ color: "#00000040" }} />}
+          />
+        </Form.Item>
+        <Form.Item noStyle>
+          <Button
+            type="primary"
+            size="large"
+            htmlType="submit"
+            block
+            loading={isLoading}
+          >
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
   );
 
   return (

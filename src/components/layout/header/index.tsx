@@ -18,6 +18,12 @@ import { useTranslation } from "react-i18next";
 const { DownOutlined } = Icons;
 const { Text } = Typography;
 
+let LangStrings = {
+  en: "English",
+  ru: "Русский",
+  de: "Deutsch",
+};
+
 export const Header: React.FC = () => {
   const { i18n } = useTranslation();
   const locale = useGetLocale();
@@ -38,7 +44,7 @@ export const Header: React.FC = () => {
             </span>
           }
         >
-          {lang === "en" ? "English" : "German"}
+          {LangStrings[lang as keyof typeof LangStrings]}
         </Menu.Item>
       ))}
     </Menu>
@@ -59,7 +65,7 @@ export const Header: React.FC = () => {
         <Button type="link">
           <Space>
             <Avatar size={16} src={`/images/flags/${currentLocale}.svg`} />
-            {currentLocale === "en" ? "English" : "German"}
+            {LangStrings[currentLocale as keyof typeof LangStrings]}
             <DownOutlined />
           </Space>
         </Button>

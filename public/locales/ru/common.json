@@ -1,0 +1,93 @@
+{
+  "pages": {
+    "login": {
+      "signin": "Войти",
+      "signup": "Зарегистрироваться",
+      "username": "Имя пользователя",
+      "password": "Пароль",
+      "remember": "Запомнить меня",
+      "forgotPassword": "Забыли пароль?",
+      "title": "Войти в аккаунт",
+      "noAccount": "Нет аккаунта?"
+    },
+    "error": {
+      "info": "Возможно, вы забыли добавить компонент {{action}} в {{resource}} ресурс.",
+      "404": "Извините, страница, которую вы посетили, не существует.",
+      "resource404": "Вы уверены, что создали ресурс {{resource}}.",
+      "backHome": "Домой"
+    }
+  },
+  "actions": {
+    "list": "Список",
+    "create": "Создать",
+    "edit": "Редактировать",
+    "show": "Показывать"
+  },
+  "buttons": {
+    "create": "Создать",
+    "save": "Сохранять",
+    "logout": "Выйти",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "cancel": "Отмена",
+    "confirm": "Ты уверен?",
+    "filter": "Фильтр",
+    "clear": "Очистить",
+    "refresh": "Обновить",
+    "show": "Показать",
+    "undo": "Отменить",
+    "import": "Импорт",
+    "clone": "Копировать",
+    "notAccessTitle": "У вас нет разрешения на доступ"
+  },
+  "warnWhenUnsavedChanges": "Вы уверены, что хотите оставить? У вас есть несохранённые изменения.",
+  "notifications": {
+    "success": "Успешный",
+    "error": "Ошибка (код состояния: {{statusCode}})",
+    "undoable": "У вас есть {{seconds}} секунды, чтобы отменить",
+    "createSuccess": "Успешно создан {{resource}}",
+    "createError": "Была ошибка, при создании {{resource}} (код статуса: {{StatusCode}})",
+    "deleteSuccess": "Успешно удалил {{resource}}",
+    "deleteError": "Ошибка при удалении {{resource}} (код статуса: {{StatusCode}})",
+    "editSuccess": "Успешно отредактировано {{resource}}",
+    "editError": "Ошибка при редактировании {{resource}} (код статуса: {{statusCode}})",
+    "importProgress": "Импортирование: {{processed}}/{{total}}"
+  },
+  "loading": "Загрузка",
+  "tags": {
+    "clone": "Клон"
+  },
+  "dashboard": {
+    "title": "Дашбоард"
+  },
+  "posts": {
+    "posts": "Посты",
+    "fields": {
+      "id": "Id",
+      "title": "Заголовок",
+      "category": {
+        "title": "Категория",
+        "filter": {
+          "placeholder": "Выбрать категорию"
+        }
+      },
+      "status": {
+        "title": "Заголовок",
+        "published": "Опубликовано",
+        "draft": "Черновик",
+        "rejected": "Отклоненный"
+      },
+      "content": "Содержание",
+      "createdAt": "Создано на"
+    },
+    "titles": {
+      "create": "Создать пост",
+      "edit": "Редактировать пост",
+      "list": "Посты",
+      "show": "Показать пост"
+    }
+  },
+  "table": {
+    "actions": "Действия"
+  }
+}

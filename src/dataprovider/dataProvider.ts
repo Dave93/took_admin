@@ -4,10 +4,16 @@ import * as gql from "gql-query-builder";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
 
+type SortOrder = {
+  [key: string]: "asc" | "desc";
+};
+
 const genereteSort = (sort?: CrudSorting) => {
   if (sort && sort.length > 0) {
     const sortQuery = sort.map((i) => {
-      return `${i.field}:${i.order}`;
+      let res: SortOrder = {};
+      res[i.field] = i.order;
+      return res;
     });
 
     return sortQuery;
@@ -58,7 +64,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       metaData,
     }) => {
       const { current = 1, pageSize = 10 } = pagination ?? {};
-
+      console.log(metaData);
       const sortBy = genereteSort(sort);
       const filterBy = generateFilter(filters);
 
@@ -72,11 +78,12 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
 
       const operationConnection = `${operation}Connection`;
 
-      const { query, variables } = gql.query([
+      console.log([
         {
           operation: operationConnection,
           variables: {
             ...metaData?.variables,
+            orderBy: [],
             where: { value: filterBy },
           },
           fields: [{ _count: ["id"] }],
@@ -97,6 +104,38 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           fields: metaData?.fields,
         },
       ]);
+
+      const { query, variables } = gql.query([
+        {
+          operation: operationConnection,
+          variables: {
+            ...metaData?.variables,
+            where: { value: filterBy, type: metaData?.whereInputType },
+          },
+          fields: [{ _count: ["id"] }],
+        },
+        {
+          operation,
+          variables: {
+            ...metaData?.variables,
+            orderBy: {
+              value: sortBy,
+              list: true,
+              type: metaData?.orderByInputType,
+            },
+            where: { value: filterBy, type: metaData?.whereInputType },
+            ...(hasPagination
+              ? {
+                  skip: (current - 1) * pageSize,
+                  take: pageSize,
+                }
+              : {}),
+          },
+          fields: metaData?.fields,
+        },
+      ]);
+
+      console.log([query, variables]);
 
       const response = await client.request(query, variables);
 

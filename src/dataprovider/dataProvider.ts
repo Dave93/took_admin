@@ -247,12 +247,15 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         },
         fields: [
           {
-            operation: singularResource,
+            // operation: metaData?.pluralize ? resource : singularResource,
             fields: metaData?.fields ?? ["id"],
             variables: {},
           },
         ],
       });
+
+      console.log(query);
+
       const response = await client.request(query, gqlVariables);
 
       return {
@@ -303,7 +306,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       const { query, variables } = gql.query({
         operation,
         variables: {
-          id: { value: id, type: "ID", required: true },
+          id: { value: id, type: "String", required: true },
         },
         fields: metaData?.fields,
       });

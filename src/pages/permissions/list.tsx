@@ -1,15 +1,38 @@
 import {
   List,
-  TagField,
   DateField,
   Table,
   useTable,
   Switch,
+  Space,
+  EditButton,
+  useDrawerForm,
+  Drawer,
+  Edit,
+  Form,
+  Input,
+  Checkbox,
 } from "@pankod/refine-antd";
 
 import { IPermissions } from "interfaces";
+import { defaultDateTimeFormat } from "localConstants";
 
 export const PermissionsList: React.FC = () => {
+  const {
+    drawerProps,
+    formProps,
+    show,
+    saveButtonProps,
+    deleteButtonProps,
+    id,
+  } = useDrawerForm<IPermissions>({
+    action: "edit",
+    metaData: {
+      fields: ["id", "slug", "active", "created_at"],
+      pluralize: true,
+    },
+  });
+
   const { tableProps } = useTable<IPermissions>({
     initialSorter: [
       {
@@ -24,22 +47,75 @@ export const PermissionsList: React.FC = () => {
     },
   });
   return (
-    <List>
-      <Table {...tableProps} rowKey="id">
-        <Table.Column
-          dataIndex="active"
-          title="Активность"
-          render={(value) => <Switch checked={value} disabled />}
-        />
-        <Table.Column dataIndex="slug" title="Код" />
-        <Table.Column
-          dataIndex="created_at"
-          title="Дата создания"
-          render={(value) => (
-            <DateField format="LLL" value={value} locales="ru" />
-          )}
-        />
-      </Table>
-    </List>
+    <>
+      <List>
+        <Table {...tableProps} rowKey="id">
+          <Table.Column
+            dataIndex="active"
+            title="Активность"
+            render={(value) => <Switch checked={value} disabled />}
+          />
+          <Table.Column dataIndex="slug" title="Код" />
+          <Table.Column
+            dataIndex="created_at"
+            title="Дата создания"
+            render={(value) => (
+              <DateField
+                format={defaultDateTimeFormat}
+                value={value}
+                locales="ru"
+              />
+            )}
+          />
+          <Table.Column<IPermissions>
+            title="Действия"
+            dataIndex="actions"
+            render={(_text, record): React.ReactNode => {
+              return (
+                <Space>
+                  <EditButton
+                    size="small"
+                    recordItemId={record.id}
+                    onClick={() => show(record.id)}
+                  />
+                </Space>
+              );
+            }}
+          />
+        </Table>
+      </List>
+      <Drawer {...drawerProps}>
+        <Edit
+          saveButtonProps={saveButtonProps}
+          deleteButtonProps={deleteButtonProps}
+          recordItemId={id}
+        >
+          <Form {...formProps} layout="vertical">
+            <Form.Item
+              label="Активность"
+              name="active"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Checkbox value={true} />
+            </Form.Item>
+            <Form.Item
+              label="Код"
+              name="slug"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Form>
+        </Edit>
+      </Drawer>
+    </>
   );
 };

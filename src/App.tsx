@@ -12,8 +12,10 @@ import { OffLayoutArea } from "components/offLayoutArea";
 import { Header } from "components/layout";
 import { authProvider } from "./authProvider";
 import { Login } from "pages/login";
+// import dataProvider, { GraphQLClient } from "@pankod/refine-strapi-graphql";
 import dataProvider, { GraphQLClient } from "./dataprovider";
-import { PermissionsList } from "pages/permissions/list";
+import { PermissionsList } from "pages/permissions";
+import { PermissionsEdit } from "pages/permissions/edit";
 const API_URL = process.env.REACT_APP_GRAPHQL_API_URL!;
 
 const client = new GraphQLClient(API_URL);
@@ -49,6 +51,7 @@ function App() {
           {
             name: "permissions",
             list: PermissionsList,
+            edit: PermissionsEdit,
           },
         ]}
       />

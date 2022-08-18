@@ -64,46 +64,15 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       metaData,
     }) => {
       const { current = 1, pageSize = 10 } = pagination ?? {};
-      console.log(metaData);
+
       const sortBy = genereteSort(sort);
       const filterBy = generateFilter(filters);
-
-      console.log(sortBy);
 
       const camelResource = camelCase(resource);
 
       const operation = metaData?.operation ?? camelResource;
 
-      console.log("operation", operation);
-
       const operationConnection = `${operation}Connection`;
-
-      console.log([
-        {
-          operation: operationConnection,
-          variables: {
-            ...metaData?.variables,
-            orderBy: [],
-            where: { value: filterBy },
-          },
-          fields: [{ _count: ["id"] }],
-        },
-        {
-          operation,
-          variables: {
-            ...metaData?.variables,
-            orderBy: sortBy,
-            where: { value: filterBy },
-            ...(hasPagination
-              ? {
-                  skip: (current - 1) * pageSize,
-                  take: pageSize,
-                }
-              : {}),
-          },
-          fields: metaData?.fields,
-        },
-      ]);
 
       const { query, variables } = gql.query([
         {
@@ -134,8 +103,6 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           fields: metaData?.fields,
         },
       ]);
-
-      console.log([query, variables]);
 
       const response = await client.request(query, variables);
 
@@ -234,28 +201,28 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
     update: async ({ resource, id, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
       const camelUpdateName = camelCase(`update-${singularResource}`);
+      const updateInputName = `${resource}UpdateInput`;
+      const whereInputName = `${resource}WhereUniqueInput`;
 
       const operation = metaData?.operation ?? camelUpdateName;
-
       const { query, variables: gqlVariables } = gql.mutation({
         operation,
         variables: {
-          input: {
-            value: { where: { id }, data: variables },
-            type: `${camelUpdateName}Input`,
-          },
+          where: { value: { id }, type: whereInputName, required: true },
+          data: { value: variables, type: updateInputName, required: true },
         },
-        fields: [
-          {
-            // operation: metaData?.pluralize ? resource : singularResource,
-            fields: metaData?.fields ?? ["id"],
-            variables: {},
-          },
-        ],
+        fields: metaData?.fields ?? ["id"],
       });
-
+      console.log({
+        operation,
+        variables: {
+          where: { id },
+          data: variables,
+        },
+        fields: metaData?.fields ?? ["id"],
+      });
       console.log(query);
-
+      console.log(gqlVariables);
       const response = await client.request(query, gqlVariables);
 
       return {

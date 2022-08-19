@@ -15,3 +15,11 @@ export interface IPermissions {
 
   updated_by: string | null;
 }
+
+export interface IRoles {
+  id: string;
+
+  name: string;
+
+  active: boolean;
+}

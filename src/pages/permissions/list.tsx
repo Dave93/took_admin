@@ -11,7 +11,6 @@ import {
   Edit,
   Form,
   Input,
-  Checkbox,
 } from "@pankod/refine-antd";
 
 import { IPermissions } from "interfaces";
@@ -28,7 +27,7 @@ export const PermissionsList: React.FC = () => {
   } = useDrawerForm<IPermissions>({
     action: "edit",
     metaData: {
-      fields: ["id", "slug", "active", "created_at"],
+      fields: ["id", "slug", "active", "created_at", "description"],
       pluralize: true,
     },
   });
@@ -48,7 +47,7 @@ export const PermissionsList: React.FC = () => {
   });
   return (
     <>
-      <List>
+      <List title="Список разрешений">
         <Table {...tableProps} rowKey="id">
           <Table.Column
             dataIndex="active"
@@ -89,22 +88,35 @@ export const PermissionsList: React.FC = () => {
           saveButtonProps={saveButtonProps}
           deleteButtonProps={deleteButtonProps}
           recordItemId={id}
+          title="Редактирование разрешения"
         >
           <Form {...formProps} layout="vertical">
             <Form.Item
               label="Активность"
               name="active"
+              valuePropName="checked"
               rules={[
                 {
                   required: true,
                 },
               ]}
             >
-              <Checkbox value={true} />
+              <Switch />
             </Form.Item>
             <Form.Item
               label="Код"
               name="slug"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Описание"
+              name="description"
               rules={[
                 {
                   required: true,

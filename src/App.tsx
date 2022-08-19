@@ -14,8 +14,14 @@ import { authProvider } from "./authProvider";
 import { Login } from "pages/login";
 // import dataProvider, { GraphQLClient } from "@pankod/refine-strapi-graphql";
 import dataProvider, { GraphQLClient } from "./dataprovider";
-import { PermissionsList } from "pages/permissions";
-import { PermissionsEdit } from "pages/permissions/edit";
+import {
+  PermissionsList,
+  PermissionsEdit,
+  PermissionsCreate,
+} from "pages/permissions";
+import { RolesList } from "pages/roles";
+import { RolesCreate } from "pages/roles/create";
+import { RolesEdit } from "pages/roles/edit";
 const API_URL = process.env.REACT_APP_GRAPHQL_API_URL!;
 
 const client = new GraphQLClient(API_URL);
@@ -52,6 +58,19 @@ function App() {
             name: "permissions",
             list: PermissionsList,
             edit: PermissionsEdit,
+            create: PermissionsCreate,
+            options: {
+              label: "Разрешения",
+            },
+          },
+          {
+            name: "roles",
+            list: RolesList,
+            create: RolesCreate,
+            edit: RolesEdit,
+            options: {
+              label: "Роли",
+            },
           },
         ]}
       />

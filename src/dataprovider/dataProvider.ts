@@ -138,15 +138,19 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
     create: async ({ resource, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
       const camelCreateName = camelCase(`create-${singularResource}`);
+      const pluralCreateName = camelCase(`${resource}-create`);
 
       const operation = metaData?.operation ?? camelCreateName;
 
       const { query, variables: gqlVariables } = gql.mutation({
         operation,
         variables: {
-          input: {
-            value: { data: variables },
-            type: `${camelCreateName}Input`,
+          data: {
+            value: variables,
+            type: metaData?.pluralize
+              ? `${pluralCreateName}Input`
+              : `${camelCreateName}Input`,
+            required: true,
           },
         },
         fields: metaData?.fields ?? [
@@ -213,16 +217,6 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         },
         fields: metaData?.fields ?? ["id"],
       });
-      console.log({
-        operation,
-        variables: {
-          where: { id },
-          data: variables,
-        },
-        fields: metaData?.fields ?? ["id"],
-      });
-      console.log(query);
-      console.log(gqlVariables);
       const response = await client.request(query, gqlVariables);
 
       return {

@@ -1,7 +1,8 @@
-import { useForm, Form, Input, Edit, Switch } from "@pankod/refine-antd";
+import { Create, Form, Input, Switch, useForm } from "@pankod/refine-antd";
+
 import { IPermissions } from "interfaces";
 
-export const PermissionsEdit: React.FC = () => {
+export const PermissionsCreate = () => {
   const { formProps, saveButtonProps } = useForm<IPermissions>({
     metaData: {
       fields: ["id", "slug", "active", "created_at", "description"],
@@ -10,17 +11,17 @@ export const PermissionsEdit: React.FC = () => {
   });
 
   return (
-    <Edit saveButtonProps={saveButtonProps}>
+    <Create saveButtonProps={saveButtonProps} title="Создать разрешение">
       <Form {...formProps} layout="vertical">
         <Form.Item
           label="Активность"
           name="active"
-          valuePropName="checked"
           rules={[
             {
               required: true,
             },
           ]}
+          valuePropName="checked"
         >
           <Switch />
         </Form.Item>
@@ -35,7 +36,18 @@ export const PermissionsEdit: React.FC = () => {
         >
           <Input />
         </Form.Item>
+        <Form.Item
+          label="Описание"
+          name="description"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
       </Form>
-    </Edit>
+    </Create>
   );
 };

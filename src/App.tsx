@@ -23,6 +23,7 @@ import {
 import { RolesList, RolesShow } from "pages/roles";
 import { RolesCreate } from "pages/roles/create";
 import { RolesEdit } from "pages/roles/edit";
+import { DeliveryPricingList } from "pages/delivery_pricing";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -70,6 +71,20 @@ function App() {
             options: {
               label: "Роли",
             },
+          },
+          {
+            name: "organizations_menu",
+            options: {
+              label: "Организации",
+            },
+          },
+          {
+            name: "delivery_pricing",
+            parentName: "organizations_menu",
+            options: {
+              label: "Условия доставки",
+            },
+            list: DeliveryPricingList,
           },
         ]}
       />

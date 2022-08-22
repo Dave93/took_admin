@@ -13,18 +13,16 @@ import { Header } from "components/layout";
 import { authProvider } from "./authProvider";
 import { Login } from "pages/login";
 // import dataProvider, { GraphQLClient } from "@pankod/refine-strapi-graphql";
-import dataProvider, { GraphQLClient } from "./dataprovider";
+import dataProvider from "./dataprovider";
+import { client } from "graphConnect";
 import {
   PermissionsList,
   PermissionsEdit,
   PermissionsCreate,
 } from "pages/permissions";
-import { RolesList } from "pages/roles";
+import { RolesList, RolesShow } from "pages/roles";
 import { RolesCreate } from "pages/roles/create";
 import { RolesEdit } from "pages/roles/edit";
-const API_URL = process.env.REACT_APP_GRAPHQL_API_URL!;
-
-const client = new GraphQLClient(API_URL);
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -68,6 +66,7 @@ function App() {
             list: RolesList,
             create: RolesCreate,
             edit: RolesEdit,
+            show: RolesShow,
             options: {
               label: "Роли",
             },

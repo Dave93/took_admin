@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useLogin, useNotification } from "@pankod/refine-core";
-import { GraphQLClient, gql } from "graphql-request";
+import { gql } from "graphql-request";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { client } from "graphConnect";
 
 import {
   Row,
@@ -15,10 +16,6 @@ import {
 } from "@pankod/refine-antd";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-
-const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_API_URL!, {
-  headers: {},
-});
 
 const { NumberOutlined } = Icons;
 export interface ILoginForm {

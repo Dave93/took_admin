@@ -1,14 +1,12 @@
 import { AuthProvider } from "@pankod/refine-core";
-import { GraphQLClient, gql } from "graphql-request";
+import { gql } from "graphql-request";
+import { client } from "./graphConnect";
 import { AES, enc } from "crypto-js";
 
 import ms from "ms";
 import { DateTime } from "luxon";
 
 export const TOKEN_KEY = "refine-auth";
-const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_API_URL!, {
-  headers: {},
-});
 
 export const authProvider: AuthProvider = {
   login: async ({ phone, code, otpSecret }) => {

@@ -6,6 +6,7 @@ import {
   Switch,
   Space,
   EditButton,
+  ShowButton,
 } from "@pankod/refine-antd";
 
 import { IRoles } from "interfaces";
@@ -53,6 +54,7 @@ export const RolesList: React.FC = () => {
               return (
                 <Space>
                   <EditButton size="small" recordItemId={record.id} hideText />
+                  <ShowButton size="small" recordItemId={record.id} hideText />
                 </Space>
               );
             }}

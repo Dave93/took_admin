@@ -24,6 +24,7 @@ export const DeliveryPricingList: React.FC = () => {
       fields: ["id", "name", "active"],
       whereInputType: "delivery_pricingWhereInput!",
       orderByInputType: "delivery_pricingOrderByWithRelationInput!",
+      operation: "deliveryPricings",
     },
   });
   return (

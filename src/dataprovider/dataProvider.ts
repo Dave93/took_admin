@@ -139,6 +139,18 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       const singularResource = pluralize.singular(resource);
       const camelCreateName = camelCase(`${singularResource}-create`);
       const pluralCreateName = camelCase(`${resource}-create`);
+      const camelCreateInputName =
+        singularResource +
+        camelCase(`unchecked-create`, {
+          pascalCase: true,
+        });
+      const pluralCreateInputName =
+        resource +
+        camelCase(`unchecked-create`, {
+          pascalCase: true,
+        });
+
+      console.log(resource, camelCreateName);
 
       const operation = metaData?.operation ?? camelCreateName;
 
@@ -148,8 +160,8 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           data: {
             value: variables,
             type: metaData?.pluralize
-              ? `${pluralCreateName}Input`
-              : `${camelCreateName}Input`,
+              ? `${pluralCreateInputName}Input`
+              : `${camelCreateInputName}Input`,
             required: true,
           },
         },

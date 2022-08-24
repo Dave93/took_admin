@@ -32,7 +32,7 @@ import {
   OrganizationsCreate,
   OrganizationsEdit,
 } from "pages/organizations";
-import { WorkSchedulesList } from "pages/work_schedules";
+import { WorkSchedulesCreate, WorkSchedulesList } from "pages/work_schedules";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -119,6 +119,7 @@ function App() {
               label: "Рабочие графики",
             },
             list: WorkSchedulesList,
+            create: WorkSchedulesCreate,
           },
         ]}
       />

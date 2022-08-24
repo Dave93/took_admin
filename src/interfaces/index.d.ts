@@ -89,6 +89,10 @@ export class IOrganization {
 export class IWorkSchedules {
   id: string;
 
+  name: string;
+
+  active: boolean;
+
   organization_id: string;
 
   organization?: organization;

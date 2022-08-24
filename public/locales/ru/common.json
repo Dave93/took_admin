@@ -89,5 +89,12 @@
   },
   "table": {
     "actions": "Действия"
+  },
+  "deliveryPricing": {
+    "driveType": {
+      "car": "Автомобиль",
+      "bike": "Мотоцикл",
+      "foot": "Пешком"
+    }
   }
 }

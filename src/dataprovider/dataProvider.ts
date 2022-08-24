@@ -137,7 +137,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
 
     create: async ({ resource, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
-      const camelCreateName = camelCase(`create-${singularResource}`);
+      const camelCreateName = camelCase(`${singularResource}-create`);
       const pluralCreateName = camelCase(`${resource}-create`);
 
       const operation = metaData?.operation ?? camelCreateName;

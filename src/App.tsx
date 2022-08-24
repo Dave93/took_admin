@@ -23,7 +23,16 @@ import {
 import { RolesList, RolesShow } from "pages/roles";
 import { RolesCreate } from "pages/roles/create";
 import { RolesEdit } from "pages/roles/edit";
-import { DeliveryPricingList } from "pages/delivery_pricing";
+import {
+  DeliveryPricingCreate,
+  DeliveryPricingList,
+} from "pages/delivery_pricing";
+import {
+  OrganizationList,
+  OrganizationsCreate,
+  OrganizationsEdit,
+} from "pages/organizations";
+import { WorkSchedulesList } from "pages/work_schedules";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -79,12 +88,37 @@ function App() {
             },
           },
           {
+            name: "organizations",
+            parentName: "organizations_menu",
+            options: {
+              label: "Список организации",
+            },
+            list: OrganizationList,
+            create: OrganizationsCreate,
+            edit: OrganizationsEdit,
+          },
+          {
             name: "delivery_pricing",
             parentName: "organizations_menu",
             options: {
               label: "Условия доставки",
             },
             list: DeliveryPricingList,
+            create: DeliveryPricingCreate,
+          },
+          {
+            name: "time_management",
+            options: {
+              label: "Время и отчёты",
+            },
+          },
+          {
+            name: "work_schedules",
+            parentName: "time_management",
+            options: {
+              label: "Рабочие графики",
+            },
+            list: WorkSchedulesList,
           },
         ]}
       />

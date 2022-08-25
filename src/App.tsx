@@ -34,6 +34,7 @@ import {
   OrganizationsEdit,
 } from "pages/organization";
 import { WorkSchedulesCreate, WorkSchedulesList } from "pages/work_schedules";
+import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -97,6 +98,16 @@ function App() {
             list: OrganizationList,
             create: OrganizationsCreate,
             edit: OrganizationsEdit,
+          },
+          {
+            name: "terminals",
+            parentName: "organizations_menu",
+            options: {
+              label: "Филиалы",
+            },
+            list: TerminalsList,
+            create: TerminalsCreate,
+            edit: TerminalsEdit,
           },
           {
             name: "delivery_pricing",

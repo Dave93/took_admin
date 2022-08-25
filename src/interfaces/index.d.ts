@@ -120,3 +120,33 @@ export class IWorkSchedules {
 
   work_schedules_updated_byTousers?: users | null;
 }
+
+export class ITerminals {
+  id: string;
+
+  name: string;
+
+  active: boolean;
+
+  phone: string | null;
+
+  address: string | null;
+
+  latitude: number;
+
+  longitude: number;
+
+  external_id: string;
+
+  organization_id: string;
+
+  organization?: organization;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  created_by: string | null;
+
+  updated_by: string | null;
+}

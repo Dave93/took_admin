@@ -20,6 +20,7 @@ export const OrganizationsEdit: React.FC = () => {
         "name",
         "active",
         "created_at",
+        "iiko_login",
         "phone",
         "webhook",
         "system_type",
@@ -29,6 +30,7 @@ export const OrganizationsEdit: React.FC = () => {
         "sender_name",
         "sender_number",
         "description",
+        "external_id",
       ],
       // pluralize: true,
     },
@@ -63,18 +65,30 @@ export const OrganizationsEdit: React.FC = () => {
         <Form.Item label="Телефон" name="phone">
           <Input />
         </Form.Item>
-        <Form.Item label="Тип системы" name="system_type">
-          <Select allowClear>
-            {Object.keys(organization_system_type).map((key) => (
-              <Select.Option key={key} value={key}>
-                {
-                  Object.keys(organization_system_type).filter(
-                    (k) => k === key
-                  )[0]
-                }
-              </Select.Option>
-            ))}
-          </Select>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Тип системы" name="system_type">
+              <Select allowClear>
+                {Object.keys(organization_system_type).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {
+                      Object.keys(organization_system_type).filter(
+                        (k) => k === key
+                      )[0]
+                    }
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Iiko логин" name="iiko_login">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="Внешний id" name="external_id">
+          <Input />
         </Form.Item>
         <Row gutter={16}>
           <Col span={12}>

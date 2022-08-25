@@ -24,6 +24,7 @@ export const OrganizationList: React.FC = () => {
       fields: ["id", "name", "active", "created_at", "phone", "webhook"],
       whereInputType: "organizationWhereInput!",
       orderByInputType: "organizationOrderByWithRelationInput!",
+      operation: "organizations",
     },
   });
   return (

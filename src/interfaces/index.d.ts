@@ -48,6 +48,9 @@ export interface IDeliveryPricing {
   rules: any;
 
   price_per_km: number;
+
+  organization_id: string;
+  organization?: organization;
 }
 
 export class IOrganization {

@@ -1,18 +1,25 @@
 import {
+  Button,
   Col,
   Create,
   Form,
   Input,
+  InputNumber,
   Row,
   Select,
+  Space,
   Switch,
   TimePicker,
   useForm,
 } from "@pankod/refine-antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useTranslate } from "@pankod/refine-core";
 
-import { IDeliveryPricing } from "interfaces";
+import { IDeliveryPricing, IOrganization } from "interfaces";
 import { drive_type } from "interfaces/enums";
+import { useEffect, useState } from "react";
+import { gql } from "graphql-request";
+import { client } from "graphConnect";
 
 let daysOfWeekRu = {
   "1": "Понедельник",
@@ -48,6 +55,28 @@ export const DeliveryPricingCreate = () => {
   });
 
   const tr = useTranslate();
+
+  const [organizations, setOrganizations] = useState<IOrganization[]>([]);
+
+  const fetchOrganizations = async () => {
+    const query = gql`
+      query {
+        organizations {
+          id
+          name
+        }
+      }
+    `;
+
+    const { organizations } = await client.request<{
+      organizations: IOrganization[];
+    }>(query);
+    setOrganizations(organizations);
+  };
+
+  useEffect(() => {
+    fetchOrganizations();
+  }, []);
 
   return (
     <Create saveButtonProps={saveButtonProps} title="Создать разрешение">
@@ -117,7 +146,26 @@ export const DeliveryPricingCreate = () => {
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col span={24}>
+          <Col span={12}>
+            <Form.Item
+              label="Организация"
+              name="organization_id"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select showSearch optionFilterProp="children">
+                {organizations.map((organization) => (
+                  <Select.Option key={organization.id} value={organization.id}>
+                    {organization.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
             <Form.Item
               label="Дни недели"
               name="days"
@@ -165,6 +213,83 @@ export const DeliveryPricingCreate = () => {
             </Form.Item>
           </Col>
         </Row>
+        <Form.Item label="Минимальная цена заказа" name="min_price">
+          <InputNumber type="number" />
+        </Form.Item>
+        <Form.List name="rules">
+          {(fields, { add, remove }) => {
+            return (
+              <div>
+                {fields.map((field, index) => (
+                  <Space
+                    key={field.key}
+                    style={{ display: "flex", marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <Form.Item
+                      label="От (км)"
+                      name={[field.name, "from"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    <Form.Item
+                      label="До (км)"
+                      name={[field.name, "to"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Цена"
+                      name={[field.name, "price"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    {index > 0 && (
+                      <Form.Item label=" ">
+                        <Button
+                          danger
+                          shape="circle"
+                          icon={<DeleteOutlined />}
+                          onClick={() => {
+                            remove(field.name);
+                          }}
+                        />
+                      </Form.Item>
+                    )}
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Добавить условие
+                  </Button>
+                </Form.Item>
+              </div>
+            );
+          }}
+        </Form.List>
+        <Form.Item label="Цена за км дальше условий" name="price_per_km">
+          <InputNumber type="number" />
+        </Form.Item>
       </Form>
     </Create>
   );

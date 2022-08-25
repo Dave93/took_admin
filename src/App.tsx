@@ -25,13 +25,14 @@ import { RolesCreate } from "pages/roles/create";
 import { RolesEdit } from "pages/roles/edit";
 import {
   DeliveryPricingCreate,
+  DeliveryPricingEdit,
   DeliveryPricingList,
 } from "pages/delivery_pricing";
 import {
   OrganizationList,
   OrganizationsCreate,
   OrganizationsEdit,
-} from "pages/organizations";
+} from "pages/organization";
 import { WorkSchedulesCreate, WorkSchedulesList } from "pages/work_schedules";
 const gqlDataProvider = dataProvider(client);
 
@@ -88,7 +89,7 @@ function App() {
             },
           },
           {
-            name: "organizations",
+            name: "organization",
             parentName: "organizations_menu",
             options: {
               label: "Список организации",
@@ -105,6 +106,7 @@ function App() {
             },
             list: DeliveryPricingList,
             create: DeliveryPricingCreate,
+            edit: DeliveryPricingEdit,
           },
           {
             name: "time_management",

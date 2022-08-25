@@ -21,7 +21,14 @@ export const DeliveryPricingList: React.FC = () => {
       },
     ],
     metaData: {
-      fields: ["id", "name", "active"],
+      fields: [
+        "id",
+        "name",
+        {
+          organization: ["id", "name"],
+        },
+        "active",
+      ],
       whereInputType: "delivery_pricingWhereInput!",
       orderByInputType: "delivery_pricingOrderByWithRelationInput!",
       operation: "deliveryPricings",
@@ -37,6 +44,13 @@ export const DeliveryPricingList: React.FC = () => {
             render={(value) => <Switch checked={value} disabled />}
           />
           <Table.Column dataIndex="name" title="Название" />
+          <Table.Column
+            dataIndex="organization.name"
+            title="Организация"
+            render={(value: any, record: IDeliveryPricing) =>
+              record.organization.name
+            }
+          />
           <Table.Column
             dataIndex="created_at"
             title="Дата создания"

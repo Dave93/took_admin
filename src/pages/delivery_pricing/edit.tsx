@@ -1,137 +1,297 @@
 import {
-  useForm,
+  Button,
+  Col,
+  Edit,
   Form,
   Input,
-  Edit,
-  Switch,
+  InputNumber,
+  Row,
   Select,
+  Space,
+  Switch,
+  TimePicker,
+  useForm,
 } from "@pankod/refine-antd";
-import { client } from "graphConnect";
-import { gql } from "graphql-request";
-import { IPermissions, IRoles } from "interfaces";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useTranslate } from "@pankod/refine-core";
+
+import { IDeliveryPricing, IOrganization } from "interfaces";
+import { drive_type } from "interfaces/enums";
 import { useEffect, useState } from "react";
+import { gql } from "graphql-request";
+import { client } from "graphConnect";
 
-const { Option } = Select;
+let daysOfWeekRu = {
+  "1": "Понедельник",
+  "2": "Вторник",
+  "3": "Среда",
+  "4": "Четверг",
+  "5": "Пятница",
+  "6": "Суббота",
+  "7": "Воскресенье",
+};
 
-export const RolesEdit: React.FC = () => {
-  const [permissions, setPermissions] = useState<IPermissions[]>([]);
-  const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
+const format = "HH:mm";
 
-  const { formProps, saveButtonProps, id } = useForm<IRoles>({
+export const DeliveryPricingEdit: React.FC = () => {
+  const { formProps, saveButtonProps, id } = useForm<IDeliveryPricing>({
     metaData: {
-      fields: ["id", "name", "active"],
+      fields: [
+        "id",
+        "name",
+        "active",
+        "created_at",
+        "default",
+        "drive_type",
+        "days",
+        "start_time",
+        "end_time",
+        "min_price",
+        "rules",
+        "price_per_km",
+      ],
       pluralize: true,
     },
   });
 
-  const loadPermissions = async () => {
-    let query = gql`
-      query {
-        permissions {
-          id
-          slug
-          description
-        }
-      }
-    `;
+  const tr = useTranslate();
 
-    const permissionsData = await client.request(query);
+  const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
-    query = gql`
-      query ($id: String) {
-        manyRolePermissions(where: { role_id: { equals: $id } }) {
-          permission_id
-        }
-      }
-    `;
-    const variables = {
-      id,
-    };
-    const chosenPermissionsData = await client.request(query, variables);
-    setChosenPermissions(
-      chosenPermissionsData.manyRolePermissions.map(
-        (item: any) => item.permission_id
-      )
-    );
-
-    setPermissions(permissionsData.permissions);
-  };
-
-  const beforeSave = async (data: any) => {
+  const fetchOrganizations = async () => {
     const query = gql`
-      mutation ($id: ID!, $chosenPermissions: [String!]!) {
-        assignRolePermissions(
-          role_id: $id
-          permission_ids: $chosenPermissions
-        ) {
-          count
+      query {
+        organizations {
+          id
+          name
         }
       }
     `;
-    let variables = {
-      id: id,
-      chosenPermissions: chosenPermissions,
-    };
-    await client.request(query, variables);
-    saveButtonProps.onClick();
-  };
 
-  const onPermissionsSelect = (value: any) => {
-    setChosenPermissions(value);
+    const { organizations } = await client.request<{
+      organizations: IOrganization[];
+    }>(query);
+    setOrganizations(organizations);
   };
 
   useEffect(() => {
-    loadPermissions();
+    fetchOrganizations();
   }, []);
 
   return (
     <Edit
-      saveButtonProps={{
-        disabled: saveButtonProps.disabled,
-        loading: saveButtonProps.loading,
-        onClick: beforeSave,
-      }}
-      title="Редактировать роль"
+      saveButtonProps={saveButtonProps}
+      title="Редактировать условие доставки"
     >
       <Form {...formProps} layout="vertical">
-        <Form.Item
-          label="Активность"
-          name="active"
-          valuePropName="checked"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Switch />
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Активность"
+              name="active"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="По-умолчанию"
+              name="default"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Название"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Вид передвижения"
+              name="drive_type"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select>
+                {Object.keys(drive_type).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {tr(`deliveryPricing.driveType.${key}`)}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Организация"
+              name="organization_id"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select showSearch optionFilterProp="children">
+                {organizations.map((organization) => (
+                  <Select.Option key={organization.id} value={organization.id}>
+                    {organization.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Дни недели"
+              name="days"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select mode="multiple">
+                {Object.keys(daysOfWeekRu).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {daysOfWeekRu[key as keyof typeof daysOfWeekRu]}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Время начала"
+              name="start_time"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <TimePicker format={format} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Время окончания"
+              name="end_time"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <TimePicker format={format} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="Минимальная цена заказа" name="min_price">
+          <InputNumber type="number" />
         </Form.Item>
-        <Form.Item
-          label="Название"
-          name="name"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item label="Разрешения">
-          <Select
-            mode="multiple"
-            style={{ width: "100%" }}
-            placeholder="Выберите разрешения"
-            value={chosenPermissions}
-            onChange={onPermissionsSelect}
-            optionLabelProp="label"
-          >
-            {permissions.map((item: any) => (
-              <Option key={item.id} value={item.id} label={item.description}>
-                {item.description}
-              </Option>
-            ))}
-          </Select>
+        <Form.List name="rules">
+          {(fields, { add, remove }) => {
+            return (
+              <div>
+                {fields.map((field, index) => (
+                  <Space
+                    key={field.key}
+                    style={{ display: "flex", marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <Form.Item
+                      label="От (км)"
+                      name={[field.name, "from"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    <Form.Item
+                      label="До (км)"
+                      name={[field.name, "to"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Цена"
+                      name={[field.name, "price"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    {index > 0 && (
+                      <Form.Item label=" ">
+                        <Button
+                          danger
+                          shape="circle"
+                          icon={<DeleteOutlined />}
+                          onClick={() => {
+                            remove(field.name);
+                          }}
+                        />
+                      </Form.Item>
+                    )}
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Добавить условие
+                  </Button>
+                </Form.Item>
+              </div>
+            );
+          }}
+        </Form.List>
+        <Form.Item label="Цена за км дальше условий" name="price_per_km">
+          <InputNumber type="number" />
         </Form.Item>
       </Form>
     </Edit>

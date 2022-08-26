@@ -1,4 +1,4 @@
-import { drive_type, organization_system_type } from "./enums";
+import { drive_type, organization_system_type, user_status } from "./enums";
 
 export interface IPermissions {
   id: number;
@@ -149,4 +149,105 @@ export class ITerminals {
   created_by: string | null;
 
   updated_by: string | null;
+}
+
+export class IUsers {
+  [x: string]: any;
+  id: string;
+
+  phone: string;
+
+  first_name?: string | null;
+
+  last_name?: string | null;
+
+  password?: string | null;
+
+  is_super_user: boolean;
+
+  status: keyof typeof user_status;
+
+  drive_type?: keyof typeof drive_type | null;
+
+  card_name?: string | null;
+
+  card_number?: string | null;
+
+  birth_date?: Date | null;
+
+  car_model?: string | null;
+
+  car_number?: string | null;
+
+  is_online: boolean;
+
+  latitude?: number | null;
+
+  longitude?: number | null;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  otp?: Array<otp>;
+
+  permissions_permissions_created_byTousers?: Array<permissions>;
+
+  permissions_permissions_updated_byTousers?: Array<permissions>;
+
+  post_post_created_byTousers?: Array<post>;
+
+  post_updated_byTousers?: Array<post>;
+
+  post_post_user_idTousers?: Array<post>;
+
+  roles_roles_created_byTousers?: Array<roles>;
+
+  roles_roles_updated_byTousers?: Array<roles>;
+
+  roles_permissions_roles_permissions_created_byTousers?: Array<roles_permissions>;
+
+  roles_permissions_roles_permissions_updated_byTousers?: Array<roles_permissions>;
+
+  users_permissions_usersTousers_permissions_created_by?: Array<users_permissions>;
+
+  users_permissions_usersTousers_permissions_updated_by?: Array<users_permissions>;
+
+  users_permissions_usersTousers_permissions_user_id?: Array<users_permissions>;
+
+  users_roles_usersTousers_roles_created_by?: Array<users_roles>;
+
+  users_roles_usersTousers_roles_updated_by?: Array<users_roles>;
+
+  users_roles_usersTousers_roles_user_id?: Array<users_roles>;
+
+  post_prop_types_created_byTousers?: Array<post_prop_types>;
+
+  post_prop_types_updated_byTousers?: Array<post_prop_types>;
+
+  delivery_pricing_created_byTousers?: Array<delivery_pricing>;
+
+  delivery_pricing_updated_byTousers?: Array<delivery_pricing>;
+
+  city_created_byTousers?: Array<city>;
+
+  city_updated_byTousers?: Array<city>;
+
+  organization_created_byTousers?: Array<organization>;
+
+  organization_updated_byTousers?: Array<organization>;
+
+  work_schedules_created_byTousers?: Array<work_schedules>;
+
+  work_schedules_updated_byTousers?: Array<work_schedules>;
+
+  terminals_created_byTousers?: Array<terminals>;
+
+  terminals_updated_byTousers?: Array<terminals>;
+
+  users_terminals?: Array<users_terminals>;
+
+  users_work_schedules?: Array<users_work_schedules>;
+
+  _count?: UsersCount;
 }

@@ -1,19 +1,19 @@
 import {
-  Col,
-  Create,
+  useForm,
   Form,
   Input,
-  Row,
-  Select,
+  Edit,
   Switch,
-  useForm,
+  Select,
+  Row,
+  Col,
 } from "@pankod/refine-antd";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, ITerminals } from "interfaces";
 import { useEffect, useState } from "react";
 
-export const TerminalsCreate = () => {
+export const TerminalsEdit: React.FC = () => {
   const { formProps, saveButtonProps } = useForm<ITerminals>({
     metaData: {
       fields: [
@@ -54,7 +54,7 @@ export const TerminalsCreate = () => {
   }, []);
 
   return (
-    <Create saveButtonProps={saveButtonProps} title="Создать филиал">
+    <Edit saveButtonProps={saveButtonProps}>
       <Form {...formProps} layout="vertical">
         <Form.Item
           label="Активность"
@@ -128,9 +128,9 @@ export const TerminalsCreate = () => {
           </Col>
         </Row>
         <Form.Item label="Внешний идентификатор" name="external_id">
-          <Input />
+          <Input disabled />
         </Form.Item>
       </Form>
-    </Create>
+    </Edit>
   );
 };

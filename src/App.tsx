@@ -35,6 +35,7 @@ import {
 } from "pages/organization";
 import { WorkSchedulesCreate, WorkSchedulesList } from "pages/work_schedules";
 import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
+import { UsersCreate, UsersList } from "pages/users";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -65,7 +66,26 @@ function App() {
             name: "home",
           },
           {
+            name: "users-group",
+            options: {
+              label: "Пользователи",
+            },
+            list: UsersList,
+          },
+          {
+            name: "roles",
+            parentName: "users-group",
+            list: RolesList,
+            create: RolesCreate,
+            edit: RolesEdit,
+            show: RolesShow,
+            options: {
+              label: "Роли",
+            },
+          },
+          {
             name: "permissions",
+            parentName: "users-group",
             list: PermissionsList,
             edit: PermissionsEdit,
             create: PermissionsCreate,
@@ -74,13 +94,12 @@ function App() {
             },
           },
           {
-            name: "roles",
-            list: RolesList,
-            create: RolesCreate,
-            edit: RolesEdit,
-            show: RolesShow,
+            name: "users",
+            parentName: "users-group",
+            list: UsersList,
+            create: UsersCreate,
             options: {
-              label: "Роли",
+              label: "Список пользователей",
             },
           },
           {

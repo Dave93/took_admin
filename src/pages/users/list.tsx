@@ -7,61 +7,66 @@ import {
   Space,
   EditButton,
   ShowButton,
+  Select,
 } from "@pankod/refine-antd";
+import { useTranslate } from "@pankod/refine-core";
 
-import { ITerminals } from "interfaces";
+import { IUsers } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
-export const TerminalsList: React.FC = () => {
-  const { tableProps } = useTable<ITerminals>({
+export const UsersList: React.FC = () => {
+  const { tableProps } = useTable<IUsers>({
     initialSorter: [
       {
-        field: "name",
-        order: "asc",
-      },
-      {
-        field: "organization_id",
+        field: "first_name",
         order: "asc",
       },
     ],
     metaData: {
       fields: [
         "id",
-        "name",
-        "active",
+        "first_name",
+        "last_name",
         "created_at",
-        "organization_id",
+        "drive_type",
+        "card_number",
         "phone",
         "latitude",
         "longitude",
-        "external_id",
         {
-          organization: ["id", "name"],
+          users_terminals: [
+            {
+              terminals: ["id", "name"],
+            },
+          ],
         },
       ],
-      whereInputType: "terminalsWhereInput!",
-      orderByInputType: "terminalsOrderByWithRelationInput!",
+      whereInputType: "usersWhereInput!",
+      orderByInputType: "usersOrderByWithRelationInput!",
     },
   });
+
+  const tr = useTranslate();
+
   return (
     <>
-      <List title="Список филиалов">
+      <List title="Список пользователей">
         <Table {...tableProps} rowKey="id">
           <Table.Column
-            dataIndex="active"
-            title="Активность"
-            render={(value) => <Switch checked={value} disabled />}
-          />
-          <Table.Column dataIndex="name" title="Название" />
-          <Table.Column
-            dataIndex="organization.name"
-            title="Организация"
-            render={(value: any, record: ITerminals) =>
-              record.organization.name
-            }
+            dataIndex="status"
+            title="Статус"
+            render={(value) => tr(`users.status.${value}`)}
           />
           <Table.Column dataIndex="phone" title="Телефон" />
-          <Table.Column dataIndex="external_id" title="Внешний идентификатор" />
+          <Table.Column dataIndex="first_name" title="Имя" />
+          <Table.Column dataIndex="last_name" title="Фамилия" />
+          {/* <Table.Column dataIndex="roles" title="Роль" render={(value, record: IUsers) => } /> */}
+          <Table.Column
+            dataIndex="drive_type"
+            title="Тип доставки"
+            render={(value) => tr("deliveryPricing.driveType." + value)}
+          />
+          <Table.Column dataIndex="card_number" title="Номер карты" />
           <Table.Column dataIndex="latitude" title="Широта" />
           <Table.Column dataIndex="longitude" title="Долгота" />
           <Table.Column
@@ -75,7 +80,7 @@ export const TerminalsList: React.FC = () => {
               />
             )}
           />
-          <Table.Column<ITerminals>
+          <Table.Column<IUsers>
             title="Действия"
             dataIndex="actions"
             render={(_text, record): React.ReactNode => {

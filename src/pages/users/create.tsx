@@ -10,6 +10,7 @@ import {
 import { useTranslate } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
+import * as gqlb from "gql-query-builder";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
 import { drive_type, user_status } from "interfaces/enums";
 import { useEffect, useState } from "react";
@@ -160,39 +161,56 @@ export const UsersCreate = () => {
 
             if (userCreate) {
               console.log(userCreate);
-              let query = gql`
-                mutation {
-                  updateUser(
-                    where: {
-                      id: "${userCreate?.id}"
-                    }
-                    data: {
+              let { query, variables } = gqlb.mutation({
+                operation: "updateUser",
+                variables: {
+                  where: {
+                    type: "usersWhereUniqueInput",
+                    value: {
+                      id: userCreate.id,
+                    },
+                    required: true,
+                  },
+                  data: {
+                    type: "usersUpdateInput",
+                    required: true,
+                    value: {
                       users_terminals: {
-                        connect: ${JSON.stringify(
-                          users_terminals.map((item: any) => ({
-                            user_id_terminal_id: { terminal_id: item },
-                          }))
-                        )}
-                      }
+                        connect: users_terminals.map((item: any) => {
+                          return {
+                            user_id_terminal_id: {
+                              terminal_id: item,
+                              user_id: userCreate.id,
+                            },
+                          };
+                        }),
+                      },
                       users_work_schedules: {
-                        connect: ${JSON.stringify(
-                          work_schedules.map((item: any) => ({
+                        connect: work_schedules.map((item: any) => {
+                          return {
                             user_id_work_schedule_id: {
                               work_schedule_id: item,
+                              user_id: userCreate.id,
                             },
-                          }))
-                        )}
-                      }
-                      users_roles_usersTousers_roles_user_id: {
-                        connect: ${JSON.stringify([
-                          { user_id_role_id: { role_id: roles } },
-                        ])}
-                      }
-                    }
-                  )
-                }
-                `;
-              await client.request(query);
+                          };
+                        }),
+                      },
+                      // users_roles_usersTousers_roles_user_id: {
+                      //   connect: [
+                      //     {
+                      //       user_id_role_id: {
+                      //         role_id: roles,
+                      //         user_id: userCreate.id,
+                      //       },
+                      //     },
+                      //   ],
+                      // },
+                    },
+                  },
+                },
+                fields: ["id"],
+              });
+              await client.request(query, variables);
               redirect("list");
             }
 

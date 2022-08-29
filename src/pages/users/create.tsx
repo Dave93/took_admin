@@ -161,55 +161,52 @@ export const UsersCreate = () => {
 
             if (userCreate) {
               console.log(userCreate);
-              let { query, variables } = gqlb.mutation({
-                operation: "updateUser",
-                variables: {
-                  where: {
-                    type: "usersWhereUniqueInput",
-                    value: {
-                      id: userCreate.id,
+              let { query, variables } = gqlb.mutation([
+                {
+                  operation: "linkUserToRoles",
+                  variables: {
+                    userId: {
+                      value: userCreate.id,
+                      required: true,
                     },
-                    required: true,
-                  },
-                  data: {
-                    type: "usersUpdateInput",
-                    required: true,
-                    value: {
-                      users_terminals: {
-                        connect: users_terminals.map((item: any) => {
-                          return {
-                            user_id_terminal_id: {
-                              terminal_id: item,
-                              user_id: userCreate.id,
-                            },
-                          };
-                        }),
-                      },
-                      users_work_schedules: {
-                        connect: work_schedules.map((item: any) => {
-                          return {
-                            user_id_work_schedule_id: {
-                              work_schedule_id: item,
-                              user_id: userCreate.id,
-                            },
-                          };
-                        }),
-                      },
-                      // users_roles_usersTousers_roles_user_id: {
-                      //   connect: [
-                      //     {
-                      //       user_id_role_id: {
-                      //         role_id: roles,
-                      //         user_id: userCreate.id,
-                      //       },
-                      //     },
-                      //   ],
-                      // },
+                    roleId: {
+                      value: roles,
+                      required: true,
                     },
                   },
+                  fields: ["user_id"],
                 },
-                fields: ["id"],
-              });
+                {
+                  operation: "linkUserToWorkSchedules",
+                  variables: {
+                    userId: {
+                      value: userCreate.id,
+                      required: true,
+                    },
+                    workScheduleId: {
+                      value: work_schedules,
+                      type: "[String!]",
+                      required: true,
+                    },
+                  },
+                  fields: ["user_id"],
+                },
+                {
+                  operation: "linkUserToTerminals",
+                  variables: {
+                    userId: {
+                      value: userCreate.id,
+                      required: true,
+                    },
+                    terminalId: {
+                      value: users_terminals,
+                      type: "[String!]",
+                      required: true,
+                    },
+                  },
+                  fields: ["user_id"],
+                },
+              ]);
               await client.request(query, variables);
               redirect("list");
             }

@@ -35,7 +35,7 @@ import {
 } from "pages/organization";
 import { WorkSchedulesCreate, WorkSchedulesList } from "pages/work_schedules";
 import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
-import { UsersCreate, UsersList } from "pages/users";
+import { UsersCreate, UsersEdit, UsersList } from "pages/users";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -98,6 +98,7 @@ function App() {
             parentName: "users-group",
             list: UsersList,
             create: UsersCreate,
+            edit: UsersEdit,
             options: {
               label: "Список пользователей",
             },

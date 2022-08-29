@@ -18,7 +18,7 @@ import { chain } from "lodash";
 
 export const UsersCreate = () => {
   const tr = useTranslate();
-  const { formProps, saveButtonProps, redirect, onFinish } = useForm<IUsers>({
+  const { formProps, saveButtonProps, redirect } = useForm<IUsers>({
     redirect: false,
     metaData: {
       fields: [
@@ -157,10 +157,7 @@ export const UsersCreate = () => {
               data: values,
             });
 
-            // const response = await onFinish(values);
-
             if (userCreate) {
-              console.log(userCreate);
               let { query, variables } = gqlb.mutation([
                 {
                   operation: "linkUserToRoles",
@@ -189,7 +186,7 @@ export const UsersCreate = () => {
                       required: true,
                     },
                   },
-                  fields: ["user_id"],
+                  fields: ["count"],
                 },
                 {
                   operation: "linkUserToTerminals",
@@ -204,18 +201,13 @@ export const UsersCreate = () => {
                       required: true,
                     },
                   },
-                  fields: ["user_id"],
+                  fields: ["count"],
                 },
               ]);
               await client.request(query, variables);
               redirect("list");
             }
-
-            console.log(formProps.form?.getFieldsValue());
-            console.log(saveButtonProps);
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         },
       }}
       title="Создать пользователя"

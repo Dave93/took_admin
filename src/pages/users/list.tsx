@@ -3,11 +3,9 @@ import {
   DateField,
   Table,
   useTable,
-  Switch,
   Space,
   EditButton,
   ShowButton,
-  Select,
 } from "@pankod/refine-antd";
 import { useTranslate } from "@pankod/refine-core";
 
@@ -33,6 +31,7 @@ export const UsersList: React.FC = () => {
         "phone",
         "latitude",
         "longitude",
+        "status",
         {
           users_terminals: [
             {

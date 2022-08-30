@@ -43,7 +43,6 @@ export const authProvider: AuthProvider = {
         }
       `;
       const data = await client.request(query);
-      console.log(data);
       let expirationAddition = parseInt(
         ms(data.verifyOtp.token.accessTokenExpires)
       );
@@ -74,6 +73,7 @@ export const authProvider: AuthProvider = {
       let password = process.env.REACT_APP_CRYPTO_KEY!;
       var bytes = AES.decrypt(token, password);
       var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
+      console.log("token", decryptedData.token);
       if (decryptedData.token.accessTokenExpires) {
         let expiration = DateTime.fromMillis(
           decryptedData.token.expirationMillis

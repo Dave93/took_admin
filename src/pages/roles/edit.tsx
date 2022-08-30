@@ -19,7 +19,7 @@ export const RolesEdit: React.FC = () => {
 
   const { formProps, saveButtonProps, id } = useForm<IRoles>({
     metaData: {
-      fields: ["id", "name", "active"],
+      fields: ["id", "name", "code", "active"],
       pluralize: true,
     },
   });
@@ -115,6 +115,9 @@ export const RolesEdit: React.FC = () => {
             },
           ]}
         >
+          <Input />
+        </Form.Item>
+        <Form.Item label="Код" name="code">
           <Input />
         </Form.Item>
         <Form.Item label="Разрешения">

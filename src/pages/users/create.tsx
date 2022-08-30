@@ -47,25 +47,22 @@ export const UsersCreate = () => {
   const [terminals, setTerminals] = useState<any[]>([]);
   const [work_schedules, setWorkSchedules] = useState<any[]>([]);
 
-  const fetchRoles = async () => {
+  const fetchAllData = async () => {
     const query = gql`
       query {
         roles {
           id
           name
         }
-      }
-    `;
-    const { roles } = await client.request<{
-      roles: IRoles[];
-    }>(query);
-    setRoles(roles);
-  };
-
-  const fetchTerminals = async () => {
-    const query = gql`
-      query {
         terminals {
+          id
+          name
+          organization {
+            id
+            name
+          }
+        }
+        workSchedules {
           id
           name
           organization {
@@ -75,8 +72,10 @@ export const UsersCreate = () => {
         }
       }
     `;
-    const { terminals } = await client.request<{
+    const { roles, terminals, workSchedules } = await client.request<{
+      roles: IRoles[];
       terminals: ITerminals[];
+      workSchedules: IWorkSchedules[];
     }>(query);
 
     var result = chain(terminals)
@@ -89,27 +88,7 @@ export const UsersCreate = () => {
         };
       })
       .value();
-
-    setTerminals(result);
-  };
-
-  const fetchWorkSchedules = async () => {
-    const query = gql`
-      query {
-        workSchedules {
-          id
-          name
-          organization {
-            id
-            name
-          }
-        }
-      }
-    `;
-    const { workSchedules } = await client.request<{
-      workSchedules: IWorkSchedules[];
-    }>(query);
-    var result = chain(workSchedules)
+    var workScheduleResult = chain(workSchedules)
       .groupBy("organization.name")
       .toPairs()
       .map(function (item) {
@@ -120,13 +99,13 @@ export const UsersCreate = () => {
       })
       .value();
 
-    setWorkSchedules(result);
+    setWorkSchedules(workScheduleResult);
+    setTerminals(result);
+    setRoles(roles);
   };
 
   useEffect(() => {
-    fetchRoles();
-    fetchTerminals();
-    fetchWorkSchedules();
+    fetchAllData();
   }, []);
 
   return (

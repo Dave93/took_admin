@@ -5,7 +5,7 @@ import { IRoles } from "interfaces";
 export const RolesCreate = () => {
   const { formProps, saveButtonProps } = useForm<IRoles>({
     metaData: {
-      fields: ["id", "name", "active", "created_at"],
+      fields: ["id", "name", "active", "code", "created_at"],
       pluralize: true,
     },
   });
@@ -34,6 +34,9 @@ export const RolesCreate = () => {
             },
           ]}
         >
+          <Input />
+        </Form.Item>
+        <Form.Item label="Код" name="code">
           <Input />
         </Form.Item>
       </Form>

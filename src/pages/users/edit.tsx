@@ -18,7 +18,7 @@ import { drive_type, user_status } from "interfaces/enums";
 
 export const UsersEdit: React.FC = () => {
   const tr = useTranslate();
-  const { formProps, saveButtonProps, redirect } = useForm<IUsers>({
+  const { formProps, saveButtonProps, redirect, id } = useForm<IUsers>({
     metaData: {
       fields: [
         "id",
@@ -26,6 +26,9 @@ export const UsersEdit: React.FC = () => {
         "last_name",
         "created_at",
         "drive_type",
+        "car_model",
+        "car_number",
+        "card_name",
         "card_number",
         "phone",
         "latitude",
@@ -61,25 +64,22 @@ export const UsersEdit: React.FC = () => {
   const [terminals, setTerminals] = useState<any[]>([]);
   const [work_schedules, setWorkSchedules] = useState<any[]>([]);
 
-  const fetchRoles = async () => {
+  const fetchAllData = async () => {
     const query = gql`
       query {
         roles {
           id
           name
         }
-      }
-    `;
-    const { roles } = await client.request<{
-      roles: IRoles[];
-    }>(query);
-    setRoles(roles);
-  };
-
-  const fetchTerminals = async () => {
-    const query = gql`
-      query {
         terminals {
+          id
+          name
+          organization {
+            id
+            name
+          }
+        }
+        workSchedules {
           id
           name
           organization {
@@ -89,8 +89,10 @@ export const UsersEdit: React.FC = () => {
         }
       }
     `;
-    const { terminals } = await client.request<{
+    const { roles, terminals, workSchedules } = await client.request<{
+      roles: IRoles[];
       terminals: ITerminals[];
+      workSchedules: IWorkSchedules[];
     }>(query);
 
     var result = chain(terminals)
@@ -103,27 +105,7 @@ export const UsersEdit: React.FC = () => {
         };
       })
       .value();
-
-    setTerminals(result);
-  };
-
-  const fetchWorkSchedules = async () => {
-    const query = gql`
-      query {
-        workSchedules {
-          id
-          name
-          organization {
-            id
-            name
-          }
-        }
-      }
-    `;
-    const { workSchedules } = await client.request<{
-      workSchedules: IWorkSchedules[];
-    }>(query);
-    var result = chain(workSchedules)
+    var workScheduleResult = chain(workSchedules)
       .groupBy("organization.name")
       .toPairs()
       .map(function (item) {
@@ -134,18 +116,42 @@ export const UsersEdit: React.FC = () => {
       })
       .value();
 
-    setWorkSchedules(result);
+    setWorkSchedules(workScheduleResult);
+    setTerminals(result);
+    setRoles(roles);
   };
 
   const setSelectValues = () => {
-    console.log(formProps);
+    setTimeout(() => {
+      let formValues: any = formProps.form?.getFieldsValue();
+      formProps.form?.setFieldsValue({
+        ...formValues,
+        users_roles_usersTousers_roles_user_id:
+          formValues.users_roles_usersTousers_roles_user_id
+            ? formValues.users_roles_usersTousers_roles_user_id[0].roles.id
+            : null,
+        users_work_schedules:
+          formValues.users_work_schedules &&
+          formValues.users_work_schedules.length > 0
+            ? formValues.users_work_schedules.map(
+                (item: any) => item.work_schedules.id
+              )
+            : null,
+        users_terminals:
+          formValues.users_terminals && formValues.users_terminals.length > 0
+            ? formValues.users_terminals.map((item: any) => item.terminals.id)
+            : null,
+      });
+    }, 200);
+  };
+
+  const loadData = async () => {
+    await fetchAllData();
+    setSelectValues();
   };
 
   useEffect(() => {
-    setSelectValues();
-    fetchRoles();
-    fetchTerminals();
-    fetchWorkSchedules();
+    loadData();
   }, []);
 
   return (
@@ -158,31 +164,35 @@ export const UsersEdit: React.FC = () => {
             let values: any = await formProps.form?.validateFields();
             let users_terminals = values.users_terminals;
             let work_schedules = values.users_work_schedules;
-            let roles = values.roles;
+            let roles = values.users_roles_usersTousers_roles_user_id;
             delete values.users_terminals;
             delete values.users_work_schedules;
-            delete values.roles;
+            delete values.users_roles_usersTousers_roles_user_id;
 
             let createQuery = gql`
-              mutation ($data: usersUncheckedCreateInput!) {
-                userCreate(data: $data) {
+              mutation (
+                $data: usersUpdateInput!
+                $where: usersWhereUniqueInput!
+              ) {
+                updateUser(data: $data, where: $where) {
                   id
                 }
               }
             `;
-            let { userCreate } = await client.request<{
-              userCreate: IUsers;
+            let { updateUser } = await client.request<{
+              updateUser: IUsers;
             }>(createQuery, {
               data: values,
+              where: { id },
             });
 
-            if (userCreate) {
+            if (updateUser) {
               let { query, variables } = gqlb.mutation([
                 {
                   operation: "linkUserToRoles",
                   variables: {
                     userId: {
-                      value: userCreate.id,
+                      value: updateUser.id,
                       required: true,
                     },
                     roleId: {
@@ -196,7 +206,7 @@ export const UsersEdit: React.FC = () => {
                   operation: "linkUserToWorkSchedules",
                   variables: {
                     userId: {
-                      value: userCreate.id,
+                      value: updateUser.id,
                       required: true,
                     },
                     workScheduleId: {
@@ -211,7 +221,7 @@ export const UsersEdit: React.FC = () => {
                   operation: "linkUserToTerminals",
                   variables: {
                     userId: {
-                      value: userCreate.id,
+                      value: updateUser.id,
                       required: true,
                     },
                     terminalId: {
@@ -229,7 +239,7 @@ export const UsersEdit: React.FC = () => {
           } catch (error) {}
         },
       }}
-      title="Создать пользователя"
+      title="Редактирование пользователя"
     >
       <Form {...formProps} layout="vertical">
         <Row gutter={16}>
@@ -255,7 +265,7 @@ export const UsersEdit: React.FC = () => {
           <Col span={12}>
             <Form.Item
               label="Роль"
-              name="roles"
+              name="users_roles_usersTousers_roles_user_id"
               rules={[
                 {
                   required: true,

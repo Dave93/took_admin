@@ -7,6 +7,7 @@ import {
   Select,
   Row,
   Col,
+  InputNumber,
 } from "@pankod/refine-antd";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
@@ -79,7 +80,7 @@ export const TerminalsEdit: React.FC = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="Организация"
           name="organization_id"
           rules={[
@@ -95,7 +96,7 @@ export const TerminalsEdit: React.FC = () => {
               </Select.Option>
             ))}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="Телефон" name="phone">
           <Input />
         </Form.Item>
@@ -110,7 +111,7 @@ export const TerminalsEdit: React.FC = () => {
                 },
               ]}
             >
-              <Input />
+              <InputNumber type="number" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -123,7 +124,7 @@ export const TerminalsEdit: React.FC = () => {
                 },
               ]}
             >
-              <Input />
+              <InputNumber type="number" />
             </Form.Item>
           </Col>
         </Row>

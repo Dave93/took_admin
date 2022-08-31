@@ -7,6 +7,7 @@ import {
   Select,
   Row,
   Col,
+  InputNumber,
 } from "@pankod/refine-antd";
 import { IOrganization } from "interfaces";
 import { organization_system_type } from "interfaces/enums";
@@ -31,6 +32,8 @@ export const OrganizationsEdit: React.FC = () => {
         "sender_number",
         "description",
         "external_id",
+        "max_distance",
+        "max_active_order_count",
       ],
       // pluralize: true,
     },
@@ -90,6 +93,21 @@ export const OrganizationsEdit: React.FC = () => {
         <Form.Item label="Внешний id" name="external_id">
           <Input />
         </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Максимальное расстояние" name="max_distance">
+              <InputNumber type="number" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Максимальное количество активных заказов"
+              name="max_active_order_count"
+            >
+              <InputNumber type="number" />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Вебхук" name="webhook">

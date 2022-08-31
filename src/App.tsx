@@ -33,7 +33,11 @@ import {
   OrganizationsCreate,
   OrganizationsEdit,
 } from "pages/organization";
-import { WorkSchedulesCreate, WorkSchedulesList } from "pages/work_schedules";
+import {
+  WorkSchedulesCreate,
+  WorkSchedulesEdit,
+  WorkSchedulesList,
+} from "pages/work_schedules";
 import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
 import { UsersCreate, UsersEdit, UsersList } from "pages/users";
 const gqlDataProvider = dataProvider(client);
@@ -153,6 +157,7 @@ function App() {
             },
             list: WorkSchedulesList,
             create: WorkSchedulesCreate,
+            edit: WorkSchedulesEdit,
           },
         ]}
       />

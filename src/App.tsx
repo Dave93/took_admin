@@ -40,6 +40,7 @@ import {
 } from "pages/work_schedules";
 import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
 import { UsersCreate, UsersEdit, UsersList } from "pages/users";
+import { WorkSchedulesReport } from "pages/work_schedule_entries_report";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -158,6 +159,14 @@ function App() {
             list: WorkSchedulesList,
             create: WorkSchedulesCreate,
             edit: WorkSchedulesEdit,
+          },
+          {
+            name: "work_schedule_entries_report",
+            parentName: "time_management",
+            options: {
+              label: "Отчёт по рабочим графикам",
+            },
+            list: WorkSchedulesReport,
           },
         ]}
       />

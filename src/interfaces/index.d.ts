@@ -251,3 +251,17 @@ export class IUsers {
 
   _count?: UsersCount;
 }
+
+export class WorkScheduleEntriesReportForPeriod {
+  user_id: string;
+
+  duration: number;
+
+  day: Date;
+
+  late: boolean;
+
+  first_name: string;
+
+  last_name: string;
+}

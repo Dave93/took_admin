@@ -7,13 +7,26 @@ import {
   Space,
   EditButton,
   ShowButton,
+  Form,
+  Select,
+  Button,
 } from "@pankod/refine-antd";
+import { CrudFilters, HttpError } from "@pankod/refine-core";
+import { client } from "graphConnect";
+import { gql } from "graphql-request";
 
-import { ITerminals } from "interfaces";
+import { IOrganization, ITerminals } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
+import { useEffect, useState } from "react";
 
 export const TerminalsList: React.FC = () => {
-  const { tableProps } = useTable<ITerminals>({
+  const [organizations, setOrganizations] = useState<IOrganization[]>([]);
+
+  const { tableProps, searchFormProps } = useTable<
+    ITerminals,
+    HttpError,
+    { organization_id: string }
+  >({
     initialSorter: [
       {
         field: "name",
@@ -42,10 +55,58 @@ export const TerminalsList: React.FC = () => {
       whereInputType: "terminalsWhereInput!",
       orderByInputType: "terminalsOrderByWithRelationInput!",
     },
+    onSearch: async (params) => {
+      const filters: CrudFilters = [];
+      const { organization_id } = params;
+
+      if (organization_id) {
+        filters.push({
+          field: "organization_id",
+          operator: "eq",
+          value: {
+            equals: organization_id,
+          },
+        });
+      }
+      return filters;
+    },
   });
+
+  const loadOrganizations = async () => {
+    const query = gql`
+      query {
+        organizations {
+          id
+          name
+        }
+      }
+    `;
+    const { organizations } = await client.request(query);
+    setOrganizations(organizations);
+  };
+
+  useEffect(() => {
+    loadOrganizations();
+  }, []);
+
   return (
     <>
       <List title="Список филиалов">
+        <Form layout="horizontal" {...searchFormProps}>
+          <Form.Item name="organization_id" label="Организация">
+            <Select
+              options={organizations.map((org) => ({
+                label: org.name,
+                value: org.id,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="submit" type="primary">
+              Filter
+            </Button>
+          </Form.Item>
+        </Form>
         <Table {...tableProps} rowKey="id">
           <Table.Column
             dataIndex="active"

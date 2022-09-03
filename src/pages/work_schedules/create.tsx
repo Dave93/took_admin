@@ -13,8 +13,6 @@ import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, IWorkSchedules } from "interfaces";
 import { useEffect, useState } from "react";
-
-const { TextArea } = Input;
 let daysOfWeekRu = {
   "1": "Понедельник",
   "2": "Вторник",

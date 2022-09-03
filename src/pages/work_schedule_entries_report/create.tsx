@@ -1,27 +1,18 @@
 import {
-  useForm,
+  Col,
+  Create,
   Form,
   Input,
-  Edit,
-  Switch,
-  Select,
   Row,
-  Col,
+  Select,
+  Switch,
   TimePicker,
+  useForm,
 } from "@pankod/refine-antd";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, IWorkSchedules } from "interfaces";
-import { organization_system_type } from "interfaces/enums";
-import { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-dayjs.tz.setDefault("Asia/Tashkent");
+import { useEffect, useState } from "react";
 
 const { TextArea } = Input;
 let daysOfWeekRu = {
@@ -35,7 +26,8 @@ let daysOfWeekRu = {
 };
 
 const format = "HH:mm";
-export const WorkSchedulesEdit: React.FC = () => {
+
+export const WorkSchedulesCreate = () => {
   const { formProps, saveButtonProps } = useForm<IWorkSchedules>({
     metaData: {
       fields: [
@@ -76,7 +68,7 @@ export const WorkSchedulesEdit: React.FC = () => {
   }, []);
 
   return (
-    <Edit saveButtonProps={saveButtonProps}>
+    <Create saveButtonProps={saveButtonProps} title="Создать рабочий график">
       <Form {...formProps} layout="vertical">
         <Form.Item
           label="Активность"
@@ -101,7 +93,7 @@ export const WorkSchedulesEdit: React.FC = () => {
         >
           <Input />
         </Form.Item>
-        {/* <Form.Item
+        <Form.Item
           label="Организация"
           name="organization_id"
           rules={[
@@ -117,7 +109,7 @@ export const WorkSchedulesEdit: React.FC = () => {
               </Select.Option>
             ))}
           </Select>
-        </Form.Item> */}
+        </Form.Item>
         <Form.Item
           label="Дни недели"
           name="days"
@@ -145,9 +137,6 @@ export const WorkSchedulesEdit: React.FC = () => {
                   required: true,
                 },
               ]}
-              getValueProps={(value) => ({
-                value: value ? dayjs(value) : "",
-              })}
             >
               <TimePicker format={format} />
             </Form.Item>
@@ -161,9 +150,6 @@ export const WorkSchedulesEdit: React.FC = () => {
                   required: true,
                 },
               ]}
-              getValueProps={(value) => ({
-                value: value ? dayjs(value) : "",
-              })}
             >
               <TimePicker format={format} />
             </Form.Item>
@@ -179,15 +165,12 @@ export const WorkSchedulesEdit: React.FC = () => {
                   required: true,
                 },
               ]}
-              getValueProps={(value) => ({
-                value: value ? dayjs(value) : "",
-              })}
             >
               <TimePicker format={format} />
             </Form.Item>
           </Col>
         </Row>
       </Form>
-    </Edit>
+    </Create>
   );
 };

@@ -104,7 +104,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         },
       ]);
 
-      const response = await client.request(query, variables);
+      const response = await client.request(query, variables, metaData?.requestHeaders ?? null);
 
       return {
         data: response[operation],

@@ -103,7 +103,7 @@ export const TerminalsList: React.FC = () => {
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary">
-              Filter
+              Фильтровать
             </Button>
           </Form.Item>
         </Form>

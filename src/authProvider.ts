@@ -124,8 +124,9 @@ export const authProvider: AuthProvider = {
       return Promise.reject();
     }
 
-    return Promise.resolve({
-      id: 1,
-    });
+    let password = process.env.REACT_APP_CRYPTO_KEY!;
+    var bytes = AES.decrypt(token, password);
+    var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
+    return Promise.resolve(decryptedData);
   },
 };

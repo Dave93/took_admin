@@ -252,7 +252,21 @@ export class IUsers {
   _count?: UsersCount;
 }
 
+class WorkScheduleEntriesReportCouriers {
+  id: string;
+
+  first_name: string;
+
+  last_name: string;
+}
+
 export class WorkScheduleEntriesReportForPeriod {
+  users: WorkScheduleEntriesReportCouriers[];
+
+  work_schedule_entries: WorkScheduleEntriesReportRecord[];
+}
+
+class WorkScheduleEntriesReportRecord {
   user_id: string;
 
   duration: number;

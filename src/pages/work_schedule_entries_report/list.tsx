@@ -19,11 +19,13 @@ import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
 import { IWorkSchedules, WorkScheduleEntriesReportForPeriod } from "interfaces";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+import duration from "dayjs/plugin/duration";
 import { useMemo } from "react";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
 dayjs.extend(weekday);
+dayjs.extend(duration);
 
 const dateFormat = "DD.MM.YYYY";
 
@@ -31,10 +33,10 @@ export const WorkSchedulesReport: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
-  const { searchFormProps, tableProps } = useTable<
+  const { searchFormProps, tableProps, filters } = useTable<
     WorkScheduleEntriesReportForPeriod,
     HttpError,
-    { report_start: Date; report_end: Date }
+    { report_start: any; report_end: any }
   >({
     metaData: {
       fields: [
@@ -73,52 +75,152 @@ export const WorkSchedulesReport: React.FC = () => {
       filters.push({
         field: "report_start",
         operator: "eq",
-        value: params.report_start ?? dayjs().startOf("w").toDate(),
+        value: params.report_start
+          ? params.report_start.toDate()
+          : dayjs().startOf("w"),
       });
       filters.push({
         field: "report_end",
         operator: "eq",
-        value: params.report_end ?? dayjs().endOf("w").toDate(),
+        value: params.report_end
+          ? params.report_end.toDate()
+          : dayjs().endOf("w"),
       });
-
-      console.log(filters);
-
       return filters;
     },
   });
 
-  console.log(searchFormProps);
-
-  const tableColumns = useMemo(async () => {
-    let res = [
+  const tableColumns = useMemo(() => {
+    let res: any = [
       {
         title: "ФИО",
         dataIndex: "users",
-        render: (record: any) => {
-          return `${record.first_name} ${record.last_name}`;
-        },
+        fixed: "left",
       },
     ];
 
-    let formValues = await searchFormProps?.form?.getFieldsValue();
-    console.log(formValues);
+    if (!tableProps.loading) {
+      let formValues: any = {};
+      filters?.forEach(
+        (filter: any) => (formValues[filter.field] = filter.value)
+      );
+      let reportStart = formValues?.report_start ?? dayjs().startOf("w");
+      let reportEnd = formValues?.report_end ?? dayjs().endOf("w");
+
+      let days = dayjs(reportEnd).diff(dayjs(reportStart), "day");
+      for (let i = 0; i <= days; i++) {
+        res.push({
+          title: dayjs(reportStart).add(i, "day").format("DD.MM"),
+          dataIndex: `date_${dayjs(reportStart)
+            .add(i, "day")
+            .format("DD_MM_YYYY")}`,
+          render: (value: any, record: any) => {
+            return (
+              <Space>
+                <Tag color={value?.late ? "red" : "green"}>
+                  {dayjs.duration(value?.duration * 1000).format("HH:mm:ss")}
+                </Tag>
+              </Space>
+            );
+          },
+        });
+      }
+
+      res.push({
+        title: "Итого",
+        dataIndex: `total`,
+        fixed: "right",
+        render: (value: any, record: any) => {
+          return (
+            <Space>
+              <Tag color="blue">
+                {dayjs.duration(value * 1000).format("HH:mm:ss")}
+              </Tag>
+            </Space>
+          );
+        },
+      });
+    }
+
     return res;
   }, [tableProps.loading]);
 
-  console.log(tableColumns);
+  const tableDataSource = useMemo<any>(() => {
+    let users: any = {};
+
+    let formValues: any = {};
+    filters?.forEach(
+      (filter: any) => (formValues[filter.field] = filter.value)
+    );
+    let data: any = tableProps.dataSource;
+
+    if (!tableProps.loading) {
+      let reportStart = formValues?.report_start ?? dayjs().startOf("w");
+      let reportEnd = formValues?.report_end ?? dayjs().endOf("w");
+      data?.users?.forEach((user: any) => {
+        users[user.id] = {
+          users: `${user.first_name} ${user.last_name}`,
+          total: 0,
+        };
+        let days = dayjs(reportEnd).diff(dayjs(reportStart), "day");
+        for (let i = 0; i <= days; i++) {
+          users[user.id][
+            `date_${dayjs(reportStart).add(i, "day").format("DD_MM_YYYY")}`
+          ] = {
+            duration: 0,
+            late: false,
+          };
+        }
+      });
+
+      data?.work_schedule_entries?.forEach((entry: any) => {
+        users[entry.user_id][`date_${dayjs(entry.day).format("DD_MM_YYYY")}`] =
+          {
+            duration: entry.duration,
+            late: entry.late,
+          };
+        users[entry.user_id].total += entry.duration;
+      });
+    }
+
+    return Object.values(users);
+  }, [tableProps.loading]);
 
   return (
     <>
       <List title="Отчёт по рабочим графикам">
-        <Form layout="vertical" {...searchFormProps}>
+        <Form
+          layout="vertical"
+          {...searchFormProps}
+          initialValues={{
+            report_start: dayjs().startOf("w"),
+            report_end: dayjs().endOf("w"),
+          }}
+        >
           <Row gutter={16} align="bottom">
             <Col span={4}>
-              <Form.Item name="report_start" label="Дата начала">
+              <Form.Item
+                name="report_start"
+                label="Дата начала"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <DatePicker format={dateFormat} />
               </Form.Item>
             </Col>
             <Col span={4}>
-              <Form.Item name="report_end" label="Дата окончания">
+              <Form.Item
+                name="report_end"
+                label="Дата окончания"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <DatePicker format={dateFormat} />
               </Form.Item>
             </Col>
@@ -131,6 +233,12 @@ export const WorkSchedulesReport: React.FC = () => {
             </Col>
           </Row>
         </Form>
+        <Table
+          {...tableProps}
+          columns={tableColumns}
+          dataSource={tableDataSource}
+          pagination={false}
+        />
       </List>
     </>
   );

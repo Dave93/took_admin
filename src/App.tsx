@@ -5,7 +5,7 @@ import {
   ErrorComponent,
 } from "@pankod/refine-antd";
 import "@pankod/refine-antd/dist/styles.min.css";
-import routerProvider from "@pankod/refine-react-location";
+import routerProvider from "@pankod/refine-react-router-v6";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";
@@ -65,6 +65,7 @@ function App() {
         LoginPage={Login}
         OffLayoutArea={OffLayoutArea}
         i18nProvider={i18nProvider}
+        syncWithLocation={true}
         Header={Header}
         resources={[
           {

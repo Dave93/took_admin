@@ -279,3 +279,31 @@ class WorkScheduleEntriesReportRecord {
 
   last_name: string;
 }
+
+export class ICustomers {
+  id: string;
+
+  name: string;
+
+  phone: string;
+
+  customers_comments_customers?: Array<customers_comments>;
+
+  _count?: CustomersCount;
+}
+
+export class customers_comments {
+  id: string;
+
+  customer_id: string;
+
+  comment: string;
+
+  created_at: Date;
+
+  created_by: string | null;
+
+  customers_comments_created_byTousers?: users | null;
+
+  customers_comments_customers?: customers;
+}

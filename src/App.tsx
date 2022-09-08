@@ -41,6 +41,7 @@ import {
 import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
 import { UsersCreate, UsersEdit, UsersList } from "pages/users";
 import { WorkSchedulesReport } from "pages/work_schedule_entries_report";
+import { CustomersList, CustomersShow } from "pages/customers";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -70,6 +71,21 @@ function App() {
         resources={[
           {
             name: "home",
+          },
+          {
+            name: "orders-group",
+            options: {
+              label: "Заказы",
+            },
+          },
+          {
+            name: "customers",
+            options: {
+              label: "Клиенты",
+            },
+            parentName: "orders-group",
+            list: CustomersList,
+            show: CustomersShow,
           },
           {
             name: "users-group",

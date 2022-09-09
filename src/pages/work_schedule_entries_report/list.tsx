@@ -238,6 +238,7 @@ export const WorkSchedulesReport: React.FC = () => {
           columns={tableColumns}
           dataSource={tableDataSource}
           pagination={false}
+          bordered
         />
       </List>
     </>

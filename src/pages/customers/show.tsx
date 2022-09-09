@@ -8,16 +8,13 @@ import {
   AntdList,
 } from "@pankod/refine-antd";
 
-import { useEffect, useState } from "react";
-import { gql } from "graphql-request";
-import { client } from "graphConnect";
 import { customers_comments } from "interfaces";
 import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
 
 export const CustomersShow = () => {
-  const { queryResult, showId } = useShow({
+  const { queryResult } = useShow({
     metaData: {
       fields: [
         "id",
@@ -32,7 +29,6 @@ export const CustomersShow = () => {
   });
   const { data, isLoading } = queryResult;
   const record = data?.data;
-  console.log(record);
   return (
     <Show isLoading={isLoading}>
       <Row gutter={16}>

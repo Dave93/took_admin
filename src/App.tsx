@@ -42,6 +42,11 @@ import { TerminalsCreate, TerminalsEdit, TerminalsList } from "pages/terminals";
 import { UsersCreate, UsersEdit, UsersList } from "pages/users";
 import { WorkSchedulesReport } from "pages/work_schedule_entries_report";
 import { CustomersList, CustomersShow } from "pages/customers";
+import {
+  OrderStatusCreate,
+  OrderStatusEdit,
+  OrderStatusList,
+} from "pages/order_status";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -86,6 +91,16 @@ function App() {
             parentName: "orders-group",
             list: CustomersList,
             show: CustomersShow,
+          },
+          {
+            name: "order_status",
+            options: {
+              label: "Статусы заказов",
+            },
+            parentName: "orders-group",
+            list: OrderStatusList,
+            create: OrderStatusCreate,
+            edit: OrderStatusEdit,
           },
           {
             name: "users-group",

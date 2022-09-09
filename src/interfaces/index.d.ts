@@ -307,3 +307,21 @@ export class customers_comments {
 
   customers_comments_customers?: customers;
 }
+
+export class IOrderStatus {
+  id: string;
+
+  name: string;
+
+  sort: number;
+
+  organization_id: string;
+
+  finish: boolean;
+
+  cancel: boolean;
+
+  waiting: boolean;
+
+  order_status_organization?: organization;
+}

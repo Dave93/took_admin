@@ -36,17 +36,17 @@ export const TerminalsCreate = () => {
   const fetchOrganizations = async () => {
     const query = gql`
       query {
-        organizations {
+        cachedOrganizations {
           id
           name
         }
       }
     `;
 
-    const { organizations } = await client.request<{
-      organizations: IOrganization[];
+    const { cachedOrganizations } = await client.request<{
+      cachedOrganizations: IOrganization[];
     }>(query);
-    setOrganizations(organizations);
+    setOrganizations(cachedOrganizations);
   };
 
   useEffect(() => {

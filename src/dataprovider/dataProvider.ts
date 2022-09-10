@@ -33,7 +33,10 @@ const generateFilter = (filters?: CrudFilters) => {
         if (operator === "eq") {
           queryFilters[`${field}`] = value;
         } else {
-          queryFilters[`${field}_${operator}`] = value;
+          if (!queryFilters[`${field}`]) {
+            queryFilters[`${field}`] = {};
+          }
+          queryFilters[`${field}`][operator] = value;
         }
       } else {
         const { value } = filter;
@@ -104,7 +107,11 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         },
       ]);
 
-      const response = await client.request(query, variables, metaData?.requestHeaders ?? null);
+      const response = await client.request(
+        query,
+        variables,
+        metaData?.requestHeaders ?? null
+      );
 
       return {
         data: response[operation],

@@ -1,4 +1,5 @@
 import { drive_type, organization_system_type, user_status } from "./enums";
+import { GraphQLScalarType } from "graphql";
 
 export interface IPermissions {
   id: number;
@@ -324,4 +325,84 @@ export class IOrderStatus {
   waiting: boolean;
 
   order_status_organization?: organization;
+}
+
+export class IOrders {
+  id: string;
+
+  organization_id: string;
+
+  customer_id: string;
+
+  courier_id: string;
+
+  terminal_id: string;
+
+  order_status_id: string;
+
+  delivery_type: keyof typeof drive_type;
+
+  from_lat: number;
+
+  from_lon: number;
+
+  to_lat: number;
+
+  to_lon: number;
+
+  pre_distance: number;
+
+  pre_duration: number;
+
+  order_number: string;
+
+  distance: number | null;
+
+  duration: number | null;
+
+  order_price: number;
+
+  delivery_price: number;
+
+  delivery_address: string;
+
+  delivery_date: Date;
+
+  finished_date: Date | null;
+
+  delivery_comment: string | null;
+
+  delivery_phone: string;
+
+  delivery_name: string;
+
+  payment_type_id: string;
+
+  payment_type: string;
+
+  cancel_reason: string | null;
+
+  order_items: any | null;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  created_by: string | null;
+
+  updated_by: string | null;
+
+  orders_created_byTousers?: users | null;
+
+  orders_updated_byTousers?: users | null;
+
+  orders_customers?: customers;
+
+  orders_couriers?: users;
+
+  orders_order_status?: order_status;
+
+  orders_organization?: organization;
+
+  orders_terminals?: terminals;
 }

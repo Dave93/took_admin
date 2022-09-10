@@ -54,7 +54,7 @@ export const UsersCreate = () => {
           id
           name
         }
-        terminals {
+        cachedTerminals {
           id
           name
           organization {
@@ -72,13 +72,13 @@ export const UsersCreate = () => {
         }
       }
     `;
-    const { roles, terminals, workSchedules } = await client.request<{
+    const { roles, cachedTerminals, workSchedules } = await client.request<{
       roles: IRoles[];
-      terminals: ITerminals[];
+      cachedTerminals: ITerminals[];
       workSchedules: IWorkSchedules[];
     }>(query);
 
-    var result = chain(terminals)
+    var result = chain(cachedTerminals)
       .groupBy("organization.name")
       .toPairs()
       .map(function (item) {

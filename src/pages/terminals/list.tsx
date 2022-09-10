@@ -75,14 +75,14 @@ export const TerminalsList: React.FC = () => {
   const loadOrganizations = async () => {
     const query = gql`
       query {
-        organizations {
+        cachedOrganizations {
           id
           name
         }
       }
     `;
-    const { organizations } = await client.request(query);
-    setOrganizations(organizations);
+    const { cachedOrganizations } = await client.request(query);
+    setOrganizations(cachedOrganizations);
   };
 
   useEffect(() => {

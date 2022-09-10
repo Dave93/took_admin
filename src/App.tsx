@@ -47,6 +47,8 @@ import {
   OrderStatusEdit,
   OrderStatusList,
 } from "pages/order_status";
+import { OrdersList } from "pages/orders";
+import { OrdersShow } from "pages/orders/show";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -101,6 +103,15 @@ function App() {
             list: OrderStatusList,
             create: OrderStatusCreate,
             edit: OrderStatusEdit,
+          },
+          {
+            name: "orders",
+            options: {
+              label: "Заказы",
+            },
+            parentName: "orders-group",
+            list: OrdersList,
+            show: OrdersShow,
           },
           {
             name: "users-group",

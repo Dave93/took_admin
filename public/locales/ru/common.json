@@ -103,5 +103,12 @@
       "inactive": "Неактивный",
       "blocked": "Заблокированный"
     }
+  },
+  "organizations": {
+    "paymentType": {
+      "cash": "Наличные",
+      "card": "Карта",
+      "client": "Клиент"
+    }
   }
 }

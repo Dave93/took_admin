@@ -15,3 +15,9 @@ export enum user_status {
   blocked = "blocked",
   inactive = "inactive",
 }
+
+export enum organization_payment_types {
+  cash = "cash",
+  card = "card",
+  client = "client",
+}

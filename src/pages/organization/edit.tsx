@@ -9,8 +9,12 @@ import {
   Col,
   InputNumber,
 } from "@pankod/refine-antd";
+import { useTranslate } from "@pankod/refine-core";
 import { IOrganization } from "interfaces";
-import { organization_system_type } from "interfaces/enums";
+import {
+  organization_payment_types,
+  organization_system_type,
+} from "interfaces/enums";
 const { TextArea } = Input;
 
 export const OrganizationsEdit: React.FC = () => {
@@ -34,10 +38,13 @@ export const OrganizationsEdit: React.FC = () => {
         "external_id",
         "max_distance",
         "max_active_order_count",
+        "payment_type",
       ],
       // pluralize: true,
     },
   });
+
+  const tr = useTranslate();
 
   return (
     <Edit saveButtonProps={saveButtonProps}>
@@ -90,6 +97,15 @@ export const OrganizationsEdit: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
+        <Form.Item label="Тип доставки" name="payment_type">
+          <Select>
+            {Object.keys(organization_payment_types).map((type: string) => (
+              <Select.Option key={type} value={type}>
+                {tr(`organizations.paymentType.${type}`)}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item label="Внешний id" name="external_id">
           <Input />
         </Form.Item>

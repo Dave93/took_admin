@@ -406,3 +406,26 @@ export class IOrders {
 
   orders_terminals?: terminals;
 }
+
+export class IOrderActions {
+  id: string;
+
+  order_id: string;
+
+  action: string | null;
+  duration: number;
+
+  action_text: string;
+
+  terminal_id: string;
+
+  created_at: Date;
+
+  created_by: string | null;
+
+  order_actions_created_byTousers?: users | null;
+
+  order_actions_orders?: orders;
+
+  order_actions_terminals?: terminals;
+}

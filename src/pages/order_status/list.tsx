@@ -39,7 +39,7 @@ export const OrderStatusList: React.FC = () => {
   });
   return (
     <>
-      <List title="Статусы доставки организации">
+      <List title="Статусы заказов">
         <Table {...tableProps} rowKey="id">
           <Table.Column dataIndex="sort" title="Сортировка" />
           <Table.Column dataIndex="name" title="Название" />

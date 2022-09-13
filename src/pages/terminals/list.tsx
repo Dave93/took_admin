@@ -11,7 +11,7 @@ import {
   Select,
   Button,
 } from "@pankod/refine-antd";
-import { CrudFilters, HttpError } from "@pankod/refine-core";
+import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 
@@ -20,6 +20,9 @@ import { defaultDateTimeFormat } from "localConstants";
 import { useEffect, useState } from "react";
 
 export const TerminalsList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
   const { tableProps, searchFormProps } = useTable<
@@ -85,13 +88,38 @@ export const TerminalsList: React.FC = () => {
     setOrganizations(cachedOrganizations);
   };
 
+  const loadTerminals = async () => {
+    const query = gql`
+      mutation {
+        loadTerminals
+      }
+    `;
+    await client.request(
+      query,
+      {},
+      {
+        authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+  };
+
   useEffect(() => {
     loadOrganizations();
   }, []);
 
   return (
     <>
-      <List title="Список филиалов">
+      <List
+        title="Список филиалов"
+        headerButtons={({ defaultButtons }) => (
+          <>
+            {defaultButtons}
+            <Button type="primary" onClick={loadTerminals}>
+              Загрузить филиалы
+            </Button>
+          </>
+        )}
+      >
         <Form layout="horizontal" {...searchFormProps}>
           <Form.Item name="organization_id" label="Организация">
             <Select

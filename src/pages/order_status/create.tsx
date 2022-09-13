@@ -59,7 +59,7 @@ export const OrderStatusCreate = () => {
   }, []);
 
   return (
-    <Create saveButtonProps={saveButtonProps} title="Создать разрешение">
+    <Create saveButtonProps={saveButtonProps} title="Создать статус заказа">
       <Form {...formProps} layout="vertical">
         <Row gutter={16}>
           <Col span={12}>

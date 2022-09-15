@@ -34,6 +34,7 @@ export const OrderStatusEdit: React.FC = () => {
         "finish",
         "cancel",
         "waiting",
+        "need_location",
       ],
       pluralize: true,
     },
@@ -65,7 +66,14 @@ export const OrderStatusEdit: React.FC = () => {
 
   return (
     <Edit saveButtonProps={saveButtonProps} title="Редактировать статус заказа">
-      <Form {...formProps} layout="vertical">
+      <Form
+        {...formProps}
+        layout="vertical"
+        initialValues={{
+          ...formProps.initialValues,
+          color: formProps?.initialValues?.color ?? "#fff",
+        }}
+      >
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -139,6 +147,15 @@ export const OrderStatusEdit: React.FC = () => {
           </Col>
           <Col span={4}>
             <Form.Item label="Ожидающий" name="waiting" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              label="Требует местоположение"
+              name="need_location"
+              valuePropName="checked"
+            >
               <Switch />
             </Form.Item>
           </Col>

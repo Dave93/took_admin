@@ -28,6 +28,7 @@ export const OrderStatusList: React.FC = () => {
         "finish",
         "cancel",
         "waiting",
+        "need_location",
         {
           order_status_organization: ["id", "name"],
         },
@@ -63,6 +64,11 @@ export const OrderStatusList: React.FC = () => {
           <Table.Column
             dataIndex="waiting"
             title="Ожидающий гостя"
+            render={(value) => <Switch checked={value} disabled />}
+          />
+          <Table.Column
+            dataIndex="need_location"
+            title="Требует местоположение"
             render={(value) => <Switch checked={value} disabled />}
           />
           <Table.Column

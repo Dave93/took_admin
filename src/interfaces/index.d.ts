@@ -429,3 +429,15 @@ export class IOrderActions {
 
   order_actions_terminals?: terminals;
 }
+
+export class IOrderLocation {
+  order_id: string;
+
+  terminal_id: string;
+
+  courier_id: string;
+
+  created_at: Date;
+
+  location: any;
+}

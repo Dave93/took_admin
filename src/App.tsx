@@ -49,6 +49,7 @@ import {
 } from "pages/order_status";
 import { OrdersList } from "pages/orders";
 import { OrdersShow } from "pages/orders/show";
+import { ApiTokensCreate, ApiTokensList } from "pages/api_tokens";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -210,6 +211,21 @@ function App() {
               label: "Отчёт по рабочим графикам",
             },
             list: WorkSchedulesReport,
+          },
+          {
+            name: "settings",
+            options: {
+              label: "Настройки",
+            },
+          },
+          {
+            name: "api_tokens",
+            parentName: "settings",
+            options: {
+              label: "API Токены",
+            },
+            list: ApiTokensList,
+            create: ApiTokensCreate,
           },
         ]}
       />

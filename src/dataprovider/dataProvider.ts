@@ -157,8 +157,6 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           pascalCase: true,
         });
 
-      console.log(resource, camelCreateName);
-
       const operation = metaData?.operation ?? camelCreateName;
 
       const { query, variables: gqlVariables } = gql.mutation({
@@ -180,7 +178,11 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           },
         ],
       });
-      const response = await client.request(query, gqlVariables);
+      const response = await client.request(
+        query,
+        gqlVariables,
+        metaData?.requestHeaders ?? null
+      );
 
       return {
         data: response[operation][singularResource],

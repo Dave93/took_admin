@@ -20,6 +20,11 @@ import { drive_type } from "interfaces/enums";
 import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
+import dayjs from "dayjs";
+
+import isBetween from "dayjs/plugin/isBetween";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 let daysOfWeekRu = {
   "1": "Понедельник",
@@ -32,6 +37,12 @@ let daysOfWeekRu = {
 };
 
 const format = "HH:mm";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+dayjs.tz.setDefault("Asia/Tashkent");
+
+dayjs.extend(isBetween);
 
 export const DeliveryPricingCreate = () => {
   const { formProps, saveButtonProps } = useForm<IDeliveryPricing>({
@@ -100,11 +111,6 @@ export const DeliveryPricingCreate = () => {
             <Form.Item
               label="По-умолчанию"
               name="default"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
               valuePropName="checked"
             >
               <Switch />

@@ -441,3 +441,27 @@ export class IOrderLocation {
 
   location: any;
 }
+
+export class IApiTokens {
+  id: string;
+
+  active: boolean;
+
+  token: string;
+
+  organization_id: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  created_by: string | null;
+
+  updated_by: string | null;
+
+  api_tokens_created_byTousers?: users | null;
+
+  api_tokens_updated_byTousers?: users | null;
+
+  api_tokens_organization?: organization;
+}

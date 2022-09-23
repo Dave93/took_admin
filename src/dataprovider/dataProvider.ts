@@ -226,10 +226,11 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
     update: async ({ resource, id, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
       const camelUpdateName = camelCase(`update-${singularResource}`);
-      const updateInputName = `${resource}UpdateInput`;
+      let updateInputName = `${resource}UpdateInput`;
       const whereInputName = `${resource}WhereUniqueInput`;
 
-      const operation = metaData?.operation ?? camelUpdateName;
+      const operation = metaData?.updateOperation ?? camelUpdateName;
+      updateInputName = metaData?.updateInputName ?? updateInputName;
       const { query, variables: gqlVariables } = gql.mutation({
         operation,
         variables: {

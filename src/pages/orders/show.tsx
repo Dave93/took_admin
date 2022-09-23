@@ -48,6 +48,7 @@ export const OrdersShow = () => {
         "from_lon",
         "to_lat",
         "to_lon",
+        "order_items",
         {
           orders_organization: ["id", "name"],
         },
@@ -94,7 +95,13 @@ export const OrdersShow = () => {
   ];
 
   const productsData = useMemo(() => {
-    return record?.order_items?.items?.map((item: any) => ({
+    let order_items = [];
+    if (record?.order_items) {
+      try {
+        order_items = JSON.parse(record?.order_items);
+      } catch (error) {}
+    }
+    return order_items?.map((item: any) => ({
       key: item.id,
       name: item.name,
       quantity: item.quantity,

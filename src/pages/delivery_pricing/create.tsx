@@ -15,7 +15,7 @@ import {
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useTranslate } from "@pankod/refine-core";
 
-import { IDeliveryPricing, IOrganization } from "interfaces";
+import { IDeliveryPricing, IOrganization, ITerminals } from "interfaces";
 import { drive_type } from "interfaces/enums";
 import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
@@ -68,6 +68,7 @@ export const DeliveryPricingCreate = () => {
   const tr = useTranslate();
 
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
+  const [terminals, setTerminals] = useState<ITerminals[]>([]);
 
   const fetchOrganizations = async () => {
     const query = gql`
@@ -76,13 +77,19 @@ export const DeliveryPricingCreate = () => {
           id
           name
         }
+        cachedTerminals {
+          id
+          name
+        }
       }
     `;
 
-    const { cachedOrganizations } = await client.request<{
+    const { cachedOrganizations, cachedTerminals } = await client.request<{
       cachedOrganizations: IOrganization[];
+      cachedTerminals: ITerminals[];
     }>(query);
     setOrganizations(cachedOrganizations);
+    setTerminals(cachedTerminals);
   };
 
   useEffect(() => {
@@ -172,25 +179,34 @@ export const DeliveryPricingCreate = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              label="Дни недели"
-              name="days"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select mode="multiple">
-                {Object.keys(daysOfWeekRu).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {daysOfWeekRu[key as keyof typeof daysOfWeekRu]}
+            <Form.Item label="Филиал" name="terminal_id">
+              <Select showSearch optionFilterProp="children">
+                {terminals.map((terminal) => (
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
                   </Select.Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
         </Row>
+        <Form.Item
+          label="Дни недели"
+          name="days"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select mode="multiple">
+            {Object.keys(daysOfWeekRu).map((key) => (
+              <Select.Option key={key} value={key}>
+                {daysOfWeekRu[key as keyof typeof daysOfWeekRu]}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item

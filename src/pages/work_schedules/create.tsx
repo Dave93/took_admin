@@ -13,6 +13,7 @@ import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, IWorkSchedules } from "interfaces";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 let daysOfWeekRu = {
   "1": "Понедельник",
   "2": "Вторник",
@@ -135,6 +136,9 @@ export const WorkSchedulesCreate = () => {
                   required: true,
                 },
               ]}
+              getValueProps={(value) => ({
+                value: value ? dayjs(value) : "",
+              })}
             >
               <TimePicker format={format} />
             </Form.Item>
@@ -148,6 +152,9 @@ export const WorkSchedulesCreate = () => {
                   required: true,
                 },
               ]}
+              getValueProps={(value) => ({
+                value: value ? dayjs(value) : "",
+              })}
             >
               <TimePicker format={format} />
             </Form.Item>
@@ -163,6 +170,9 @@ export const WorkSchedulesCreate = () => {
                   required: true,
                 },
               ]}
+              getValueProps={(value) => ({
+                value: value ? dayjs(value) : "",
+              })}
             >
               <TimePicker format={format} />
             </Form.Item>

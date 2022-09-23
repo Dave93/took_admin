@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  Divider,
   Edit,
   Form,
   Input,
@@ -15,11 +16,12 @@ import {
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useTranslate } from "@pankod/refine-core";
 
-import { IDeliveryPricing, IOrganization } from "interfaces";
+import { IDeliveryPricing, IOrganization, ITerminals } from "interfaces";
 import { drive_type } from "interfaces/enums";
 import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
+import dayjs from "dayjs";
 
 let daysOfWeekRu = {
   "1": "Понедельник",
@@ -49,14 +51,19 @@ export const DeliveryPricingEdit: React.FC = () => {
         "min_price",
         "rules",
         "price_per_km",
+        "organization_id",
+        "terminal_id",
       ],
       pluralize: true,
+      updateInputName: "delivery_pricingUncheckedUpdateInput",
     },
   });
 
   const tr = useTranslate();
 
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
+  const [terminals, setTerminals] = useState<ITerminals[]>([]);
+  const [aproximatePrice, setAproximatePrice] = useState<number>(0);
 
   const fetchOrganizations = async () => {
     const query = gql`
@@ -65,13 +72,39 @@ export const DeliveryPricingEdit: React.FC = () => {
           id
           name
         }
+        cachedTerminals {
+          id
+          name
+        }
       }
     `;
 
-    const { cachedOrganizations } = await client.request<{
+    const { cachedOrganizations, cachedTerminals } = await client.request<{
       cachedOrganizations: IOrganization[];
+      cachedTerminals: ITerminals[];
     }>(query);
     setOrganizations(cachedOrganizations);
+    setTerminals(cachedTerminals);
+  };
+
+  const calculateAproximatePrice = (value: any) => {
+    let formValues: any = formProps?.form?.getFieldsValue();
+    let rules = formValues.rules;
+    let price = 0;
+    let distance = +value;
+    if (rules) {
+      rules.forEach((rule: any) => {
+        let { from, to, price: rulePrice } = rule;
+        if (distance > 0) {
+          distance -= +to - +from;
+          price += +rulePrice;
+        }
+      });
+      if (distance > 0) {
+        price += distance * formValues.price_per_km;
+      }
+    }
+    setAproximatePrice(price);
   };
 
   useEffect(() => {
@@ -169,25 +202,34 @@ export const DeliveryPricingEdit: React.FC = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              label="Дни недели"
-              name="days"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select mode="multiple">
-                {Object.keys(daysOfWeekRu).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {daysOfWeekRu[key as keyof typeof daysOfWeekRu]}
+            <Form.Item label="Филиал" name="terminal_id">
+              <Select showSearch optionFilterProp="children">
+                {terminals.map((terminal) => (
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
                   </Select.Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
         </Row>
+        <Form.Item
+          label="Дни недели"
+          name="days"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select mode="multiple">
+            {Object.keys(daysOfWeekRu).map((key) => (
+              <Select.Option key={key} value={key}>
+                {daysOfWeekRu[key as keyof typeof daysOfWeekRu]}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -198,6 +240,9 @@ export const DeliveryPricingEdit: React.FC = () => {
                   required: true,
                 },
               ]}
+              getValueProps={(value) => ({
+                value: value ? dayjs(value) : "",
+              })}
             >
               <TimePicker format={format} />
             </Form.Item>
@@ -211,6 +256,9 @@ export const DeliveryPricingEdit: React.FC = () => {
                   required: true,
                 },
               ]}
+              getValueProps={(value) => ({
+                value: value ? dayjs(value) : "",
+              })}
             >
               <TimePicker format={format} />
             </Form.Item>
@@ -294,6 +342,26 @@ export const DeliveryPricingEdit: React.FC = () => {
           <InputNumber type="number" />
         </Form.Item>
       </Form>
+      <Divider>Калькулятор примерного расчёта</Divider>
+      <div>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Примерная дистанция(км)" name="distance">
+              <InputNumber
+                type="number"
+                onChange={(value) => calculateAproximatePrice(value)}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Примерная цена доставки">
+              <div>
+                {new Intl.NumberFormat("ru-RU").format(aproximatePrice)} сум
+              </div>
+            </Form.Item>
+          </Col>
+        </Row>
+      </div>
     </Edit>
   );
 };

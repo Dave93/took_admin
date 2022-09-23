@@ -12,8 +12,14 @@ import {
   Dropdown,
   Avatar,
   Typography,
+  Modal,
 } from "@pankod/refine-antd";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { QrcodeOutlined } from "@ant-design/icons";
+import { QRCode } from "react-qrcode-logo";
+import { gql } from "graphql-request";
+import { client } from "graphConnect";
 
 const { DownOutlined } = Icons;
 const { Text } = Typography;
@@ -29,6 +35,11 @@ export const Header: React.FC = () => {
   const locale = useGetLocale();
   const changeLanguage = useSetLocale();
   const { data: user } = useGetIdentity();
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [qrCode, setQrCode] = useState("");
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
 
   const currentLocale = locale();
 
@@ -50,6 +61,26 @@ export const Header: React.FC = () => {
     </Menu>
   );
 
+  const loadQrCode = async () => {
+    const query = gql`
+      query {
+        getApiUrl
+      }
+    `;
+    const data = await client.request(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    setQrCode(data.getApiUrl);
+  };
+
+  useEffect(() => {
+    loadQrCode();
+  }, [identity]);
+
   return (
     <AntdLayout.Header
       style={{
@@ -61,6 +92,31 @@ export const Header: React.FC = () => {
         backgroundColor: "#FFF",
       }}
     >
+      <Space style={{ marginRight: "20px" }}>
+        <Button
+          type="primary"
+          icon={
+            <QrcodeOutlined
+              style={{
+                fontSize: "22px",
+              }}
+            />
+          }
+          onClick={() => setQrModalOpen(true)}
+          size="large"
+        />
+      </Space>
+      <Modal
+        title="Отсканируйте в мобильном приложении"
+        style={{ top: 20 }}
+        centered
+        visible={qrModalOpen}
+        footer={null}
+        onCancel={() => setQrModalOpen(false)} //pass close logic here
+        destroyOnClose={true}
+      >
+        <QRCode value={qrCode} size={200} />
+      </Modal>
       <Dropdown overlay={menu}>
         <Button type="link">
           <Space>

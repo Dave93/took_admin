@@ -65,6 +65,7 @@ export const OrdersList: React.FC = () => {
         "duration",
         "delivery_price",
         "payment_type",
+
         {
           orders_organization: ["id", "name"],
         },
@@ -334,15 +335,19 @@ export const OrdersList: React.FC = () => {
           <Table.Column
             dataIndex="orders_couriers.first_name"
             title="Курьер"
-            render={(value: any, record: IOrders) => (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => goToCourier(record.orders_couriers.id)}
-              >
-                {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
-              </Button>
-            )}
+            render={(value: any, record: IOrders) =>
+              record.orders_couriers ? (
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={() => goToCourier(record.orders_couriers.id)}
+                >
+                  {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
+                </Button>
+              ) : (
+                <span>Не назначен</span>
+              )
+            }
           />
           <Table.Column
             dataIndex="orders_customers.name"

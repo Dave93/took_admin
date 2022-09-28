@@ -10,7 +10,7 @@ import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";
 import { Header } from "components/layout";
-import { authProvider } from "./authProvider";
+import { authProvider, TOKEN_KEY } from "./authProvider";
 import { Login } from "pages/login";
 // import dataProvider, { GraphQLClient } from "@pankod/refine-strapi-graphql";
 import dataProvider from "./dataprovider";
@@ -50,6 +50,7 @@ import {
 import { OrdersList } from "pages/orders";
 import { OrdersShow } from "pages/orders/show";
 import { ApiTokensCreate, ApiTokensList } from "pages/api_tokens";
+import { AES, enc } from "crypto-js";
 const gqlDataProvider = dataProvider(client);
 
 function App() {
@@ -66,6 +67,28 @@ function App() {
       <Refine
         notificationProvider={notificationProvider}
         Layout={Layout}
+        accessControlProvider={{
+          can: async ({ action, params, resource }) => {
+            const token = localStorage.getItem(TOKEN_KEY);
+            if (token) {
+              let password = process.env.REACT_APP_CRYPTO_KEY!;
+              var bytes = AES.decrypt(token, password);
+              var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
+              const {
+                access: { additionalPermissions },
+              } = decryptedData;
+              return Promise.resolve({
+                can: additionalPermissions.includes(`${resource}.${action}`),
+                reason: additionalPermissions.includes(`${resource}.${action}`)
+                  ? undefined
+                  : "You are not allowed to do this",
+              });
+            }
+            return Promise.resolve({
+              can: true,
+            });
+          },
+        }}
         // ReadyPage={ReadyPage}
         catchAll={<ErrorComponent />}
         routerProvider={routerProvider}

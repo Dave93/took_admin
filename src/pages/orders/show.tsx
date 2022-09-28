@@ -177,7 +177,7 @@ export const OrdersShow = () => {
         <Tabs.TabPane tab="Основная информация" key="1">
           <Row gutter={16}>
             <Col span={12}>
-              <Descriptions bordered column={1}>
+              <Descriptions bordered column={1} size="small">
                 <Descriptions.Item label="Дата заказа">
                   {dayjs(record?.created_at).format("DD.MM.YYYY HH:mm")}
                 </Descriptions.Item>
@@ -189,6 +189,7 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Организация">
                   <Button
                     type="link"
+                    size="small"
                     onClick={() =>
                       show(
                         "organizations",
@@ -203,6 +204,7 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Филиал">
                   <Button
                     type="link"
+                    size="small"
                     onClick={() =>
                       show("terminals", "show", record?.orders_terminals?.id)
                     }
@@ -213,6 +215,7 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Курьер">
                   <Button
                     type="link"
+                    size="small"
                     onClick={() =>
                       show("couriers", "show", record?.orders_couriers?.id)
                     }

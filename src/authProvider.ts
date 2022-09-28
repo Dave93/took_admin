@@ -18,7 +18,8 @@ export const authProvider: AuthProvider = {
             additionalPermissions
             roles {
                 name
-                permissions
+                active
+                code
             }
         }
         token {
@@ -117,7 +118,16 @@ export const authProvider: AuthProvider = {
 
     return Promise.reject();
   },
-  getPermissions: () => Promise.resolve(),
+  getPermissions: () => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      let password = process.env.REACT_APP_CRYPTO_KEY!;
+      var bytes = AES.decrypt(token, password);
+      var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
+      return Promise.resolve(decryptedData.access);
+    }
+    return Promise.reject();
+  },
   getUserIdentity: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) {

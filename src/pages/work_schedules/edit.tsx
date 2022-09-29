@@ -9,21 +9,17 @@ import {
   Col,
   TimePicker,
 } from "@pankod/refine-antd";
-import { client } from "graphConnect";
-import { gql } from "graphql-request";
-import { IOrganization, IWorkSchedules } from "interfaces";
-import { organization_system_type } from "interfaces/enums";
-import { useState, useEffect } from "react";
+import { IWorkSchedules } from "interfaces";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { useGetIdentity } from "@pankod/refine-core";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 dayjs.tz.setDefault("Asia/Tashkent");
 
-const { TextArea } = Input;
 let daysOfWeekRu = {
   "1": "Понедельник",
   "2": "Вторник",
@@ -36,6 +32,9 @@ let daysOfWeekRu = {
 
 const format = "HH:mm";
 export const WorkSchedulesEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<IWorkSchedules>({
     metaData: {
       fields: [
@@ -50,30 +49,11 @@ export const WorkSchedulesEdit: React.FC = () => {
         "max_start_time",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
-
-  const [organizations, setOrganizations] = useState<IOrganization[]>([]);
-
-  const fetchOrganizations = async () => {
-    const query = gql`
-      query {
-        cachedOrganizations {
-          id
-          name
-        }
-      }
-    `;
-
-    const { cachedOrganizations } = await client.request<{
-      cachedOrganizations: IOrganization[];
-    }>(query);
-    setOrganizations(cachedOrganizations);
-  };
-
-  useEffect(() => {
-    fetchOrganizations();
-  }, []);
 
   return (
     <Edit saveButtonProps={saveButtonProps}>

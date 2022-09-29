@@ -1,7 +1,6 @@
 import { useGetIdentity, useNavigation, useShow } from "@pankod/refine-core";
 import {
   Show,
-  Typography,
   Descriptions,
   Col,
   Row,
@@ -16,14 +15,12 @@ import dayjs from "dayjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
-import { YMaps, Map, Polyline, Placemark } from "react-yandex-maps";
+import { YMaps, Map } from "react-yandex-maps";
 import { IOrderActions, IOrderLocation } from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 dayjs.locale("ru");
 dayjs.extend(duration);
-
-const { Title, Text } = Typography;
 
 export const OrdersShow = () => {
   const map = useRef<any>(null);
@@ -65,6 +62,9 @@ export const OrdersShow = () => {
           orders_terminals: ["id", "name"],
         },
       ],
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   const { data, isLoading } = queryResult;
@@ -299,7 +299,7 @@ export const OrdersShow = () => {
                     );
                     map.current.geoObjects.add(placemark);
 
-                    var placemark = new ymaps.Placemark(
+                    placemark = new ymaps.Placemark(
                       [record?.to_lat, record?.to_lon],
                       {
                         hintContent: "Адрес клиента",

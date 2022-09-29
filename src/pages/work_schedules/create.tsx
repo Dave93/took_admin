@@ -14,6 +14,7 @@ import { gql } from "graphql-request";
 import { IOrganization, IWorkSchedules } from "interfaces";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { useGetIdentity } from "@pankod/refine-core";
 let daysOfWeekRu = {
   "1": "Понедельник",
   "2": "Вторник",
@@ -27,6 +28,9 @@ let daysOfWeekRu = {
 const format = "HH:mm";
 
 export const WorkSchedulesCreate = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<IWorkSchedules>({
     metaData: {
       fields: [
@@ -41,6 +45,9 @@ export const WorkSchedulesCreate = () => {
         "max_start_time",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -58,13 +65,13 @@ export const WorkSchedulesCreate = () => {
 
     const { cachedOrganizations } = await client.request<{
       cachedOrganizations: IOrganization[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
   };
 
   useEffect(() => {
     fetchOrganizations();
-  }, []);
+  }, [identity]);
 
   return (
     <Create saveButtonProps={saveButtonProps} title="Создать рабочий график">

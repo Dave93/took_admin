@@ -1,20 +1,12 @@
-import {
-  List,
-  DateField,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  ShowButton,
-  Tag,
-} from "@pankod/refine-antd";
-import { useNavigation } from "@pankod/refine-core";
+import { List, Table, useTable, Space, ShowButton } from "@pankod/refine-antd";
+import { useGetIdentity, useNavigation } from "@pankod/refine-core";
 
 import { ICustomers } from "interfaces";
-import { defaultDateTimeFormat, defaultTimeFormat } from "localConstants";
 
 export const CustomersList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { show } = useNavigation();
 
   const { tableProps } = useTable<ICustomers>({
@@ -28,6 +20,9 @@ export const CustomersList: React.FC = () => {
       fields: ["id", "name", "phone"],
       whereInputType: "customersWhereInput!",
       orderByInputType: "customersOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   return (

@@ -7,12 +7,15 @@ import {
   EditButton,
   ShowButton,
 } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 
 import { IUsers } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
 export const UsersList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { tableProps } = useTable<IUsers>({
     initialSorter: [
       {
@@ -42,6 +45,9 @@ export const UsersList: React.FC = () => {
       ],
       whereInputType: "usersWhereInput!",
       orderByInputType: "usersOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 

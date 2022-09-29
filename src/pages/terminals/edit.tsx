@@ -9,12 +9,16 @@ import {
   Col,
   InputNumber,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, ITerminals } from "interfaces";
 import { useEffect, useState } from "react";
 
 export const TerminalsEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<ITerminals>({
     metaData: {
       fields: [
@@ -29,6 +33,9 @@ export const TerminalsEdit: React.FC = () => {
         "external_id",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -46,7 +53,7 @@ export const TerminalsEdit: React.FC = () => {
 
     const { cachedOrganizations } = await client.request<{
       cachedOrganizations: IOrganization[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
   };
 

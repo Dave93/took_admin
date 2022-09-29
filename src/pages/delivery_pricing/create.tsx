@@ -13,7 +13,7 @@ import {
   useForm,
 } from "@pankod/refine-antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 
 import { IDeliveryPricing, IOrganization, ITerminals } from "interfaces";
 import { drive_type } from "interfaces/enums";
@@ -45,6 +45,9 @@ dayjs.tz.setDefault("Asia/Tashkent");
 dayjs.extend(isBetween);
 
 export const DeliveryPricingCreate = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<IDeliveryPricing>({
     metaData: {
       fields: [
@@ -62,6 +65,9 @@ export const DeliveryPricingCreate = () => {
         "price_per_km",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -87,14 +93,14 @@ export const DeliveryPricingCreate = () => {
     const { cachedOrganizations, cachedTerminals } = await client.request<{
       cachedOrganizations: IOrganization[];
       cachedTerminals: ITerminals[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
     setTerminals(cachedTerminals);
   };
 
   useEffect(() => {
     fetchOrganizations();
-  }, []);
+  }, [identity]);
 
   return (
     <Create saveButtonProps={saveButtonProps} title="Создать разрешение">

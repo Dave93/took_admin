@@ -35,7 +35,6 @@ export const Login: React.FC = () => {
   const { mutate: login, isLoading } = useLogin<ILoginForm>();
 
   const onGsmFormSubmit = async (values: Pick<ILoginForm, "phone">) => {
-    console.log(process.env.REACT_APP_GRAPHQL_API_URL!);
     setLoading(true);
     setGsmNumber(`+${values.phone}`);
     let phone = `+${values.phone}`;
@@ -149,7 +148,7 @@ export const Login: React.FC = () => {
   return (
     <AntdLayout
       style={{
-        background: `radial-gradient(50% 50% at 50% 50%, #63386A 0%, #310438 100%)`,
+        background: `#4d2c91`,
         backgroundSize: "cover",
       }}
     >
@@ -169,7 +168,7 @@ export const Login: React.FC = () => {
               marginBottom: "28px",
             }}
           >
-            <img src="/images/refine.svg" alt="Refine" />
+            <img src="/images/logo-white.svg" alt="Refine" />
           </div>
 
           <Card

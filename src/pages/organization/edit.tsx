@@ -9,7 +9,7 @@ import {
   Col,
   InputNumber,
 } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { IOrganization } from "interfaces";
 import {
   organization_payment_types,
@@ -18,6 +18,9 @@ import {
 const { TextArea } = Input;
 
 export const OrganizationsEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<IOrganization>({
     metaData: {
       fields: [
@@ -40,6 +43,9 @@ export const OrganizationsEdit: React.FC = () => {
         "max_active_order_count",
         "payment_type",
       ],
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
       // pluralize: true,
     },
   });

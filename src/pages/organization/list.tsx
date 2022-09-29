@@ -8,12 +8,15 @@ import {
   EditButton,
   ShowButton,
 } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 
 import { IOrganization } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
 export const OrganizationList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { tableProps } = useTable<IOrganization>({
     initialSorter: [
       {
@@ -34,6 +37,9 @@ export const OrganizationList: React.FC = () => {
       whereInputType: "organizationWhereInput!",
       orderByInputType: "organizationOrderByWithRelationInput!",
       operation: "organizations",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   const tr = useTranslate();

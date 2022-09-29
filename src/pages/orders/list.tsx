@@ -2,7 +2,6 @@ import {
   List,
   Table,
   useTable,
-  Switch,
   Space,
   ShowButton,
   Button,
@@ -13,7 +12,12 @@ import {
   DatePicker,
   Tag,
 } from "@pankod/refine-antd";
-import { CrudFilters, HttpError, useNavigation } from "@pankod/refine-core";
+import {
+  CrudFilters,
+  HttpError,
+  useGetIdentity,
+  useNavigation,
+} from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 
@@ -23,7 +27,6 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
-import { ExpandAltOutlined } from "@ant-design/icons";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
@@ -33,6 +36,9 @@ dayjs.extend(duration);
 const { RangePicker } = DatePicker;
 
 export const OrdersList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<any[]>([]);
@@ -84,6 +90,9 @@ export const OrdersList: React.FC = () => {
       ],
       whereInputType: "ordersWhereInput!",
       orderByInputType: "ordersOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
     initialFilter: [
       {
@@ -171,7 +180,7 @@ export const OrdersList: React.FC = () => {
         cachedOrganizations: IOrganization[];
         cachedTerminals: ITerminals[];
         cachedOrderStatuses: IOrderStatus[];
-      }>(query);
+      }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
     var terminalRes = chain(cachedTerminals)
       .groupBy("organization.name")

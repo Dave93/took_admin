@@ -9,6 +9,7 @@ import {
   ShowButton,
   Tag,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IWorkSchedules } from "interfaces";
 import { defaultDateTimeFormat, defaultTimeFormat } from "localConstants";
@@ -24,6 +25,9 @@ const daysOfWeekRu = {
 };
 
 export const WorkSchedulesList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { tableProps } = useTable<IWorkSchedules>({
     initialSorter: [
       {
@@ -52,6 +56,9 @@ export const WorkSchedulesList: React.FC = () => {
       ],
       whereInputType: "work_schedulesWhereInput!",
       orderByInputType: "work_schedulesOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   return (

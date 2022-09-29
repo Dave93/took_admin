@@ -7,7 +7,7 @@ import {
   Row,
   Col,
 } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 import { drive_type, user_status } from "interfaces/enums";
 
 export const UsersEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const tr = useTranslate();
   const { formProps, saveButtonProps, redirect, id } = useForm<IUsers>({
     metaData: {
@@ -57,6 +60,9 @@ export const UsersEdit: React.FC = () => {
         },
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -93,7 +99,7 @@ export const UsersEdit: React.FC = () => {
       roles: IRoles[];
       cachedTerminals: ITerminals[];
       workSchedules: IWorkSchedules[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
     var result = chain(cachedTerminals)
       .groupBy("organization.name")
@@ -181,10 +187,14 @@ export const UsersEdit: React.FC = () => {
             `;
             let { updateUser } = await client.request<{
               updateUser: IUsers;
-            }>(createQuery, {
-              data: values,
-              where: { id },
-            });
+            }>(
+              createQuery,
+              {
+                data: values,
+                where: { id },
+              },
+              { Authorization: `Bearer ${identity?.token.accessToken}` }
+            );
 
             if (updateUser) {
               let { query, variables } = gqlb.mutation([
@@ -233,7 +243,9 @@ export const UsersEdit: React.FC = () => {
                   fields: ["count"],
                 },
               ]);
-              await client.request(query, variables);
+              await client.request(query, variables, {
+                Authorization: `Bearer ${identity?.token.accessToken}`,
+              });
               redirect("list");
             }
           } catch (error) {}

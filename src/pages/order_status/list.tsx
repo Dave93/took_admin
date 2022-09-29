@@ -1,17 +1,19 @@
 import {
   List,
-  DateField,
   Table,
   useTable,
   Switch,
   Space,
   EditButton,
-  ShowButton,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IOrderStatus } from "interfaces";
 
 export const OrderStatusList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { tableProps } = useTable<IOrderStatus>({
     initialSorter: [
       {
@@ -36,6 +38,9 @@ export const OrderStatusList: React.FC = () => {
       whereInputType: "order_statusWhereInput!",
       orderByInputType: "order_statusOrderByWithRelationInput!",
       operation: "orderStatuses",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   return (

@@ -1,4 +1,4 @@
-import { useShow } from "@pankod/refine-core";
+import { useGetIdentity, useShow } from "@pankod/refine-core";
 import {
   Show,
   Typography,
@@ -14,6 +14,9 @@ import dayjs from "dayjs";
 const { Title, Text } = Typography;
 
 export const CustomersShow = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { queryResult } = useShow({
     metaData: {
       fields: [
@@ -25,6 +28,9 @@ export const CustomersShow = () => {
         },
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   const { data, isLoading } = queryResult;

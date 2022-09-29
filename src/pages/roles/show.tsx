@@ -1,4 +1,4 @@
-import { useShow } from "@pankod/refine-core";
+import { useGetIdentity, useShow } from "@pankod/refine-core";
 import { Show, Typography, Tag, Switch } from "@pankod/refine-antd";
 
 import { useEffect, useState } from "react";
@@ -8,11 +8,17 @@ import { client } from "graphConnect";
 const { Title, Text } = Typography;
 
 export const RolesShow = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
   const { queryResult, showId } = useShow({
     metaData: {
       fields: ["id", "name", "active", "created_at"],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   const { data, isLoading } = queryResult;
@@ -31,7 +37,9 @@ export const RolesShow = () => {
     const variables = {
       id: showId,
     };
-    const chosenPermissionsData = await client.request(query, variables);
+    const chosenPermissionsData = await client.request(query, variables, {
+      Authorization: `Bearer ${identity?.token.accessToken}`,
+    });
     setChosenPermissions(
       chosenPermissionsData.manyRolePermissions.map(
         (item: any) => item.permissions.description
@@ -41,7 +49,7 @@ export const RolesShow = () => {
 
   useEffect(() => {
     loadPermissions();
-  }, [showId]);
+  }, [showId, identity]);
 
   return (
     <Show isLoading={isLoading}>

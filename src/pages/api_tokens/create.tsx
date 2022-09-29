@@ -4,7 +4,6 @@ import {
   Create,
   Form,
   Input,
-  InputNumber,
   Row,
   Select,
   Switch,
@@ -13,7 +12,6 @@ import {
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 
 import { IApiTokens, IOrganization } from "interfaces";
-import { Colorpicker } from "antd-colorpicker";
 import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
@@ -32,8 +30,6 @@ export const ApiTokensCreate = () => {
     },
   });
 
-  const tr = useTranslate();
-
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
   const fetchOrganizations = async () => {
@@ -48,7 +44,7 @@ export const ApiTokensCreate = () => {
 
     const { cachedOrganizations } = await client.request<{
       cachedOrganizations: IOrganization[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
   };
 
@@ -63,7 +59,7 @@ export const ApiTokensCreate = () => {
 
   useEffect(() => {
     fetchOrganizations();
-  }, []);
+  }, [identity]);
 
   return (
     <Create saveButtonProps={saveButtonProps} title="Создать токен">

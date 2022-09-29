@@ -8,12 +8,16 @@ import {
   Switch,
   useForm,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, ITerminals } from "interfaces";
 import { useEffect, useState } from "react";
 
 export const TerminalsCreate = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<ITerminals>({
     metaData: {
       fields: [
@@ -28,6 +32,9 @@ export const TerminalsCreate = () => {
         "external_id",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -45,7 +52,7 @@ export const TerminalsCreate = () => {
 
     const { cachedOrganizations } = await client.request<{
       cachedOrganizations: IOrganization[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
   };
 

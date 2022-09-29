@@ -12,11 +12,15 @@ import {
   Form,
   Input,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IPermissions } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
 export const PermissionsList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const {
     drawerProps,
     formProps,
@@ -29,6 +33,9 @@ export const PermissionsList: React.FC = () => {
     metaData: {
       fields: ["id", "slug", "active", "created_at", "description"],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -43,6 +50,9 @@ export const PermissionsList: React.FC = () => {
       fields: ["id", "slug", "active", "created_at"],
       whereInputType: "permissionsWhereInput!",
       orderByInputType: "permissionsOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   return (

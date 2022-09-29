@@ -6,6 +6,7 @@ import {
   Switch,
   Select,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IPermissions, IRoles } from "interfaces";
@@ -14,6 +15,9 @@ import { useEffect, useState } from "react";
 const { Option } = Select;
 
 export const RolesEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const [permissions, setPermissions] = useState<IPermissions[]>([]);
   const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
 
@@ -21,6 +25,9 @@ export const RolesEdit: React.FC = () => {
     metaData: {
       fields: ["id", "name", "code", "active"],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -35,7 +42,13 @@ export const RolesEdit: React.FC = () => {
       }
     `;
 
-    const permissionsData = await client.request(query);
+    const permissionsData = await client.request(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
 
     query = gql`
       query ($id: String) {
@@ -47,7 +60,9 @@ export const RolesEdit: React.FC = () => {
     const variables = {
       id,
     };
-    const chosenPermissionsData = await client.request(query, variables);
+    const chosenPermissionsData = await client.request(query, variables, {
+      Authorization: `Bearer ${identity?.token.accessToken}`,
+    });
     setChosenPermissions(
       chosenPermissionsData.manyRolePermissions.map(
         (item: any) => item.permission_id
@@ -72,7 +87,9 @@ export const RolesEdit: React.FC = () => {
       id: id,
       chosenPermissions: chosenPermissions,
     };
-    await client.request(query, variables);
+    await client.request(query, variables, {
+      Authorization: `Bearer ${identity?.token.accessToken}`,
+    });
     saveButtonProps.onClick();
   };
 
@@ -82,7 +99,7 @@ export const RolesEdit: React.FC = () => {
 
   useEffect(() => {
     loadPermissions();
-  }, []);
+  }, [identity]);
 
   return (
     <Edit

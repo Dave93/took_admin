@@ -14,7 +14,7 @@ import {
   useForm,
 } from "@pankod/refine-antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 
 import { IDeliveryPricing, IOrganization, ITerminals } from "interfaces";
 import { drive_type } from "interfaces/enums";
@@ -36,6 +36,9 @@ let daysOfWeekRu = {
 const format = "HH:mm";
 
 export const DeliveryPricingEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps, id } = useForm<IDeliveryPricing>({
     metaData: {
       fields: [
@@ -56,6 +59,9 @@ export const DeliveryPricingEdit: React.FC = () => {
       ],
       pluralize: true,
       updateInputName: "delivery_pricingUncheckedUpdateInput",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -82,7 +88,7 @@ export const DeliveryPricingEdit: React.FC = () => {
     const { cachedOrganizations, cachedTerminals } = await client.request<{
       cachedOrganizations: IOrganization[];
       cachedTerminals: ITerminals[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
     setTerminals(cachedTerminals);
   };
@@ -109,7 +115,7 @@ export const DeliveryPricingEdit: React.FC = () => {
 
   useEffect(() => {
     fetchOrganizations();
-  }, []);
+  }, [identity]);
 
   return (
     <Edit

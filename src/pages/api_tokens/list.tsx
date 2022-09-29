@@ -1,12 +1,10 @@
 import {
   List,
-  DateField,
   Table,
   useTable,
   Switch,
   Space,
   EditButton,
-  ShowButton,
   Button,
   DeleteButton,
 } from "@pankod/refine-antd";
@@ -16,9 +14,6 @@ import Hashids from "hashids";
 
 import { IApiTokens } from "interfaces";
 import { useGetIdentity, useNotification } from "@pankod/refine-core";
-import { AES, enc } from "crypto-js";
-
-const hashids = new Hashids("yuridavrshahzod", 12);
 
 export const ApiTokensList: React.FC = () => {
   const { data: identity } = useGetIdentity<{

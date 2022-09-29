@@ -4,7 +4,10 @@ import {
   Layout,
   ErrorComponent,
 } from "@pankod/refine-antd";
+
 import "@pankod/refine-antd/dist/styles.min.css";
+import "./styles/main.css";
+
 import routerProvider from "@pankod/refine-react-router-v6";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { useTranslation } from "react-i18next";
@@ -53,6 +56,8 @@ import { ApiTokensCreate, ApiTokensList } from "pages/api_tokens";
 import { AES, enc } from "crypto-js";
 const gqlDataProvider = dataProvider(client);
 
+const { Link } = routerProvider;
+
 function App() {
   const { t, i18n } = useTranslation();
 
@@ -99,6 +104,15 @@ function App() {
         i18nProvider={i18nProvider}
         syncWithLocation={true}
         Header={Header}
+        Title={() => (
+          <Link to="/" style={{ width: "100%" }}>
+            <img
+              src="/images/logo-white.svg"
+              alt="Refine"
+              style={{ width: "80%", margin: "0 auto", display: "block" }}
+            />
+          </Link>
+        )}
         resources={[
           {
             name: "home",

@@ -8,11 +8,15 @@ import {
   EditButton,
   ShowButton,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IDeliveryPricing } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
 export const DeliveryPricingList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { tableProps } = useTable<IDeliveryPricing>({
     initialSorter: [
       {
@@ -32,6 +36,9 @@ export const DeliveryPricingList: React.FC = () => {
       whereInputType: "delivery_pricingWhereInput!",
       orderByInputType: "delivery_pricingOrderByWithRelationInput!",
       operation: "deliveryPricings",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   return (

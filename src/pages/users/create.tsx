@@ -7,7 +7,7 @@ import {
   Select,
   useForm,
 } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import * as gqlb from "gql-query-builder";
@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 import { chain } from "lodash";
 
 export const UsersCreate = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const tr = useTranslate();
   const { formProps, saveButtonProps, redirect } = useForm<IUsers>({
     redirect: false,
@@ -40,6 +43,9 @@ export const UsersCreate = () => {
         },
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
 
@@ -76,7 +82,7 @@ export const UsersCreate = () => {
       roles: IRoles[];
       cachedTerminals: ITerminals[];
       workSchedules: IWorkSchedules[];
-    }>(query);
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
     var result = chain(cachedTerminals)
       .groupBy("organization.name")
@@ -132,9 +138,13 @@ export const UsersCreate = () => {
             `;
             let { userCreate } = await client.request<{
               userCreate: IUsers;
-            }>(createQuery, {
-              data: values,
-            });
+            }>(
+              createQuery,
+              {
+                data: values,
+              },
+              { Authorization: `Bearer ${identity?.token.accessToken}` }
+            );
 
             if (userCreate) {
               let { query, variables } = gqlb.mutation([
@@ -183,7 +193,9 @@ export const UsersCreate = () => {
                   fields: ["count"],
                 },
               ]);
-              await client.request(query, variables);
+              await client.request(query, variables, {
+                Authorization: `Bearer ${identity?.token.accessToken}`,
+              });
               redirect("list");
             }
           } catch (error) {}

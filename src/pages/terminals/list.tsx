@@ -57,6 +57,9 @@ export const TerminalsList: React.FC = () => {
       ],
       whereInputType: "terminalsWhereInput!",
       orderByInputType: "terminalsOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
     onSearch: async (params) => {
       const filters: CrudFilters = [];
@@ -84,7 +87,13 @@ export const TerminalsList: React.FC = () => {
         }
       }
     `;
-    const { cachedOrganizations } = await client.request(query);
+    const { cachedOrganizations } = await client.request(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
     setOrganizations(cachedOrganizations);
   };
 

@@ -8,11 +8,15 @@ import {
   EditButton,
   ShowButton,
 } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IRoles } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
 export const RolesList: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { tableProps } = useTable<IRoles>({
     initialSorter: [
       {
@@ -24,6 +28,9 @@ export const RolesList: React.FC = () => {
       fields: ["id", "name", "active"],
       whereInputType: "rolesWhereInput!",
       orderByInputType: "rolesOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
   return (

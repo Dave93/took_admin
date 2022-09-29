@@ -9,7 +9,7 @@ import {
   Switch,
   useForm,
 } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IOrderStatus, IOrganization } from "interfaces";
 import { Colorpicker } from "antd-colorpicker";
@@ -18,6 +18,9 @@ import { gql } from "graphql-request";
 import { client } from "graphConnect";
 
 export const OrderStatusCreate = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps } = useForm<IOrderStatus>({
     metaData: {
       fields: [
@@ -31,10 +34,11 @@ export const OrderStatusCreate = () => {
         "waiting",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
-
-  const tr = useTranslate();
 
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
@@ -50,13 +54,19 @@ export const OrderStatusCreate = () => {
 
     const { cachedOrganizations } = await client.request<{
       cachedOrganizations: IOrganization[];
-    }>(query);
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
     setOrganizations(cachedOrganizations);
   };
 
   useEffect(() => {
     fetchOrganizations();
-  }, []);
+  }, [identity]);
 
   return (
     <Create saveButtonProps={saveButtonProps} title="Создать статус заказа">

@@ -1,28 +1,25 @@
 import {
-  Button,
   Col,
   Edit,
   Form,
   Input,
   InputNumber,
   Row,
-  Select,
-  Space,
   Switch,
-  TimePicker,
   useForm,
 } from "@pankod/refine-antd";
-import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useTranslate } from "@pankod/refine-core";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IOrderStatus, IOrganization } from "interfaces";
-import { drive_type } from "interfaces/enums";
 import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { Colorpicker } from "antd-colorpicker";
 
 export const OrderStatusEdit: React.FC = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
   const { formProps, saveButtonProps, id } = useForm<IOrderStatus>({
     metaData: {
       fields: [
@@ -37,10 +34,11 @@ export const OrderStatusEdit: React.FC = () => {
         "need_location",
       ],
       pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
     },
   });
-
-  const tr = useTranslate();
 
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
@@ -56,13 +54,19 @@ export const OrderStatusEdit: React.FC = () => {
 
     const { cachedOrganizations } = await client.request<{
       cachedOrganizations: IOrganization[];
-    }>(query);
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
     setOrganizations(cachedOrganizations);
   };
 
   useEffect(() => {
     fetchOrganizations();
-  }, []);
+  }, [identity]);
 
   return (
     <Edit saveButtonProps={saveButtonProps} title="Редактировать статус заказа">

@@ -145,7 +145,6 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
     create: async ({ resource, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
       const camelCreateName = camelCase(`${singularResource}-create`);
-      const pluralCreateName = camelCase(`${resource}-create`);
       const camelCreateInputName =
         singularResource +
         camelCase(`unchecked-create`, {
@@ -239,7 +238,11 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         },
         fields: metaData?.fields ?? ["id"],
       });
-      const response = await client.request(query, gqlVariables);
+      const response = await client.request(
+        query,
+        gqlVariables,
+        metaData?.requestHeaders ?? null
+      );
 
       return {
         data: response[operation][singularResource],
@@ -294,7 +297,11 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         fields: metaData?.fields,
       });
 
-      const response = await client.request(query, variables);
+      const response = await client.request(
+        query,
+        variables,
+        metaData?.requestHeaders ?? null
+      );
 
       return {
         data: response[operation],
@@ -324,7 +331,11 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
         ],
       });
 
-      const response = await client.request(query, variables);
+      const response = await client.request(
+        query,
+        variables,
+        metaData?.requestHeaders ?? null
+      );
 
       return {
         data: response[operation][singularResource],

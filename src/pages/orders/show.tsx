@@ -1,4 +1,9 @@
-import { useGetIdentity, useNavigation, useShow } from "@pankod/refine-core";
+import {
+  CanAccess,
+  useGetIdentity,
+  useNavigation,
+  useShow,
+} from "@pankod/refine-core";
 import {
   Show,
   Descriptions,
@@ -19,6 +24,7 @@ import { YMaps, Map } from "react-yandex-maps";
 import { IOrderActions, IOrderLocation } from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
+import { ChangeOrdersCouirer } from "components/orders/changeCourier";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -213,16 +219,30 @@ export const OrdersShow = () => {
                   </Button>
                 </Descriptions.Item>
                 <Descriptions.Item label="Курьер">
-                  <Button
-                    type="link"
-                    size="small"
-                    onClick={() =>
-                      show("couriers", "show", record?.orders_couriers?.id)
-                    }
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    {record?.orders_couriers?.first_name}{" "}
-                    {record?.orders_couriers?.last_name}
-                  </Button>
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() =>
+                        show("couriers", "show", record?.orders_couriers?.id)
+                      }
+                    >
+                      {record?.orders_couriers?.first_name}{" "}
+                      {record?.orders_couriers?.last_name}
+                    </Button>
+                    <CanAccess resource="orders" action="changeCourier">
+                      <ChangeOrdersCouirer
+                        id={showId?.toString()}
+                        terminal_id={record?.orders_terminals.id}
+                      />
+                    </CanAccess>
+                  </div>
                 </Descriptions.Item>
                 <Descriptions.Item label="ФИО">
                   {record?.orders_customers?.name}

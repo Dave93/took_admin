@@ -395,7 +395,7 @@ export const OrdersList: React.FC = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="courier_id" label="Курьер">
-                <DebounceSelect fetchOptions={fetchCourier} />
+                <DebounceSelect fetchOptions={fetchCourier} allowClear />
               </Form.Item>
             </Col>
           </Row>

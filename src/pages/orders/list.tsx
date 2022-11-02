@@ -11,6 +11,7 @@ import {
   Row,
   DatePicker,
   Tag,
+  Input,
 } from "@pankod/refine-antd";
 import {
   CrudFilters,
@@ -21,12 +22,19 @@ import {
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 
-import { IOrders, IOrderStatus, IOrganization, ITerminals } from "interfaces";
+import {
+  IOrders,
+  IOrderStatus,
+  IOrganization,
+  ITerminals,
+  IUsers,
+} from "interfaces";
 import { chain } from "lodash";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
+import DebounceSelect from "components/select/debounceSelector";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
@@ -52,7 +60,9 @@ export const OrdersList: React.FC = () => {
       organization_id: string;
       created_at: [dayjs.Dayjs, dayjs.Dayjs];
       terminal_id: string;
-      order_status_id: string;
+      order_status_id: string[];
+      customer_phone: string;
+      courier_id: any;
     }
   >({
     initialSorter: [
@@ -108,7 +118,14 @@ export const OrdersList: React.FC = () => {
     ],
     onSearch: async (params) => {
       const filters: CrudFilters = [];
-      const { organization_id, created_at, terminal_id } = params;
+      const {
+        organization_id,
+        created_at,
+        terminal_id,
+        order_status_id,
+        customer_phone,
+        courier_id,
+      } = params;
 
       filters.push(
         {
@@ -143,6 +160,38 @@ export const OrdersList: React.FC = () => {
         });
       }
 
+      if (order_status_id && order_status_id.length) {
+        filters.push({
+          field: "order_status_id",
+          operator: "in",
+          value: order_status_id,
+        });
+      }
+
+      if (customer_phone) {
+        filters.push({
+          field: "orders_customers",
+          operator: "contains",
+          value: {
+            custom: {
+              is: {
+                phone: {
+                  contains: customer_phone,
+                },
+              },
+            },
+          },
+        });
+      }
+      console.log(filters);
+
+      if (courier_id && courier_id.value) {
+        filters.push({
+          field: "courier_id",
+          operator: "eq",
+          value: { equals: courier_id.value },
+        });
+      }
       return filters;
     },
   });
@@ -221,6 +270,58 @@ export const OrdersList: React.FC = () => {
     show(`organization`, id);
   };
 
+  const fetchCourier = async (queryText: string) => {
+    const query = gql`
+        query {
+          users(where: {
+            users_roles_usersTousers_roles_user_id: {
+              some: {
+                roles: {
+                  is: {
+                    code: {
+                      equals: "courier"
+                    }
+                  }
+                }
+              }
+            },
+            status: {
+              equals: active
+            },
+            OR: [{
+              first_name: {
+                contains: "${queryText}"
+              }
+            }, {
+              phone: {
+                contains: "${queryText}"
+              }
+            }]
+          }) {
+            id
+            first_name
+            last_name
+            phone
+          }
+        }
+    `;
+    const { users } = await client.request<{
+      users: IUsers[];
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+
+    return users.map((user) => ({
+      key: user.id,
+      value: user.id,
+      label: `${user.first_name} ${user.last_name} (${user.phone})`,
+    }));
+  };
+
   useEffect(() => {
     getAllFilterData();
   }, []);
@@ -235,12 +336,12 @@ export const OrdersList: React.FC = () => {
           }}
         >
           <Row gutter={16}>
-            <Col span={6}>
+            <Col span={8}>
               <Form.Item label="Дата заказа" name="created_at">
-                <RangePicker format={"DD.MM.YYYY"} />
+                <RangePicker format={"DD.MM.YYYY HH:mm"} showTime />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={4}>
               <Form.Item name="organization_id" label="Организация">
                 <Select
                   options={organizations.map((org) => ({
@@ -267,7 +368,12 @@ export const OrdersList: React.FC = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="order_status_id" label="Статус">
-                <Select showSearch optionFilterProp="children" allowClear>
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  allowClear
+                  mode="multiple"
+                >
                   {orderStatuses.map((terminal: any) => (
                     <Select.OptGroup key={terminal.name} label={terminal.name}>
                       {terminal.children.map((terminal: ITerminals) => (
@@ -278,6 +384,18 @@ export const OrdersList: React.FC = () => {
                     </Select.OptGroup>
                   ))}
                 </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={6}>
+              <Form.Item name="customer_phone" label="Телефон клиента">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="courier_id" label="Курьер">
+                <DebounceSelect fetchOptions={fetchCourier} />
               </Form.Item>
             </Col>
           </Row>

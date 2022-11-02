@@ -33,17 +33,6 @@ const COMMENTS_SUBSCRIPTION = gql`
 `;
 
 export const MainPage: FC = () => {
-  const { data: identity } = useGetIdentity<{
-    token: { accessToken: string };
-    user: { id: string };
-  }>();
-  const { data, loading } = useSubscription(COMMENTS_SUBSCRIPTION, {
-    variables: {
-      courier_id: identity?.user.id,
-    },
-  });
-  console.log(data);
-  console.log(loading);
   return (
     <>
       <h1>Home Page</h1>

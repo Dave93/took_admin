@@ -36,7 +36,11 @@ const generateFilter = (filters?: CrudFilters) => {
           if (!queryFilters[`${field}`]) {
             queryFilters[`${field}`] = {};
           }
-          queryFilters[`${field}`][operator] = value;
+          if (typeof value == "object" && value.custom) {
+            queryFilters[`${field}`] = value.custom;
+          } else {
+            queryFilters[`${field}`][operator] = value;
+          }
         }
       } else {
         const { value } = filter;

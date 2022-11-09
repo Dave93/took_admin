@@ -65,6 +65,7 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { MainPage } from "pages/main/list";
+import { TerminalsCouriersListPage } from "pages/terminals_couriers/list";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -231,6 +232,14 @@ function App() {
               edit: UsersEdit,
               options: {
                 label: "Список пользователей",
+              },
+            },
+            {
+              name: "terminals_couriers",
+              parentName: "users-group",
+              list: TerminalsCouriersListPage,
+              options: {
+                label: "Курьеры по филиалам",
               },
             },
             {

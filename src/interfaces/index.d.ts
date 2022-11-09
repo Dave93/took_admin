@@ -465,3 +465,9 @@ export class IApiTokens {
 
   api_tokens_organization?: organization;
 }
+
+export class ICouriersByTerminal {
+  name: string;
+
+  couriers: IUsers[];
+}

@@ -59,7 +59,7 @@ export const OrdersList: React.FC = () => {
     {
       organization_id: string;
       created_at: [dayjs.Dayjs, dayjs.Dayjs];
-      terminal_id: string;
+      terminal_id: string[];
       order_status_id: string[];
       customer_phone: string;
       courier_id: any;
@@ -153,10 +153,8 @@ export const OrdersList: React.FC = () => {
       if (terminal_id) {
         filters.push({
           field: "terminal_id",
-          operator: "eq",
-          value: {
-            equals: terminal_id,
-          },
+          operator: "in",
+          value: terminal_id,
         });
       }
 
@@ -353,7 +351,12 @@ export const OrdersList: React.FC = () => {
             </Col>
             <Col span={6}>
               <Form.Item name="terminal_id" label="Филиал">
-                <Select showSearch optionFilterProp="children" allowClear>
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  allowClear
+                  mode="multiple"
+                >
                   {terminals.map((terminal: any) => (
                     <Select.OptGroup key={terminal.name} label={terminal.name}>
                       {terminal.children.map((terminal: ITerminals) => (
@@ -415,6 +418,10 @@ export const OrdersList: React.FC = () => {
               show("orders", record.id);
             },
           })}
+          pagination={{
+            ...tableProps.pagination,
+            showSizeChanger: true,
+          }}
         >
           <Table.Column dataIndex="order_number" title="Номер заказа" />
           <Table.Column

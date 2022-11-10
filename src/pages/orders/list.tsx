@@ -13,6 +13,7 @@ import {
   Tag,
   Input,
 } from "@pankod/refine-antd";
+import type { TableRowSelection } from "antd/es/table/interface";
 import {
   CrudFilters,
   HttpError,
@@ -30,11 +31,12 @@ import {
   IUsers,
 } from "interfaces";
 import { chain } from "lodash";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import DebounceSelect from "components/select/debounceSelector";
+import { OrdersTableActions } from "components/table_actions/orders";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
@@ -50,6 +52,7 @@ export const OrdersList: React.FC = () => {
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<any[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const { show } = useNavigation();
 
@@ -320,9 +323,84 @@ export const OrdersList: React.FC = () => {
     }));
   };
 
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection: TableRowSelection<IOrders> = useMemo(() => {
+    const res = {
+      selectedRowKeys,
+      onChange: onSelectChange,
+      selections: [
+        {
+          key: "all-data",
+          text: "Выбрать все записи",
+          onSelect: (changableRowKeys: React.Key[]) => {
+            setSelectedRowKeys(changableRowKeys);
+          },
+        },
+        {
+          key: "invert",
+          text: "Инвертировать выбор",
+          onSelect: (changableRowKeys: React.Key[]) => {
+            setSelectedRowKeys(
+              changableRowKeys.filter((key) => !selectedRowKeys.includes(key))
+            );
+          },
+        },
+        {
+          key: "clear-all",
+          text: "Очистить выбор",
+          onSelect: () => {
+            setSelectedRowKeys([]);
+          },
+        },
+      ],
+    };
+
+    let organizations: any = {};
+    if (tableProps.dataSource?.length) {
+      tableProps.dataSource?.map((item: IOrders) => {
+        organizations[item.orders_organization.id] =
+          item.orders_organization.name;
+        // res.selectedRowKeys?.push(item.id);
+      });
+
+      for (const key in organizations) {
+        res.selections?.push({
+          key: key,
+          text: `Выбрать все заказы ${organizations[key]}`,
+          onSelect: () => {
+            setSelectedRowKeys(
+              tableProps
+                .dataSource!.filter(
+                  (item: IOrders) => item.orders_organization.id === key
+                )
+                .map((item: IOrders) => item.id)
+            );
+          },
+        });
+      }
+    }
+
+    return res;
+  }, [tableProps, setSelectedRowKeys, selectedRowKeys]);
+
+  const selectedOrders = useMemo(() => {
+    return tableProps.dataSource?.filter((item) =>
+      selectedRowKeys.includes(item.id)
+    );
+  }, [tableProps, selectedRowKeys]);
+
+  const onFinishAction = async () => {
+    setSelectedRowKeys([]);
+  };
+
   useEffect(() => {
     getAllFilterData();
   }, []);
+
   return (
     <>
       <List title="Список заказов">
@@ -422,6 +500,13 @@ export const OrdersList: React.FC = () => {
             ...tableProps.pagination,
             showSizeChanger: true,
           }}
+          rowSelection={rowSelection}
+          title={() => (
+            <OrdersTableActions
+              selectedOrders={selectedOrders}
+              onFinishAction={onFinishAction}
+            />
+          )}
         >
           <Table.Column dataIndex="order_number" title="Номер заказа" />
           <Table.Column

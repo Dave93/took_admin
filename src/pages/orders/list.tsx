@@ -12,11 +12,13 @@ import {
   DatePicker,
   Tag,
   Input,
+  ExportButton,
 } from "@pankod/refine-antd";
 import type { TableRowSelection } from "antd/es/table/interface";
 import {
   CrudFilters,
   HttpError,
+  useExport,
   useGetIdentity,
   useNavigation,
 } from "@pankod/refine-core";
@@ -56,7 +58,7 @@ export const OrdersList: React.FC = () => {
 
   const { show } = useNavigation();
 
-  const { tableProps, searchFormProps } = useTable<
+  const { tableProps, searchFormProps, filters, sorter } = useTable<
     IOrders,
     HttpError,
     {
@@ -195,6 +197,44 @@ export const OrdersList: React.FC = () => {
       }
       return filters;
     },
+  });
+
+  const { triggerExport, isLoading } = useExport<IOrders>({
+    metaData: {
+      fields: [
+        "id",
+        "delivery_type",
+        "created_at",
+        "order_price",
+        "order_number",
+        "duration",
+        "delivery_price",
+        "payment_type",
+
+        {
+          orders_organization: ["id", "name"],
+        },
+        {
+          orders_couriers: ["id", "first_name", "last_name"],
+        },
+        {
+          orders_customers: ["id", "name", "phone"],
+        },
+        {
+          orders_order_status: ["id", "name", "color"],
+        },
+        {
+          orders_terminals: ["id", "name"],
+        },
+      ],
+      whereInputType: "ordersWhereInput!",
+      orderByInputType: "ordersOrderByWithRelationInput!",
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
+    },
+    filters,
+    sorter,
   });
 
   const getAllFilterData = async () => {
@@ -403,7 +443,12 @@ export const OrdersList: React.FC = () => {
 
   return (
     <>
-      <List title="Список заказов">
+      <List
+        title="Список заказов"
+        headerProps={{
+          extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
+        }}
+      >
         <Form
           layout="horizontal"
           {...searchFormProps}

@@ -58,7 +58,7 @@ export const OrdersList: React.FC = () => {
 
   const { show } = useNavigation();
 
-  const { tableProps, searchFormProps, filters, sorter } = useTable<
+  const { tableProps, searchFormProps, filters, sorter, setFilters } = useTable<
     IOrders,
     HttpError,
     {
@@ -435,6 +435,7 @@ export const OrdersList: React.FC = () => {
 
   const onFinishAction = async () => {
     setSelectedRowKeys([]);
+    setFilters(filters!, "replace");
   };
 
   useEffect(() => {

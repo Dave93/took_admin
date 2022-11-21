@@ -32,6 +32,8 @@ export const OrderStatusCreate = () => {
         "finish",
         "cancel",
         "waiting",
+        "on_way",
+        "in_terminal",
       ],
       pluralize: true,
       requestHeaders: {
@@ -140,6 +142,20 @@ export const OrderStatusCreate = () => {
           </Col>
           <Col span={4}>
             <Form.Item label="Ожидающий" name="waiting" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              label="В филиале"
+              name="in_terminal"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label="В пути" name="on_way" valuePropName="checked">
               <Switch />
             </Form.Item>
           </Col>

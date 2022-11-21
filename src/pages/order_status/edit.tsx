@@ -32,6 +32,8 @@ export const OrderStatusEdit: React.FC = () => {
         "cancel",
         "waiting",
         "need_location",
+        "on_way",
+        "in_terminal",
       ],
       pluralize: true,
       requestHeaders: {
@@ -160,6 +162,20 @@ export const OrderStatusEdit: React.FC = () => {
               name="need_location"
               valuePropName="checked"
             >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              label="В филиале"
+              name="in_terminal"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label="В пути" name="on_way" valuePropName="checked">
               <Switch />
             </Form.Item>
           </Col>

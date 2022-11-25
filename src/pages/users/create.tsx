@@ -3,6 +3,7 @@ import {
   Create,
   Form,
   Input,
+  InputNumber,
   Row,
   Select,
   useForm,
@@ -34,6 +35,7 @@ export const UsersCreate = () => {
         "phone",
         "latitude",
         "longitude",
+        "max_active_order_count",
         {
           users_terminals: [
             {
@@ -327,6 +329,16 @@ export const UsersCreate = () => {
                   </Select.OptGroup>
                 ))}
               </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Максимальное количество активных заказов"
+              name="max_active_order_count"
+            >
+              <InputNumber type="number" />
             </Form.Item>
           </Col>
         </Row>

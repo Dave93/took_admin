@@ -6,6 +6,7 @@ import {
   Select,
   Row,
   Col,
+  InputNumber,
 } from "@pankod/refine-antd";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { client } from "graphConnect";
@@ -37,6 +38,7 @@ export const UsersEdit: React.FC = () => {
         "latitude",
         "longitude",
         "status",
+        "max_active_order_count",
         {
           users_terminals: [
             {
@@ -377,6 +379,16 @@ export const UsersEdit: React.FC = () => {
                   </Select.OptGroup>
                 ))}
               </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Максимальное количество активных заказов"
+              name="max_active_order_count"
+            >
+              <InputNumber type="number" />
             </Form.Item>
           </Col>
         </Row>

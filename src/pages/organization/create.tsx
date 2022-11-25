@@ -39,6 +39,7 @@ export const OrganizationsCreate = () => {
         "sender_number",
         "description",
         "payment_type",
+        "max_order_close_distance",
       ],
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
@@ -112,12 +113,23 @@ export const OrganizationsCreate = () => {
           <Input />
         </Form.Item>
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Максимальное расстояние" name="max_distance">
+          <Col span={8}>
+            <Form.Item
+              label="Максимальное расстояние для открытия рабочего дня"
+              name="max_distance"
+            >
               <InputNumber type="number" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
+            <Form.Item
+              label="Максимальное расстояние для закрытия заказа"
+              name="max_order_close_distance"
+            >
+              <InputNumber type="number" />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
             <Form.Item
               label="Максимальное количество активных заказов"
               name="max_active_order_count"

@@ -8,6 +8,8 @@ import {
   Row,
   Col,
   InputNumber,
+  Upload,
+  getValueFromEvent,
 } from "@pankod/refine-antd";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { IOrganization } from "interfaces";
@@ -43,6 +45,7 @@ export const OrganizationsEdit: React.FC = () => {
         "max_active_order_count",
         "payment_type",
         "max_order_close_distance",
+        "support_chat_url",
       ],
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
@@ -82,6 +85,24 @@ export const OrganizationsEdit: React.FC = () => {
         <Form.Item label="Телефон" name="phone">
           <Input />
         </Form.Item>
+        <Form.Item label="Лого">
+          <Form.Item
+            name="logo"
+            valuePropName="fileList"
+            getValueFromEvent={getValueFromEvent}
+            noStyle
+          >
+            <Upload.Dragger
+              name="file"
+              action={`https://${process.env
+                .REACT_APP_GRAPHQL_API_DOMAIN!}/api/media/upload`}
+              listType="picture"
+              maxCount={1}
+            >
+              <p className="ant-upload-text">Drag & drop a file in this area</p>
+            </Upload.Dragger>
+          </Form.Item>
+        </Form.Item>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Тип системы" name="system_type">
@@ -114,6 +135,9 @@ export const OrganizationsEdit: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item label="Внешний id" name="external_id">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Ссылка на чат колл-центра" name="support_chat_url">
           <Input />
         </Form.Item>
         <Row gutter={16}>

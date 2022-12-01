@@ -40,6 +40,7 @@ export const OrganizationsCreate = () => {
         "description",
         "payment_type",
         "max_order_close_distance",
+        "support_chat_url",
       ],
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
@@ -110,6 +111,9 @@ export const OrganizationsCreate = () => {
           </Select>
         </Form.Item>
         <Form.Item label="Внешний id" name="external_id">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Ссылка на чат колл-центра" name="support_chat_url">
           <Input />
         </Form.Item>
         <Row gutter={16}>

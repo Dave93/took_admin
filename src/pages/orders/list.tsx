@@ -68,6 +68,7 @@ export const OrdersList: React.FC = () => {
       order_status_id: string[];
       customer_phone: string;
       courier_id: any;
+      order_number: number;
     }
   >({
     initialSorter: [
@@ -130,8 +131,9 @@ export const OrdersList: React.FC = () => {
         order_status_id,
         customer_phone,
         courier_id,
+        order_number,
       } = params;
-
+      console.log("is filtering", filters);
       filters.push(
         {
           field: "created_at",
@@ -155,7 +157,7 @@ export const OrdersList: React.FC = () => {
         });
       }
 
-      if (terminal_id) {
+      if (terminal_id && terminal_id.length) {
         filters.push({
           field: "terminal_id",
           operator: "in",
@@ -186,7 +188,16 @@ export const OrdersList: React.FC = () => {
           },
         });
       }
-      console.log(filters);
+
+      if (order_number) {
+        filters.push({
+          field: "order_number",
+          operator: "eq",
+          value: {
+            equals: order_number,
+          },
+        });
+      }
 
       if (courier_id && courier_id.value) {
         filters.push({
@@ -195,6 +206,7 @@ export const OrdersList: React.FC = () => {
           value: { equals: courier_id.value },
         });
       }
+      console.log("is filtering ready", filters);
       return filters;
     },
   });
@@ -523,6 +535,11 @@ export const OrdersList: React.FC = () => {
             <Col span={6}>
               <Form.Item name="courier_id" label="Курьер">
                 <DebounceSelect fetchOptions={fetchCourier} allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="order_number" label="Номер заказа">
+                <Input allowClear />
               </Form.Item>
             </Col>
           </Row>

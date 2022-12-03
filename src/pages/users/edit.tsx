@@ -16,6 +16,7 @@ import { chain } from "lodash";
 import * as gqlb from "gql-query-builder";
 import { useEffect, useState } from "react";
 import { drive_type, user_status } from "interfaces/enums";
+import FileUploaderMultiple from "components/file_uploader/multiple";
 
 export const UsersEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
@@ -39,6 +40,7 @@ export const UsersEdit: React.FC = () => {
         "longitude",
         "status",
         "max_active_order_count",
+        "doc_files",
         {
           users_terminals: [
             {
@@ -416,6 +418,16 @@ export const UsersEdit: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
+        <Form.Item
+          label="Документы"
+          name="doc_files"
+          style={{
+            height: 250,
+          }}
+        >
+          {/* @ts-ignore */}
+          <FileUploaderMultiple modelId={id} />
+        </Form.Item>
       </Form>
     </Edit>
   );

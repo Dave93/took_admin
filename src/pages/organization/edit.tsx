@@ -12,6 +12,7 @@ import {
   getValueFromEvent,
 } from "@pankod/refine-antd";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import FileUploader from "components/file_uploader";
 import { IOrganization } from "interfaces";
 import {
   organization_payment_types,
@@ -23,7 +24,7 @@ export const OrganizationsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
-  const { formProps, saveButtonProps } = useForm<IOrganization>({
+  const { formProps, saveButtonProps, id } = useForm<IOrganization>({
     metaData: {
       fields: [
         "id",
@@ -46,6 +47,7 @@ export const OrganizationsEdit: React.FC = () => {
         "payment_type",
         "max_order_close_distance",
         "support_chat_url",
+        "icon_url",
       ],
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
@@ -85,23 +87,15 @@ export const OrganizationsEdit: React.FC = () => {
         <Form.Item label="Телефон" name="phone">
           <Input />
         </Form.Item>
-        <Form.Item label="Лого">
-          <Form.Item
-            name="logo"
-            valuePropName="fileList"
-            getValueFromEvent={getValueFromEvent}
-            noStyle
-          >
-            <Upload.Dragger
-              name="file"
-              action={`https://${process.env
-                .REACT_APP_GRAPHQL_API_DOMAIN!}/api/media/upload`}
-              listType="picture"
-              maxCount={1}
-            >
-              <p className="ant-upload-text">Drag & drop a file in this area</p>
-            </Upload.Dragger>
-          </Form.Item>
+        <Form.Item
+          label="Лого"
+          name="icon_url"
+          style={{
+            height: 200,
+          }}
+        >
+          {/* @ts-ignore */}
+          <FileUploader modelId={id} />
         </Form.Item>
         <Row gutter={16}>
           <Col span={12}>

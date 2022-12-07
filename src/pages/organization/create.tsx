@@ -101,7 +101,7 @@ export const OrganizationsCreate = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item label="Тип доставки" name="payment_type">
+        <Form.Item label="Тип оплаты" name="payment_type">
           <Select>
             {Object.keys(organization_payment_types).map((type: string) => (
               <Select.Option key={type} value={type}>

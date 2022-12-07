@@ -471,3 +471,11 @@ export class ICouriersByTerminal {
 
   couriers: IUsers[];
 }
+
+export class ISystemConfigs {
+  id: string;
+
+  name: string;
+
+  value: string;
+}

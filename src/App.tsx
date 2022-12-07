@@ -66,6 +66,7 @@ import { createClient } from "graphql-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { MainPage } from "pages/main/list";
 import { TerminalsCouriersListPage } from "pages/terminals_couriers/list";
+import { SystemConfigsList } from "pages/system_configs/list";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -316,6 +317,14 @@ function App() {
               },
               list: ApiTokensList,
               create: ApiTokensCreate,
+            },
+            {
+              name: "system_configs",
+              parentName: "settings",
+              options: {
+                label: "Системные настройки",
+              },
+              list: SystemConfigsList,
             },
           ]}
         />

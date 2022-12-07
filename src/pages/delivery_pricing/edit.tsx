@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import dayjs from "dayjs";
+import { organization_payment_types } from "interfaces/enums";
 
 let daysOfWeekRu = {
   "1": "Понедельник",
@@ -56,6 +57,7 @@ export const DeliveryPricingEdit: React.FC = () => {
         "price_per_km",
         "organization_id",
         "terminal_id",
+        "payment_type",
       ],
       pluralize: true,
       updateInputName: "delivery_pricingUncheckedUpdateInput",
@@ -219,6 +221,16 @@ export const DeliveryPricingEdit: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
+
+        <Form.Item label="Тип оплаты" name="payment_type">
+          <Select>
+            {Object.keys(organization_payment_types).map((type: string) => (
+              <Select.Option key={type} value={type}>
+                {tr(`organizations.paymentType.${type}`)}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item
           label="Дни недели"
           name="days"

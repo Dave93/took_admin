@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import dayjs from "dayjs";
+import { organization_payment_types } from "interfaces/enums";
 
 import isBetween from "dayjs/plugin/isBetween";
 import utc from "dayjs/plugin/utc";
@@ -63,6 +64,7 @@ export const DeliveryPricingCreate = () => {
         "min_price",
         "rules",
         "price_per_km",
+        "payment_type",
       ],
       pluralize: true,
       requestHeaders: {
@@ -196,6 +198,15 @@ export const DeliveryPricingCreate = () => {
             </Form.Item>
           </Col>
         </Row>
+        <Form.Item label="Тип оплаты" name="payment_type">
+          <Select>
+            {Object.keys(organization_payment_types).map((type: string) => (
+              <Select.Option key={type} value={type}>
+                {tr(`organizations.paymentType.${type}`)}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item
           label="Дни недели"
           name="days"

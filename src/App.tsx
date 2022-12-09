@@ -67,6 +67,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { MainPage } from "pages/main/list";
 import { TerminalsCouriersListPage } from "pages/terminals_couriers/list";
 import { SystemConfigsList } from "pages/system_configs/list";
+import PrivacyPage from "pages/privacy";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -145,7 +146,15 @@ function App() {
           // ReadyPage={ReadyPage}
           catchAll={<ErrorComponent />}
           DashboardPage={MainPage}
-          routerProvider={routerProvider}
+          routerProvider={{
+            ...routerProvider,
+            routes: [
+              {
+                element: <PrivacyPage />,
+                path: "/privacy",
+              },
+            ],
+          }}
           dataProvider={gqlDataProvider}
           authProvider={authProvider}
           LoginPage={Login}

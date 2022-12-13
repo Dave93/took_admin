@@ -68,6 +68,8 @@ import { MainPage } from "pages/main/list";
 import { TerminalsCouriersListPage } from "pages/terminals_couriers/list";
 import { SystemConfigsList } from "pages/system_configs/list";
 import PrivacyPage from "pages/privacy";
+import { useMemo } from "react";
+import { BrandsCreate, BrandsEdit, BrandsList } from "pages/brands";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -107,6 +109,188 @@ function App() {
     changeLocale: (lang: string) => i18n.changeLanguage(lang),
     getLocale: () => i18n.language,
   };
+
+  const resources = useMemo(() => {
+    const res = [
+      {
+        name: "orders-group",
+        options: {
+          label: "Заказы",
+        },
+      },
+      {
+        name: "customers",
+        options: {
+          label: "Клиенты",
+        },
+        parentName: "orders-group",
+        list: CustomersList,
+        show: CustomersShow,
+      },
+      {
+        name: "order_status",
+        options: {
+          label: "Статусы заказов",
+        },
+        parentName: "orders-group",
+        list: OrderStatusList,
+        create: OrderStatusCreate,
+        edit: OrderStatusEdit,
+      },
+      {
+        name: "orders",
+        options: {
+          label: "Заказы",
+        },
+        parentName: "orders-group",
+        list: OrdersList,
+        show: OrdersShow,
+      },
+      {
+        name: "users-group",
+        options: {
+          label: "Пользователи",
+        },
+        list: UsersList,
+      },
+      {
+        name: "roles",
+        parentName: "users-group",
+        list: RolesList,
+        create: RolesCreate,
+        edit: RolesEdit,
+        show: RolesShow,
+        options: {
+          label: "Роли",
+        },
+      },
+      {
+        name: "permissions",
+        parentName: "users-group",
+        list: PermissionsList,
+        edit: PermissionsEdit,
+        create: PermissionsCreate,
+        options: {
+          label: "Разрешения",
+        },
+      },
+      {
+        name: "users",
+        parentName: "users-group",
+        list: UsersList,
+        create: UsersCreate,
+        edit: UsersEdit,
+        options: {
+          label: "Список пользователей",
+        },
+      },
+      {
+        name: "terminals_couriers",
+        parentName: "users-group",
+        list: TerminalsCouriersListPage,
+        options: {
+          label: "Курьеры по филиалам",
+        },
+      },
+      {
+        name: "organizations_menu",
+        options: {
+          label: "Организации",
+        },
+      },
+      {
+        name: "organization",
+        parentName: "organizations_menu",
+        options: {
+          label: "Список организации",
+        },
+        list: OrganizationList,
+        create: OrganizationsCreate,
+        edit: OrganizationsEdit,
+      },
+      {
+        name: "terminals",
+        parentName: "organizations_menu",
+        options: {
+          label: "Филиалы",
+        },
+        list: TerminalsList,
+        create: TerminalsCreate,
+        edit: TerminalsEdit,
+      },
+      {
+        name: "delivery_pricing",
+        parentName: "organizations_menu",
+        options: {
+          label: "Условия доставки",
+        },
+        list: DeliveryPricingList,
+        create: DeliveryPricingCreate,
+        edit: DeliveryPricingEdit,
+      },
+      {
+        name: "time_management",
+        options: {
+          label: "Время и отчёты",
+        },
+      },
+      {
+        name: "work_schedules",
+        parentName: "time_management",
+        options: {
+          label: "Рабочие графики",
+        },
+        list: WorkSchedulesList,
+        create: WorkSchedulesCreate,
+        edit: WorkSchedulesEdit,
+      },
+      {
+        name: "work_schedule_entries_report",
+        parentName: "time_management",
+        options: {
+          label: "Отчёт по рабочим графикам",
+        },
+        list: WorkSchedulesReport,
+      },
+      {
+        name: "settings",
+        options: {
+          label: "Настройки",
+        },
+      },
+      {
+        name: "api_tokens",
+        parentName: "settings",
+        options: {
+          label: "API Токены",
+        },
+        list: ApiTokensList,
+        create: ApiTokensCreate,
+      },
+      {
+        name: "system_configs",
+        parentName: "settings",
+        options: {
+          label: "Системные настройки",
+        },
+        list: SystemConfigsList,
+      },
+    ];
+
+    if (process.env.REACT_APP_GRAPHQL_API_DOMAIN === "api.arryt.uz") {
+      res.push({
+        name: "brands",
+        parentName: "settings",
+        options: {
+          label: "Бренды",
+        },
+        list: BrandsList,
+        create: BrandsCreate,
+        edit: BrandsEdit,
+      });
+    }
+    return res;
+  }, []);
 
   return (
     <RefineKbarProvider>
@@ -171,171 +355,7 @@ function App() {
               />
             </Link>
           )}
-          resources={[
-            {
-              name: "orders-group",
-              options: {
-                label: "Заказы",
-              },
-            },
-            {
-              name: "customers",
-              options: {
-                label: "Клиенты",
-              },
-              parentName: "orders-group",
-              list: CustomersList,
-              show: CustomersShow,
-            },
-            {
-              name: "order_status",
-              options: {
-                label: "Статусы заказов",
-              },
-              parentName: "orders-group",
-              list: OrderStatusList,
-              create: OrderStatusCreate,
-              edit: OrderStatusEdit,
-            },
-            {
-              name: "orders",
-              options: {
-                label: "Заказы",
-              },
-              parentName: "orders-group",
-              list: OrdersList,
-              show: OrdersShow,
-            },
-            {
-              name: "users-group",
-              options: {
-                label: "Пользователи",
-              },
-              list: UsersList,
-            },
-            {
-              name: "roles",
-              parentName: "users-group",
-              list: RolesList,
-              create: RolesCreate,
-              edit: RolesEdit,
-              show: RolesShow,
-              options: {
-                label: "Роли",
-              },
-            },
-            {
-              name: "permissions",
-              parentName: "users-group",
-              list: PermissionsList,
-              edit: PermissionsEdit,
-              create: PermissionsCreate,
-              options: {
-                label: "Разрешения",
-              },
-            },
-            {
-              name: "users",
-              parentName: "users-group",
-              list: UsersList,
-              create: UsersCreate,
-              edit: UsersEdit,
-              options: {
-                label: "Список пользователей",
-              },
-            },
-            {
-              name: "terminals_couriers",
-              parentName: "users-group",
-              list: TerminalsCouriersListPage,
-              options: {
-                label: "Курьеры по филиалам",
-              },
-            },
-            {
-              name: "organizations_menu",
-              options: {
-                label: "Организации",
-              },
-            },
-            {
-              name: "organization",
-              parentName: "organizations_menu",
-              options: {
-                label: "Список организации",
-              },
-              list: OrganizationList,
-              create: OrganizationsCreate,
-              edit: OrganizationsEdit,
-            },
-            {
-              name: "terminals",
-              parentName: "organizations_menu",
-              options: {
-                label: "Филиалы",
-              },
-              list: TerminalsList,
-              create: TerminalsCreate,
-              edit: TerminalsEdit,
-            },
-            {
-              name: "delivery_pricing",
-              parentName: "organizations_menu",
-              options: {
-                label: "Условия доставки",
-              },
-              list: DeliveryPricingList,
-              create: DeliveryPricingCreate,
-              edit: DeliveryPricingEdit,
-            },
-            {
-              name: "time_management",
-              options: {
-                label: "Время и отчёты",
-              },
-            },
-            {
-              name: "work_schedules",
-              parentName: "time_management",
-              options: {
-                label: "Рабочие графики",
-              },
-              list: WorkSchedulesList,
-              create: WorkSchedulesCreate,
-              edit: WorkSchedulesEdit,
-            },
-            {
-              name: "work_schedule_entries_report",
-              parentName: "time_management",
-              options: {
-                label: "Отчёт по рабочим графикам",
-              },
-              list: WorkSchedulesReport,
-            },
-            {
-              name: "settings",
-              options: {
-                label: "Настройки",
-              },
-            },
-            {
-              name: "api_tokens",
-              parentName: "settings",
-              options: {
-                label: "API Токены",
-              },
-              list: ApiTokensList,
-              create: ApiTokensCreate,
-            },
-            {
-              name: "system_configs",
-              parentName: "settings",
-              options: {
-                label: "Системные настройки",
-              },
-              list: SystemConfigsList,
-            },
-          ]}
+          resources={resources}
         />
       </ApolloProvider>
     </RefineKbarProvider>

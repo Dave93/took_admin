@@ -479,3 +479,19 @@ export class ISystemConfigs {
 
   value: string;
 }
+
+export class IBrands {
+  id: string;
+
+  name: string;
+
+  sign: string;
+
+  api_url: string;
+
+  logo_path: string | null;
+
+  created_at: Date;
+
+  updated_at: Date;
+}

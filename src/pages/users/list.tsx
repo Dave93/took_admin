@@ -12,6 +12,19 @@ import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { IUsers } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 
+const OnlineStatus = ({ value }: { value: boolean }) => {
+  return (
+    <div
+      style={{
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: value ? "green" : "red",
+      }}
+    ></div>
+  );
+};
+
 export const UsersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
@@ -29,6 +42,7 @@ export const UsersList: React.FC = () => {
         "first_name",
         "last_name",
         "created_at",
+        "is_online",
         "drive_type",
         "card_number",
         "phone",
@@ -61,6 +75,11 @@ export const UsersList: React.FC = () => {
             dataIndex="status"
             title="Статус"
             render={(value) => tr(`users.status.${value}`)}
+          />
+          <Table.Column
+            dataIndex="is_online"
+            title="Онлайн"
+            render={(value) => <OnlineStatus value={value} />}
           />
           <Table.Column dataIndex="phone" title="Телефон" />
           <Table.Column dataIndex="first_name" title="Имя" />

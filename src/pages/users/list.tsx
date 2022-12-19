@@ -6,8 +6,19 @@ import {
   Space,
   EditButton,
   ShowButton,
+  Form,
+  Select,
+  Input,
+  Button,
+  Row,
+  Col,
 } from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import {
+  CrudFilters,
+  HttpError,
+  useGetIdentity,
+  useTranslate,
+} from "@pankod/refine-core";
 
 import { IUsers } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
@@ -29,7 +40,16 @@ export const UsersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
-  const { tableProps } = useTable<IUsers>({
+  const { tableProps, searchFormProps } = useTable<
+    IUsers,
+    HttpError,
+    {
+      first_name?: string;
+      last_name?: string;
+      phone?: string;
+      is_online?: boolean;
+    }
+  >({
     initialSorter: [
       {
         field: "first_name",
@@ -63,6 +83,54 @@ export const UsersList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+    onSearch: async (values) => {
+      const { first_name, last_name, phone, is_online } = values;
+      const filters: CrudFilters = [];
+      if (phone) {
+        filters.push({
+          field: "phone",
+          operator: "contains",
+          value: {
+            custom: {
+              contains: phone,
+            },
+          },
+        });
+      }
+      if (first_name) {
+        filters.push({
+          field: "first_name",
+          operator: "contains",
+          value: {
+            custom: {
+              contains: first_name,
+              mode: "insensitive",
+            },
+          },
+        });
+      }
+      if (last_name) {
+        filters.push({
+          field: "last_name",
+          operator: "contains",
+          value: {
+            custom: {
+              contains: last_name,
+              mode: "insensitive",
+            },
+          },
+        });
+      }
+      if (is_online !== undefined) {
+        filters.push({
+          field: "is_online",
+          operator: "eq",
+          value: { equals: is_online },
+        });
+      }
+
+      return filters;
+    },
   });
 
   const tr = useTranslate();
@@ -70,6 +138,43 @@ export const UsersList: React.FC = () => {
   return (
     <>
       <List title="Список пользователей">
+        <Form layout="horizontal" {...searchFormProps}>
+          <Row gutter={16}>
+            <Col span={6}>
+              <Form.Item name="first_name" label="Имя">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="last_name" label="Фамилия">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="phone" label="Телефон">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="is_online" label="Онлайн">
+                <Select
+                  options={[
+                    { label: "Все", value: undefined },
+                    { label: "Да", value: true },
+                    { label: "Нет", value: false },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item>
+                <Button htmlType="submit" type="primary">
+                  Фильтровать
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
         <Table {...tableProps} rowKey="id">
           <Table.Column
             dataIndex="status"

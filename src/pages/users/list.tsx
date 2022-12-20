@@ -19,9 +19,13 @@ import {
   useGetIdentity,
   useTranslate,
 } from "@pankod/refine-core";
+import { client } from "graphConnect";
+import { gql } from "graphql-request";
+import { chain } from "lodash";
 
-import { IUsers } from "interfaces";
+import { IRoles, ITerminals, IUsers } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
+import { useEffect, useState } from "react";
 
 const OnlineStatus = ({ value }: { value: boolean }) => {
   return (
@@ -40,6 +44,8 @@ export const UsersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+  const [terminals, setTerminals] = useState<any[]>([]);
+  const [roles, setRoles] = useState<IRoles[]>([]);
   const { tableProps, searchFormProps } = useTable<
     IUsers,
     HttpError,
@@ -48,6 +54,8 @@ export const UsersList: React.FC = () => {
       last_name?: string;
       phone?: string;
       is_online?: boolean;
+      terminal_id: string[];
+      roles: string;
     }
   >({
     initialSorter: [
@@ -84,7 +92,8 @@ export const UsersList: React.FC = () => {
       },
     },
     onSearch: async (values) => {
-      const { first_name, last_name, phone, is_online } = values;
+      const { first_name, last_name, phone, is_online, terminal_id, roles } =
+        values;
       const filters: CrudFilters = [];
       if (phone) {
         filters.push({
@@ -129,11 +138,83 @@ export const UsersList: React.FC = () => {
         });
       }
 
+      if (terminal_id && terminal_id.length) {
+        filters.push({
+          field: "users_terminals",
+          operator: "in",
+          value: {
+            custom: {
+              some: {
+                terminal_id: {
+                  in: terminal_id,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      if (roles) {
+        filters.push({
+          field: "users_roles_usersTousers_roles_user_id",
+          operator: "contains",
+          value: {
+            custom: {
+              some: {
+                role_id: {
+                  equals: roles,
+                },
+              },
+            },
+          },
+        });
+      }
+
       return filters;
     },
   });
 
+  const getAllFilterData = async () => {
+    const query = gql`
+      query {
+        roles {
+          id
+          name
+        }
+        cachedTerminals {
+          id
+          name
+          organization_id
+          organization {
+            id
+            name
+          }
+        }
+      }
+    `;
+    const { roles, cachedTerminals } = await client.request<{
+      roles: IRoles[];
+      cachedTerminals: ITerminals[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    var terminalRes = chain(cachedTerminals)
+      .groupBy("organization.name")
+      .toPairs()
+      .map(function (item) {
+        return {
+          name: item[0],
+          children: item[1],
+        };
+      })
+      .value();
+    setTerminals(terminalRes);
+    setRoles(roles);
+  };
+
   const tr = useTranslate();
+
+  useEffect(() => {
+    getAllFilterData();
+  }, []);
 
   return (
     <>
@@ -153,6 +234,37 @@ export const UsersList: React.FC = () => {
             <Col span={6}>
               <Form.Item name="phone" label="Телефон">
                 <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="Роль" name="roles">
+                <Select>
+                  {roles.map((role: IRoles) => (
+                    <Select.Option key={role.id} value={role.id}>
+                      {role.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="terminal_id" label="Филиал">
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  allowClear
+                  mode="multiple"
+                >
+                  {terminals.map((terminal: any) => (
+                    <Select.OptGroup key={terminal.name} label={terminal.name}>
+                      {terminal.children.map((terminal: ITerminals) => (
+                        <Select.Option key={terminal.id} value={terminal.id}>
+                          {terminal.name}
+                        </Select.Option>
+                      ))}
+                    </Select.OptGroup>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
             <Col span={6}>

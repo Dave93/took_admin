@@ -554,6 +554,10 @@ export const OrdersList: React.FC = () => {
           rowKey="id"
           bordered
           size="small"
+          scroll={{
+            y: "calc(100vh - 390px)",
+            x: "calc(100vw - 200px)",
+          }}
           onRow={(record: any) => ({
             onDoubleClick: () => {
               show("orders", record.id);
@@ -571,7 +575,11 @@ export const OrdersList: React.FC = () => {
             />
           )}
         >
-          <Table.Column dataIndex="order_number" title="Номер заказа" />
+          <Table.Column
+            dataIndex="order_number"
+            title="Номер заказа"
+            width={100}
+          />
           <Table.Column
             dataIndex="created_at"
             title="Дата заказа"
@@ -582,6 +590,7 @@ export const OrdersList: React.FC = () => {
           <Table.Column
             dataIndex="order_status_id"
             title="Статус"
+            width={100}
             render={(value: any, record: any) => (
               <Tag color={record.orders_order_status.color}>
                 {record.orders_order_status.name}
@@ -596,8 +605,12 @@ export const OrdersList: React.FC = () => {
                 type="link"
                 size="small"
                 onClick={() => goToOrganization(record.orders_organization.id)}
+                style={{
+                  whiteSpace: "pre-wrap",
+                  textAlign: "left",
+                }}
               >
-                {record.orders_organization.name}
+                <span>{record.orders_organization.name}</span>
               </Button>
             )}
           />
@@ -609,6 +622,10 @@ export const OrdersList: React.FC = () => {
                 type="link"
                 size="small"
                 onClick={() => goToTerminal(record.orders_terminals.id)}
+                style={{
+                  whiteSpace: "pre-wrap",
+                  textAlign: "left",
+                }}
               >
                 {record.orders_terminals.name}
               </Button>
@@ -623,6 +640,10 @@ export const OrdersList: React.FC = () => {
                   type="link"
                   size="small"
                   onClick={() => goToCourier(record.orders_couriers.id)}
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    textAlign: "left",
+                  }}
                 >
                   {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
                 </Button>
@@ -639,6 +660,10 @@ export const OrdersList: React.FC = () => {
                 type="link"
                 size="small"
                 onClick={() => goToCustomer(record.orders_customers.id)}
+                style={{
+                  whiteSpace: "pre-wrap",
+                  textAlign: "left",
+                }}
               >
                 {record.orders_customers.name}
               </Button>
@@ -647,6 +672,7 @@ export const OrdersList: React.FC = () => {
           <Table.Column
             dataIndex="orders_customers.phone"
             title="Телефон"
+            width={150}
             render={(value: any, record: IOrders) => (
               <Button
                 type="link"

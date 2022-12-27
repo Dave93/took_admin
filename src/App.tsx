@@ -70,6 +70,7 @@ import { SystemConfigsList } from "pages/system_configs/list";
 import PrivacyPage from "pages/privacy";
 import { useMemo } from "react";
 import { BrandsCreate, BrandsEdit, BrandsList } from "pages/brands";
+import WhereCourierList from "pages/users/where_courier_list";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -182,6 +183,14 @@ function App() {
         edit: UsersEdit,
         options: {
           label: "Список пользователей",
+        },
+      },
+      {
+        name: "where_courier",
+        parentName: "users-group",
+        list: WhereCourierList,
+        options: {
+          label: "Где курьер",
         },
       },
       {

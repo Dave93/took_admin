@@ -77,6 +77,7 @@ export const UsersList: React.FC = () => {
         "latitude",
         "longitude",
         "status",
+        "app_version",
         {
           users_terminals: [
             {
@@ -310,6 +311,7 @@ export const UsersList: React.FC = () => {
           <Table.Column dataIndex="card_number" title="Номер карты" />
           <Table.Column dataIndex="latitude" title="Широта" />
           <Table.Column dataIndex="longitude" title="Долгота" />
+          <Table.Column dataIndex="app_version" title="Версия приложения" />
           <Table.Column
             dataIndex="created_at"
             title="Дата создания"

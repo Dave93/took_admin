@@ -1,22 +1,28 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { useGetIdentity } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
-const queryClient = new QueryClient();
+import { FC } from "react";
+
+import useSWR from "swr";
 const WhereCourierList = () => {
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <WhereCourierListView />
-    </QueryClientProvider>
+    <>
+      {identity?.token.accessToken && (
+        <WhereCourierListView token={identity.token.accessToken} />
+      )}
+    </>
   );
 };
 
-const WhereCourierListView = () => {
+interface IWhereCourierListViewProps {
+  token: string;
+}
+
+const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
   const getCouriers = async () => {
     const query = gql`
       query {
@@ -32,15 +38,26 @@ const WhereCourierListView = () => {
         }
       }
     `;
-    const { data } = await client.query({
+    const response = await client.request(
       query,
-      fetchPolicy: "network-only",
-    });
-    return data;
+      {},
+      {
+        Authorization: `Bearer ${props.token}`,
+      }
+    );
+    return response.couriersLocation;
   };
 
-  const query = useQuery({ queryKey: ["todos"], queryFn: getCouriers });
-  return <div></div>;
+  const { data, error, isLoading } = useSWR("/where_couriers", getCouriers, {
+    refreshInterval: 30000,
+  });
+  return (
+    <div
+      style={{
+        position: "relative",
+      }}
+    ></div>
+  );
 };
 
 export default WhereCourierList;

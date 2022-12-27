@@ -109,11 +109,10 @@ export const WorkSchedulesReport: React.FC = () => {
 
       let days = dayjs(reportEnd).diff(dayjs(reportStart), "day");
       for (let i = 0; i <= days; i++) {
+        let date = dayjs(reportStart).add(i, "day");
         res.push({
-          title: dayjs(reportStart).add(i, "day").format("DD.MM"),
-          dataIndex: `date_${dayjs(reportStart)
-            .add(i, "day")
-            .format("DD_MM_YYYY")}`,
+          title: date.format("DD.MM"),
+          dataIndex: `date_${date.format("DD_MM_YYYY")}`,
           render: (value: any, record: any) => {
             return (
               <Space>
@@ -164,9 +163,8 @@ export const WorkSchedulesReport: React.FC = () => {
         };
         let days = dayjs(reportEnd).diff(dayjs(reportStart), "day");
         for (let i = 0; i <= days; i++) {
-          users[user.id][
-            `date_${dayjs(reportStart).add(i, "day").format("DD_MM_YYYY")}`
-          ] = {
+          const date = dayjs(reportStart).add(i, "day");
+          users[user.id][`date_${date.format("DD_MM_YYYY")}`] = {
             duration: 0,
             late: false,
           };
@@ -174,6 +172,7 @@ export const WorkSchedulesReport: React.FC = () => {
       });
 
       data?.work_schedule_entries?.forEach((entry: any) => {
+        console.log(entry.user_id);
         users[entry.user_id][`date_${dayjs(entry.day).format("DD_MM_YYYY")}`] =
           {
             duration: entry.duration,

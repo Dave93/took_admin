@@ -131,8 +131,7 @@ const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
                   key={courier.id}
                   geometry={[courier.latitude, courier.longitude]}
                   properties={{
-                    hintContent: courier.short_name,
-                    balloonContent: courier.short_name,
+                    hintContent: courier.first_name + " " + courier.last_name,
                     iconCaption: courier.short_name,
                     // iconContent: courier.short_name,
                   }}
@@ -141,6 +140,7 @@ const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
                       ? "islands#darkGreenCircleDotIcon"
                       : "islands#redCircleDotIcon",
                   }}
+                  modules={["geoObject.addon.hint"]}
                 />
               ))}
             </>

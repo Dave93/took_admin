@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import { IUsers } from "interfaces";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity, useNavigation } from "@pankod/refine-core";
 
 interface ChangeOrderProps {
   id?: string;
@@ -25,6 +25,7 @@ export const ChangeOrdersCouirer: FC<ChangeOrderProps> = ({
   const [couriers, setCouriers] = useState<IUsers[]>([]);
   const [selectedCourier, setSelectedCourier] = useState<string>();
 
+  const { show } = useNavigation();
   const changeCourier = () => {
     setConfirmLoading(true);
     const query = gql`
@@ -48,6 +49,7 @@ export const ChangeOrdersCouirer: FC<ChangeOrderProps> = ({
       .then(() => {
         setIsModalOpen(false);
         setConfirmLoading(false);
+        window.location.reload();
       });
   };
 

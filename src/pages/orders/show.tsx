@@ -1,5 +1,6 @@
 import {
   CanAccess,
+  useCan,
   useGetIdentity,
   useNavigation,
   useShow,
@@ -15,6 +16,7 @@ import {
   Table,
   Timeline,
   Space,
+  Popconfirm,
 } from "@pankod/refine-antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -24,6 +26,7 @@ import { YMaps, Map } from "react-yandex-maps";
 import { IOrderActions, IOrderLocation } from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
+import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
 import { ChangeOrdersCouirer } from "components/orders/changeCourier";
 dayjs.locale("ru");
 dayjs.extend(duration);
@@ -35,7 +38,9 @@ export const OrdersShow = () => {
   }>();
   const [orderActions, setOrderActions] = useState<IOrderActions[]>([]);
   const [orderLocations, setOrderLocations] = useState<IOrderLocation[]>([]);
+
   const { show } = useNavigation();
+
   const { queryResult, showId } = useShow({
     metaData: {
       fields: [
@@ -177,6 +182,24 @@ export const OrdersShow = () => {
     return orderLocations.map((item) => [item.location.lat, item.location.lon]);
   }, [orderLocations]);
 
+  const clearCourier = async (id: string | undefined) => {
+    const query = gql`
+      mutation ($id: String!) {
+        clearCourier(orderId: $id) {
+          created_at
+        }
+      }
+    `;
+    await client.request(
+      query,
+      { id: showId },
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    window.location.reload();
+  };
+
   return (
     <Show isLoading={isLoading} title={`Заказ #${record?.order_number}`}>
       <Tabs defaultActiveKey="1" onChange={onTabChange}>
@@ -223,24 +246,55 @@ export const OrdersShow = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      justifyContent: "space-around",
                     }}
                   >
-                    <Button
-                      type="link"
-                      size="small"
-                      onClick={() =>
-                        show("couriers", "show", record?.orders_couriers?.id)
-                      }
+                    <div
+                      style={{
+                        flex: 1,
+                      }}
                     >
-                      {record?.orders_couriers?.first_name}{" "}
-                      {record?.orders_couriers?.last_name}
-                    </Button>
-                    <CanAccess resource="orders" action="changeCourier">
-                      <ChangeOrdersCouirer
-                        id={showId?.toString()}
-                        terminal_id={record?.orders_terminals.id}
-                      />
+                      <Button
+                        type="link"
+                        size="small"
+                        onClick={() =>
+                          show("couriers", "show", record?.orders_couriers?.id)
+                        }
+                      >
+                        {record?.orders_couriers?.first_name}{" "}
+                        {record?.orders_couriers?.last_name}
+                      </Button>
+                    </div>
+                    <div
+                      style={{
+                        marginLeft: 5,
+                        marginRight: 5,
+                      }}
+                    >
+                      <CanAccess resource="orders" action="changeCourier">
+                        <ChangeOrdersCouirer
+                          id={showId?.toString()}
+                          terminal_id={record?.orders_terminals.id}
+                        />
+                      </CanAccess>
+                    </div>
+                    <CanAccess resource="orders" action="clear_courier">
+                      <Popconfirm
+                        title="Вы действительно хотите очистить курьера?"
+                        onConfirm={() => {
+                          clearCourier(showId?.toString());
+                        }}
+                        // onCancel={cancel}
+                        okText="Да"
+                        cancelText="Нет"
+                      >
+                        <Button
+                          shape="circle"
+                          danger
+                          size="small"
+                          icon={<CloseOutlined />}
+                        />
+                      </Popconfirm>
                     </CanAccess>
                   </div>
                 </Descriptions.Item>

@@ -81,7 +81,7 @@ const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
         style={{
           position: "absolute",
           top: "20px",
-          left: "40%",
+          left: "20vw",
           zIndex: 1000,
         }}
       >

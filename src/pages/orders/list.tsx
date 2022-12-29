@@ -463,19 +463,19 @@ export const OrdersList: React.FC = () => {
         }}
       >
         <Form
-          layout="horizontal"
+          layout="vertical"
           {...searchFormProps}
           initialValues={{
             created_at: [dayjs().startOf("d"), dayjs().endOf("d")],
           }}
         >
           <Row gutter={16}>
-            <Col span={8}>
+            <Col span={5}>
               <Form.Item label="Дата заказа" name="created_at">
                 <RangePicker format={"DD.MM.YYYY HH:mm"} showTime />
               </Form.Item>
             </Col>
-            <Col span={4}>
+            <Col span={3}>
               <Form.Item name="organization_id" label="Организация">
                 <Select
                   options={organizations.map((org) => ({
@@ -485,7 +485,7 @@ export const OrdersList: React.FC = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={3}>
               <Form.Item name="terminal_id" label="Филиал">
                 <Select
                   showSearch
@@ -505,7 +505,7 @@ export const OrdersList: React.FC = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={3}>
               <Form.Item name="order_status_id" label="Статус">
                 <Select
                   showSearch
@@ -525,29 +525,29 @@ export const OrdersList: React.FC = () => {
                 </Select>
               </Form.Item>
             </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={6}>
+            <Col span={3}>
               <Form.Item name="customer_phone" label="Телефон клиента">
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={3}>
               <Form.Item name="courier_id" label="Курьер">
                 <DebounceSelect fetchOptions={fetchCourier} allowClear />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={2}>
               <Form.Item name="order_number" label="Номер заказа">
                 <Input allowClear />
               </Form.Item>
             </Col>
+            <Col span={2}>
+              <Form.Item>
+                <Button htmlType="submit" type="primary">
+                  Фильтровать
+                </Button>
+              </Form.Item>
+            </Col>
           </Row>
-          <Form.Item>
-            <Button htmlType="submit" type="primary">
-              Фильтровать
-            </Button>
-          </Form.Item>
         </Form>
         <Table
           {...tableProps}

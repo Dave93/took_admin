@@ -17,13 +17,15 @@ import {
   Timeline,
   Space,
   Popconfirm,
+  Popover,
+  AntdList,
 } from "@pankod/refine-antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { YMaps, Map } from "react-yandex-maps";
-import { IOrderActions, IOrderLocation } from "interfaces";
+import { IOrderActions, IOrderLocation, IOrderStatus } from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
@@ -38,6 +40,7 @@ export const OrdersShow = () => {
   }>();
   const [orderActions, setOrderActions] = useState<IOrderActions[]>([]);
   const [orderLocations, setOrderLocations] = useState<IOrderLocation[]>([]);
+  const [orderStatuses, setOrderStatuses] = useState<IOrderStatus[]>([]);
 
   const { show } = useNavigation();
 
@@ -81,6 +84,35 @@ export const OrdersShow = () => {
   const { data, isLoading } = queryResult;
 
   const record = data?.data;
+
+  const loadOrderStatuses = async () => {
+    let organizations: any = {};
+
+    if (record) {
+      const query = gql`
+        query {
+            orderStatuses(where: {
+                organization_id: {
+                    equals: "${record.orders_organization.id}"
+                }
+            }, orderBy: {
+                sort: asc}) {
+                id
+                name
+            }
+        }`;
+      const { orderStatuses } = await client.request<{
+        orderStatuses: IOrderStatus[];
+      }>(
+        query,
+        {},
+        {
+          Authorization: `Bearer ${identity?.token.accessToken}`,
+        }
+      );
+      setOrderStatuses(orderStatuses);
+    }
+  };
 
   const productsColumns = [
     {
@@ -174,13 +206,30 @@ export const OrdersShow = () => {
     setOrderLocations(locationsForOrder);
   };
 
-  useEffect(() => {
-    loadOrderLocations();
-  }, [identity]);
-
   const mapPoints = useMemo(() => {
     return orderLocations.map((item) => [item.location.lat, item.location.lon]);
   }, [orderLocations]);
+
+  const updateOrderStatus = async (id: string) => {
+    const query = gql`
+      mutation ($id: String!, $status: String!) {
+        updateOrderStatus(orderId: $id, orderStatusId: $status) {
+          created_at
+        }
+      }
+    `;
+    await client.request(
+      query,
+      {
+        id: showId,
+        status: id,
+      },
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    window.location.reload();
+  };
 
   const clearCourier = async (id: string | undefined) => {
     const query = gql`
@@ -200,6 +249,11 @@ export const OrdersShow = () => {
     window.location.reload();
   };
 
+  useEffect(() => {
+    loadOrderStatuses();
+    loadOrderLocations();
+  }, [identity, record]);
+
   return (
     <Show isLoading={isLoading} title={`Заказ #${record?.order_number}`}>
       <Tabs defaultActiveKey="1" onChange={onTabChange}>
@@ -214,6 +268,44 @@ export const OrdersShow = () => {
                   <Tag color={record?.orders_order_status?.color}>
                     {record?.orders_order_status?.name}
                   </Tag>
+                  <CanAccess resource="orders" action="edit">
+                    <Popover
+                      placement="bottom"
+                      title="Выберите статус"
+                      content={() => (
+                        <div>
+                          <AntdList
+                            size="small"
+                            dataSource={orderStatuses}
+                            renderItem={(item) => (
+                              <AntdList.Item>
+                                <Button
+                                  type="link"
+                                  size="small"
+                                  onClick={() => {
+                                    updateOrderStatus(item.id);
+                                  }}
+                                >
+                                  {item.name}
+                                </Button>
+                              </AntdList.Item>
+                            )}
+                          />
+                        </div>
+                      )}
+                      trigger="click"
+                    >
+                      <Button
+                        size="small"
+                        block
+                        style={{
+                          marginTop: 8,
+                        }}
+                      >
+                        Сменить статус
+                      </Button>
+                    </Popover>
+                  </CanAccess>
                 </Descriptions.Item>
                 <Descriptions.Item label="Организация">
                   <Button

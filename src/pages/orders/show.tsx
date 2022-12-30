@@ -518,6 +518,11 @@ export const OrdersShow = () => {
             ))}
           </Timeline>
         </Tabs.TabPane>
+        <Tabs.TabPane tab="Калькулятор суммы доставки" key="4">
+          <Row gutter={16}>
+            <Col span={12}></Col>
+          </Row>
+        </Tabs.TabPane>
       </Tabs>
     </Show>
   );

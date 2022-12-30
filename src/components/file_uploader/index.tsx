@@ -50,7 +50,6 @@ const FileUploader = ({ value, onChange, modelId }: MyInputProps) => {
       const data = await uploadFile();
       onChange(data);
     } catch (e) {
-      console.log(e);
     } finally {
       setLoading(false);
     }

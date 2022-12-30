@@ -423,7 +423,13 @@ export const OrdersShow = () => {
               </Descriptions>
             </Col>
             <Col span={12}>
-              <YMaps query={{ lang: "ru_RU", load: "package.full" }}>
+              <YMaps
+                query={{
+                  lang: "ru_RU",
+                  load: "package.full",
+                  coordorder: "latlong",
+                }}
+              >
                 <Map
                   defaultState={{
                     center: [record?.from_lat, record?.from_lon],
@@ -451,7 +457,6 @@ export const OrdersShow = () => {
                     );
                     // Добавляем линию на карту.
                     map.current.geoObjects.add(polyline);
-
                     var placemark = new ymaps.Placemark(
                       [record?.from_lat, record?.from_lon],
                       {
@@ -477,11 +482,9 @@ export const OrdersShow = () => {
                       }
                     );
                     map.current.geoObjects.add(placemark);
-                    // Устанавливаем карте границы линии.
-                    map.current.setBounds([
-                      [record?.from_lat, record?.from_lon],
-                      [record?.to_lat, record?.to_lon],
-                    ]);
+                    let bounds = map.current.geoObjects.getBounds();
+                    // Применяем область показа к карте
+                    map.current.setBounds(bounds);
                   }}
                 ></Map>
               </YMaps>

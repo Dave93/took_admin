@@ -79,7 +79,6 @@ export const OrdersTableActions: FC<IOrdersTableActionsProps> = ({
 
   const applyStatusChange = async () => {
     setErrorMessage(null);
-    console.log(selectedOrders?.map((order) => order.id));
     const { query, variables } = gqlb.mutation({
       operation: "changeMultipleOrderStatus",
       variables: {

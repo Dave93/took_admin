@@ -50,7 +50,6 @@ export const SystemConfigsList: React.FC = () => {
       }
     );
     setIsLoading(false);
-    console.log(data.systemConfigs);
     data.systemConfigs.forEach((item: any) => {
       if (item.name.indexOf("time") !== -1) {
         setValue(item.name, dayjs(item.value));
@@ -61,7 +60,6 @@ export const SystemConfigsList: React.FC = () => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     setIsLoading(true);
     let formData = [];
     for (const key in data) {
@@ -78,7 +76,6 @@ export const SystemConfigsList: React.FC = () => {
       }
     }
 
-    console.log(formData);
     const { query, variables } = gql.mutation({
       operation: "createSystemConfig",
       variables: {

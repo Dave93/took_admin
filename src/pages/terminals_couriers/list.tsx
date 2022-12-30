@@ -45,7 +45,6 @@ export const TerminalsCouriersListPage = () => {
         });
       }
 
-      console.log(filters);
       return filters;
     },
   });

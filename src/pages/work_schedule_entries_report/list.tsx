@@ -172,7 +172,6 @@ export const WorkSchedulesReport: React.FC = () => {
       });
 
       data?.work_schedule_entries?.forEach((entry: any) => {
-        console.log(entry.user_id);
         users[entry.user_id][`date_${dayjs(entry.day).format("DD_MM_YYYY")}`] =
           {
             duration: entry.duration,

@@ -87,7 +87,6 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
     onSearch: async (params) => {
       const filters: CrudFilters = [];
       const { organization_id, created_at, customer_id } = params;
-      console.log("is filtering", filters);
       filters.push(
         {
           field: "created_at",
@@ -119,7 +118,6 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
           },
         });
       }
-      console.log("is filtering ready", filters);
       return filters;
     },
   });

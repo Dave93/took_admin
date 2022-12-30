@@ -70,7 +70,6 @@ const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
       refreshInterval: 30000,
     }
   );
-  console.log("data", data);
   return (
     <div
       style={{

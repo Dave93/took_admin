@@ -54,7 +54,6 @@ const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
       setAdditionalFiles([...additionalFiles, data]);
       onChange([...additionalFiles, data]);
     } catch (e) {
-      console.log(e);
     } finally {
       setLoading(false);
     }

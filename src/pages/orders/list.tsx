@@ -133,7 +133,6 @@ export const OrdersList: React.FC = () => {
         courier_id,
         order_number,
       } = params;
-      console.log("is filtering", filters);
       filters.push(
         {
           field: "created_at",
@@ -206,7 +205,6 @@ export const OrdersList: React.FC = () => {
           value: { equals: courier_id.value },
         });
       }
-      console.log("is filtering ready", filters);
       return filters;
     },
   });
@@ -376,7 +374,6 @@ export const OrdersList: React.FC = () => {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 

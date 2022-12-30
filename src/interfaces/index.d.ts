@@ -380,6 +380,8 @@ export class IOrders {
 
   payment_type: string;
 
+  delivery_pricing_id: string;
+
   cancel_reason: string | null;
 
   order_items: any | null;

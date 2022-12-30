@@ -30,6 +30,7 @@ import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
 import { ChangeOrdersCouirer } from "components/orders/changeCourier";
+import OrderDeliveryPricing from "components/orders/order_delivery_pricing";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -60,6 +61,9 @@ export const OrdersShow = () => {
         "to_lat",
         "to_lon",
         "order_items",
+        "delivery_pricing_id",
+        "pre_distance",
+        "pre_duration",
         {
           orders_organization: ["id", "name"],
         },
@@ -407,10 +411,12 @@ export const OrdersShow = () => {
                   сум
                 </Descriptions.Item>
                 <Descriptions.Item label="Дистанция">
-                  {record?.duration / 1000} км
+                  {record?.pre_distance} км
                 </Descriptions.Item>
                 <Descriptions.Item label="Время доставки">
-                  {dayjs.duration(record?.duration * 1000).format("HH:mm:ss")}
+                  {dayjs
+                    .duration(record?.pre_duration * 1000)
+                    .format("HH:mm:ss")}
                 </Descriptions.Item>
                 <Descriptions.Item label="Комментарий">
                   {record?.comment}
@@ -519,9 +525,7 @@ export const OrdersShow = () => {
           </Timeline>
         </Tabs.TabPane>
         <Tabs.TabPane tab="Калькулятор суммы доставки" key="4">
-          <Row gutter={16}>
-            <Col span={12}></Col>
-          </Row>
+          <OrderDeliveryPricing order={record!} />
         </Tabs.TabPane>
       </Tabs>
     </Show>

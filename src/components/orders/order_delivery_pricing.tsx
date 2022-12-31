@@ -154,7 +154,7 @@ const OrderDeliveryPricing: FC<OrderDeliveryPricingProps> = ({ order }) => {
           <Form form={calculateForm} disabled>
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item label="Примерная дистанция(км)" name="distance">
+                <Form.Item label="Дистанция(км)" name="distance">
                   <InputNumber type="number" />
                 </Form.Item>
               </Col>

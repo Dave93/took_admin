@@ -263,7 +263,7 @@ export const OrdersShow = () => {
       <Tabs defaultActiveKey="1" onChange={onTabChange}>
         <Tabs.TabPane tab="Основная информация" key="1">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} span={12}>
               <Descriptions bordered column={1} size="small">
                 <Descriptions.Item label="Дата заказа">
                   {dayjs(record?.created_at).format("DD.MM.YYYY HH:mm")}
@@ -428,7 +428,7 @@ export const OrdersShow = () => {
                 )}
               </Descriptions>
             </Col>
-            <Col span={12}>
+            <Col xs={24} span={12}>
               <YMaps
                 query={{
                   lang: "ru_RU",
@@ -444,7 +444,7 @@ export const OrdersShow = () => {
                   }}
                   instanceRef={(ref) => (map.current = ref)}
                   width="100%"
-                  height="100%"
+                  height="100vh"
                   modules={["control.ZoomControl"]}
                   onLoad={(ymaps) => {
                     // Создадим ломаную.

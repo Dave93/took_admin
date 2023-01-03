@@ -109,7 +109,18 @@ export const DeliveryPricingEdit: React.FC = () => {
         }
       });
       if (distance > 0) {
-        price += distance * formValues.price_per_km;
+        let additional = 0;
+        const decimals = +(distance % 1).toFixed(3) * 1000;
+
+        if (decimals > 0 && decimals < 250) {
+          additional = 500;
+        } else if (decimals >= 250 && decimals < 500) {
+          additional = 1000;
+        } else if (decimals >= 500 && decimals < 1000) {
+          additional = 1500;
+        }
+        const pricePerKm = Math.floor(distance) * formValues.price_per_km;
+        price += pricePerKm + additional;
       }
     }
     setAproximatePrice(price);

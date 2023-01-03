@@ -121,8 +121,6 @@ const OrderDeliveryPricing: FC<OrderDeliveryPricingProps> = ({ order }) => {
       let formValues: any = deliveryPricing;
       let rules = formValues.rules;
       let distance = +order.pre_distance;
-      console.log(distance);
-      console.log(formValues);
       if (rules) {
         rules.forEach((rule: any) => {
           let { from, to, price: rulePrice } = rule;
@@ -132,10 +130,20 @@ const OrderDeliveryPricing: FC<OrderDeliveryPricingProps> = ({ order }) => {
           }
         });
         if (distance > 0) {
-          price += distance * formValues.price_per_km;
+          let additional = 0;
+          const decimals = +(distance % 1).toFixed(3) * 1000;
+
+          if (decimals > 0 && decimals < 250) {
+            additional = 500;
+          } else if (decimals >= 250 && decimals < 500) {
+            additional = 1000;
+          } else if (decimals >= 500 && decimals < 1000) {
+            additional = 1500;
+          }
+          const pricePerKm =
+            Math.floor(distance) * deliveryPricing.price_per_km;
+          price += pricePerKm + additional;
         }
-        price = Math.round(price / 500) * 500;
-        console.log(price);
       }
     }
     return price;

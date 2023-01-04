@@ -444,6 +444,13 @@ export const OrdersList: React.FC = () => {
     );
   }, [tableProps, selectedRowKeys]);
 
+  const showFullFilter = useMemo(() => {
+    if (window.innerWidth > 768) {
+      return true;
+    }
+    return expand;
+  }, [expand]);
+
   const onFinishAction = async () => {
     setSelectedRowKeys([]);
     setFilters(filters!, "replace");
@@ -484,7 +491,7 @@ export const OrdersList: React.FC = () => {
                 <DebounceSelect fetchOptions={fetchCourier} allowClear />
               </Form.Item>
             </Col>
-            {expand && (
+            {showFullFilter && (
               <>
                 <Col xs={12} sm={12} md={3}>
                   <Form.Item name="organization_id" label="Организация">

@@ -33,6 +33,7 @@ import {
   IUsers,
 } from "interfaces";
 import { chain } from "lodash";
+import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import { useState, useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
@@ -51,6 +52,7 @@ export const OrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+  const [expand, setExpand] = useState(false);
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<any[]>([]);
@@ -442,6 +444,13 @@ export const OrdersList: React.FC = () => {
     );
   }, [tableProps, selectedRowKeys]);
 
+  const showFullFilter = useMemo(() => {
+    if (window.innerWidth > 768) {
+      return true;
+    }
+    return expand;
+  }, [expand]);
+
   const onFinishAction = async () => {
     setSelectedRowKeys([]);
     setFilters(filters!, "replace");
@@ -467,77 +476,102 @@ export const OrdersList: React.FC = () => {
           }}
         >
           <Row gutter={16}>
-            <Col span={5}>
+            <Col xs={12} sm={12} md={5}>
               <Form.Item label="Дата заказа" name="created_at">
                 <RangePicker format={"DD.MM.YYYY HH:mm"} showTime />
               </Form.Item>
             </Col>
-            <Col span={3}>
-              <Form.Item name="organization_id" label="Организация">
-                <Select
-                  options={organizations.map((org) => ({
-                    label: org.name,
-                    value: org.id,
-                  }))}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={3}>
-              <Form.Item name="terminal_id" label="Филиал">
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  allowClear
-                  mode="multiple"
-                >
-                  {terminals.map((terminal: any) => (
-                    <Select.OptGroup key={terminal.name} label={terminal.name}>
-                      {terminal.children.map((terminal: ITerminals) => (
-                        <Select.Option key={terminal.id} value={terminal.id}>
-                          {terminal.name}
-                        </Select.Option>
-                      ))}
-                    </Select.OptGroup>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={3}>
-              <Form.Item name="order_status_id" label="Статус">
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  allowClear
-                  mode="multiple"
-                >
-                  {orderStatuses.map((terminal: any) => (
-                    <Select.OptGroup key={terminal.name} label={terminal.name}>
-                      {terminal.children.map((terminal: ITerminals) => (
-                        <Select.Option key={terminal.id} value={terminal.id}>
-                          {terminal.name}
-                        </Select.Option>
-                      ))}
-                    </Select.OptGroup>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={3}>
+            <Col xs={12} sm={12} md={3}>
               <Form.Item name="customer_phone" label="Телефон клиента">
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={3}>
+            <Col xs={12} sm={12} md={3}>
               <Form.Item name="courier_id" label="Курьер">
                 <DebounceSelect fetchOptions={fetchCourier} allowClear />
               </Form.Item>
             </Col>
+            {showFullFilter && (
+              <>
+                <Col xs={12} sm={12} md={3}>
+                  <Form.Item name="organization_id" label="Организация">
+                    <Select
+                      options={organizations.map((org) => ({
+                        label: org.name,
+                        value: org.id,
+                      }))}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={12} sm={12} md={3}>
+                  <Form.Item name="terminal_id" label="Филиал">
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                      allowClear
+                      mode="multiple"
+                    >
+                      {terminals.map((terminal: any) => (
+                        <Select.OptGroup
+                          key={terminal.name}
+                          label={terminal.name}
+                        >
+                          {terminal.children.map((terminal: ITerminals) => (
+                            <Select.Option
+                              key={terminal.id}
+                              value={terminal.id}
+                            >
+                              {terminal.name}
+                            </Select.Option>
+                          ))}
+                        </Select.OptGroup>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col xs={12} sm={12} md={3}>
+                  <Form.Item name="order_status_id" label="Статус">
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                      allowClear
+                      mode="multiple"
+                    >
+                      {orderStatuses.map((terminal: any) => (
+                        <Select.OptGroup
+                          key={terminal.name}
+                          label={terminal.name}
+                        >
+                          {terminal.children.map((terminal: ITerminals) => (
+                            <Select.Option
+                              key={terminal.id}
+                              value={terminal.id}
+                            >
+                              {terminal.name}
+                            </Select.Option>
+                          ))}
+                        </Select.OptGroup>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col xs={12} sm={12} md={2}>
+                  <Form.Item name="order_number" label="Номер заказа">
+                    <Input allowClear />
+                  </Form.Item>
+                </Col>
+              </>
+            )}
             <Col span={2}>
-              <Form.Item name="order_number" label="Номер заказа">
-                <Input allowClear />
-              </Form.Item>
-            </Col>
-            <Col span={2}>
+              <Button
+                type="link"
+                onClick={() => {
+                  setExpand(!expand);
+                }}
+              >
+                {expand ? <UpOutlined /> : <DownOutlined />}
+                {expand ? "свернуть" : "развернуть"}
+              </Button>
               <Form.Item>
                 <Button htmlType="submit" type="primary">
                   Фильтровать
@@ -546,212 +580,226 @@ export const OrdersList: React.FC = () => {
             </Col>
           </Row>
         </Form>
-        <Table
-          {...tableProps}
-          rowKey="id"
-          bordered
-          size="small"
-          scroll={{
-            y: "calc(100vh - 390px)",
-            x: "calc(100vw - 200px)",
-          }}
-          onRow={(record: any) => ({
-            onDoubleClick: () => {
-              show("orders", record.id);
-            },
-          })}
-          pagination={{
-            ...tableProps.pagination,
-            showSizeChanger: true,
-          }}
-          rowSelection={rowSelection}
-          title={() => (
-            <OrdersTableActions
-              selectedOrders={selectedOrders}
-              onFinishAction={onFinishAction}
-            />
-          )}
-          summary={(pageData) => {
-            let total = 0;
-            total = pageData.reduce(
-              (sum, record) => sum + record.delivery_price,
-              0
-            );
-
-            return (
-              <>
-                <Table.Summary fixed>
-                  <Table.Summary.Row>
-                    <Table.Summary.Cell index={0} colSpan={2}>
-                      <b>Итого</b>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell
-                      index={1}
-                      colSpan={10}
-                    ></Table.Summary.Cell>
-                    <Table.Summary.Cell index={12}>
-                      <b>{new Intl.NumberFormat("ru").format(total)} </b>
-                    </Table.Summary.Cell>
-                  </Table.Summary.Row>
-                </Table.Summary>
-              </>
-            );
+        <div
+          style={{
+            overflow: "auto",
           }}
         >
-          <Table.Column
-            dataIndex="oreders_count"
-            title="№"
-            width={100}
-            render={(value: any, record: any, index: number) => (
-              <div>{index + 1}</div>
+          <Table
+            {...tableProps}
+            rowKey="id"
+            bordered
+            size="small"
+            scroll={
+              window.innerWidth < 768
+                ? undefined
+                : { y: "calc(100vh - 390px)", x: "calc(100vw - 200px)" }
+            }
+            onRow={(record: any) => ({
+              onDoubleClick: () => {
+                show("orders", record.id);
+              },
+            })}
+            pagination={{
+              ...tableProps.pagination,
+              showSizeChanger: true,
+            }}
+            rowSelection={rowSelection}
+            title={() => (
+              <OrdersTableActions
+                selectedOrders={selectedOrders}
+                onFinishAction={onFinishAction}
+              />
             )}
-          />
-          <Table.Column
-            dataIndex="order_number"
-            title="Номер заказа"
-            width={100}
-          />
-          <Table.Column
-            dataIndex="created_at"
-            title="Дата заказа"
-            render={(record: any) => (
-              <span>{dayjs(record).format("DD.MM.YYYY HH:mm")}</span>
-            )}
-          />
-          <Table.Column
-            dataIndex="order_status_id"
-            title="Статус"
-            width={100}
-            render={(value: any, record: any) => (
-              <Tag color={record.orders_order_status.color}>
-                {record.orders_order_status.name}
-              </Tag>
-            )}
-          />
-          <Table.Column
-            dataIndex="organization.name"
-            title="Организация"
-            render={(value: any, record: IOrders) => (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => goToOrganization(record.orders_organization.id)}
-                style={{
-                  whiteSpace: "pre-wrap",
-                  textAlign: "left",
-                }}
-              >
-                <span>{record.orders_organization.name}</span>
-              </Button>
-            )}
-          />
-          <Table.Column
-            dataIndex="orders_terminals.name"
-            title="Филиал"
-            render={(value: any, record: IOrders) => (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => goToTerminal(record.orders_terminals.id)}
-                style={{
-                  whiteSpace: "pre-wrap",
-                  textAlign: "left",
-                }}
-              >
-                {record.orders_terminals.name}
-              </Button>
-            )}
-          />
-          <Table.Column
-            dataIndex="orders_couriers.first_name"
-            title="Курьер"
-            render={(value: any, record: IOrders) =>
-              record.orders_couriers ? (
+            summary={(pageData) => {
+              let total = 0;
+              total = pageData.reduce(
+                (sum, record) => sum + record.delivery_price,
+                0
+              );
+
+              return (
+                <>
+                  <Table.Summary fixed>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell index={0} colSpan={2}>
+                        <b>Итого</b>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={1}
+                        colSpan={11}
+                      ></Table.Summary.Cell>
+                      <Table.Summary.Cell index={13}>
+                        <b>{new Intl.NumberFormat("ru").format(total)} </b>
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </Table.Summary>
+                </>
+              );
+            }}
+          >
+            <Table.Column<IOrders>
+              title="Actions"
+              dataIndex="actions"
+              render={(_text, record): React.ReactNode => {
+                return (
+                  <Space>
+                    <ShowButton
+                      size="small"
+                      recordItemId={record.id}
+                      hideText
+                    />
+                  </Space>
+                );
+              }}
+            />
+            <Table.Column
+              dataIndex="oreders_count"
+              title="№"
+              width={100}
+              render={(value: any, record: any, index: number) => (
+                <div>{index + 1}</div>
+              )}
+            />
+            <Table.Column
+              dataIndex="order_number"
+              title="Номер заказа"
+              width={100}
+            />
+            <Table.Column
+              dataIndex="created_at"
+              title="Дата заказа"
+              render={(record: any) => (
+                <span>{dayjs(record).format("DD.MM.YYYY HH:mm")}</span>
+              )}
+            />
+            <Table.Column
+              dataIndex="order_status_id"
+              title="Статус"
+              width={100}
+              render={(value: any, record: any) => (
+                <Tag color={record.orders_order_status.color}>
+                  {record.orders_order_status.name}
+                </Tag>
+              )}
+            />
+            <Table.Column
+              dataIndex="organization.name"
+              title="Организация"
+              render={(value: any, record: IOrders) => (
                 <Button
                   type="link"
                   size="small"
-                  onClick={() => goToCourier(record.orders_couriers.id)}
+                  onClick={() =>
+                    goToOrganization(record.orders_organization.id)
+                  }
                   style={{
                     whiteSpace: "pre-wrap",
                     textAlign: "left",
                   }}
                 >
-                  {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
+                  <span>{record.orders_organization.name}</span>
                 </Button>
-              ) : (
-                <span>Не назначен</span>
-              )
-            }
-          />
-          <Table.Column
-            dataIndex="orders_customers.name"
-            title="ФИО"
-            render={(value: any, record: IOrders) => (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => goToCustomer(record.orders_customers.id)}
-                style={{
-                  whiteSpace: "pre-wrap",
-                  textAlign: "left",
-                }}
-              >
-                {record.orders_customers.name}
-              </Button>
-            )}
-          />
-          <Table.Column
-            dataIndex="orders_customers.phone"
-            title="Телефон"
-            width={150}
-            render={(value: any, record: IOrders) => (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => goToCustomer(record.orders_customers.id)}
-              >
-                {record.orders_customers.phone}
-              </Button>
-            )}
-          />
-          <Table.Column
-            dataIndex="order_price"
-            title="Цена"
-            render={(value: any, record: IOrders) => (
-              <span>
-                {new Intl.NumberFormat("ru").format(record.order_price)} сум
-              </span>
-            )}
-          />
-          <Table.Column
-            dataIndex="duration"
-            title="Время доставки"
-            render={(value: any, record: IOrders) => (
-              <span>{dayjs.duration(value * 1000).format("HH:mm:ss")}</span>
-            )}
-          />
-          <Table.Column
-            dataIndex="delivery_price"
-            title="Цена доставки"
-            render={(value: any, record: IOrders) => (
-              <span>
-                {new Intl.NumberFormat("ru").format(record.delivery_price)} сум
-              </span>
-            )}
-          />
-          <Table.Column dataIndex="payment_type" title="Тип оплаты" />
-          <Table.Column<IOrders>
-            title="Actions"
-            dataIndex="actions"
-            render={(_text, record): React.ReactNode => {
-              return (
-                <Space>
-                  <ShowButton size="small" recordItemId={record.id} hideText />
-                </Space>
-              );
-            }}
-          />
-        </Table>
+              )}
+            />
+            <Table.Column
+              dataIndex="orders_terminals.name"
+              title="Филиал"
+              render={(value: any, record: IOrders) => (
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={() => goToTerminal(record.orders_terminals.id)}
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    textAlign: "left",
+                  }}
+                >
+                  {record.orders_terminals.name}
+                </Button>
+              )}
+            />
+            <Table.Column
+              dataIndex="orders_couriers.first_name"
+              title="Курьер"
+              render={(value: any, record: IOrders) =>
+                record.orders_couriers ? (
+                  <Button
+                    type="link"
+                    size="small"
+                    onClick={() => goToCourier(record.orders_couriers.id)}
+                    style={{
+                      whiteSpace: "pre-wrap",
+                      textAlign: "left",
+                    }}
+                  >
+                    {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
+                  </Button>
+                ) : (
+                  <span>Не назначен</span>
+                )
+              }
+            />
+            <Table.Column
+              dataIndex="orders_customers.name"
+              title="ФИО"
+              render={(value: any, record: IOrders) => (
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={() => goToCustomer(record.orders_customers.id)}
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    textAlign: "left",
+                  }}
+                >
+                  {record.orders_customers.name}
+                </Button>
+              )}
+            />
+            <Table.Column
+              dataIndex="orders_customers.phone"
+              title="Телефон"
+              width={150}
+              render={(value: any, record: IOrders) => (
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={() => goToCustomer(record.orders_customers.id)}
+                >
+                  {record.orders_customers.phone}
+                </Button>
+              )}
+            />
+            <Table.Column
+              dataIndex="order_price"
+              title="Цена"
+              render={(value: any, record: IOrders) => (
+                <span>
+                  {new Intl.NumberFormat("ru").format(record.order_price)} сум
+                </span>
+              )}
+            />
+            <Table.Column
+              dataIndex="duration"
+              title="Время доставки"
+              render={(value: any, record: IOrders) => (
+                <span>{dayjs.duration(value * 1000).format("HH:mm:ss")}</span>
+              )}
+            />
+            <Table.Column
+              dataIndex="delivery_price"
+              title="Цена доставки"
+              render={(value: any, record: IOrders) => (
+                <span>
+                  {new Intl.NumberFormat("ru").format(record.delivery_price)}{" "}
+                  сум
+                </span>
+              )}
+            />
+            <Table.Column dataIndex="payment_type" title="Тип оплаты" />
+          </Table>
+        </div>
       </List>
     </>
   );

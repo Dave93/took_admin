@@ -21,7 +21,7 @@ import {
   AntdList,
 } from "@pankod/refine-antd";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { YMaps, Map } from "react-yandex-maps";
@@ -33,6 +33,37 @@ import { ChangeOrdersCouirer } from "components/orders/changeCourier";
 import OrderDeliveryPricing from "components/orders/order_delivery_pricing";
 dayjs.locale("ru");
 dayjs.extend(duration);
+
+interface OrderShowHeaderProps {
+  startDate: Date;
+  endDate: Date;
+  defaultButtons: React.ReactNode;
+}
+
+const OrderShowHeader: FC<OrderShowHeaderProps> = ({
+  defaultButtons,
+  startDate,
+  endDate,
+}) => {
+  const duration = useMemo(() => {
+    if (startDate && endDate) {
+      return `Доставка завершена за ${dayjs(endDate).diff(
+        startDate,
+        "minute"
+      )} минут`;
+    } else {
+      return "Доставка не завершена";
+    }
+  }, [startDate, endDate]);
+  return (
+    <Space>
+      <div>
+        <strong>{duration}</strong>
+      </div>
+      {defaultButtons}
+    </Space>
+  );
+};
 
 export const OrdersShow = () => {
   const map = useRef<any>(null);
@@ -64,6 +95,7 @@ export const OrdersShow = () => {
         "delivery_pricing_id",
         "pre_distance",
         "pre_duration",
+        "finished_date",
         {
           orders_organization: ["id", "name"],
         },
@@ -259,11 +291,21 @@ export const OrdersShow = () => {
   }, [identity, record]);
 
   return (
-    <Show isLoading={isLoading} title={`Заказ #${record?.order_number}`}>
+    <Show
+      isLoading={isLoading}
+      title={`Заказ #${record?.order_number}`}
+      headerButtons={({ defaultButtons }) => (
+        <OrderShowHeader
+          startDate={record?.created_at}
+          endDate={record?.finished_date}
+          defaultButtons={defaultButtons}
+        />
+      )}
+    >
       <Tabs defaultActiveKey="1" onChange={onTabChange}>
         <Tabs.TabPane tab="Основная информация" key="1">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Descriptions bordered column={1} size="small">
                 <Descriptions.Item label="Дата заказа">
                   {dayjs(record?.created_at).format("DD.MM.YYYY HH:mm")}
@@ -428,7 +470,7 @@ export const OrdersShow = () => {
                 )}
               </Descriptions>
             </Col>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <YMaps
                 query={{
                   lang: "ru_RU",
@@ -444,7 +486,7 @@ export const OrdersShow = () => {
                   }}
                   instanceRef={(ref) => (map.current = ref)}
                   width="100%"
-                  height="100%"
+                  height="100vh"
                   modules={["control.ZoomControl"]}
                   onLoad={(ymaps) => {
                     // Создадим ломаную.

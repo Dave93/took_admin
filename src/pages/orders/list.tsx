@@ -571,7 +571,41 @@ export const OrdersList: React.FC = () => {
               onFinishAction={onFinishAction}
             />
           )}
+          summary={(pageData) => {
+            let total = 0;
+            total = pageData.reduce(
+              (sum, record) => sum + record.delivery_price,
+              0
+            );
+
+            return (
+              <>
+                <Table.Summary fixed>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell index={0} colSpan={2}>
+                      <b>Итого</b>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell
+                      index={1}
+                      colSpan={10}
+                    ></Table.Summary.Cell>
+                    <Table.Summary.Cell index={12}>
+                      <b>{new Intl.NumberFormat("ru").format(total)} </b>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                </Table.Summary>
+              </>
+            );
+          }}
         >
+          <Table.Column
+            dataIndex="oreders_count"
+            title="№"
+            width={100}
+            render={(value: any, record: any, index: number) => (
+              <div>{index + 1}</div>
+            )}
+          />
           <Table.Column
             dataIndex="order_number"
             title="Номер заказа"

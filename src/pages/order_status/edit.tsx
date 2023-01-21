@@ -35,6 +35,7 @@ export const OrderStatusEdit: React.FC = () => {
         "on_way",
         "in_terminal",
       ],
+      updateOperation: "updateOneOrderStatus",
       pluralize: true,
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,

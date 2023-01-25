@@ -148,6 +148,21 @@ export const SystemConfigsList: React.FC = () => {
                     />
                   </Form.Item>
                 </Col>
+                <Col span={6}>
+                  <Form.Item
+                    label="Телефон для звонков"
+                    rules={[
+                      { required: true, message: "Обязательно для заполнения" },
+                    ]}
+                  >
+                    <Controller
+                      name="admin_phone"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => <Input {...field} />}
+                    />
+                  </Form.Item>
+                </Col>
               </Row>
             </Card>
           </Form>

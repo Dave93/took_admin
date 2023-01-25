@@ -252,9 +252,18 @@ export const DeliveryPricingCreate = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item label="Минимальная цена заказа" name="min_price">
-          <InputNumber type="number" />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Минимальная цена заказа" name="min_price">
+              <InputNumber type="number" addonAfter="сум" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Минимальная дистанция" name="min_distance_km">
+              <InputNumber type="number" addonAfter="м." />
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.List name="rules">
           {(fields, { add, remove }) => {
             return (

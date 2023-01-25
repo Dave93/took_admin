@@ -656,7 +656,7 @@ export const OrdersList: React.FC = () => {
             <Table.Column
               dataIndex="oreders_count"
               title="№"
-              width={100}
+              width={60}
               render={(value: any, record: any, index: number) => (
                 <div>{index + 1}</div>
               )}
@@ -676,10 +676,18 @@ export const OrdersList: React.FC = () => {
             <Table.Column
               dataIndex="order_status_id"
               title="Статус"
-              width={100}
+              width={110}
               render={(value: any, record: any) => (
                 <Tag color={record.orders_order_status.color}>
-                  {record.orders_order_status.name}
+                  <span
+                    style={{
+                      fontWeight: 800,
+                      color: "#000",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {record.orders_order_status.name}
+                  </span>
                 </Tag>
               )}
             />

@@ -58,7 +58,6 @@ const IOrdersListPropsDuration: FC<IOrdersListProps> = ({
   endDate,
 }) => {
   const duration = useMemo(() => {
-    console.log(startDate, endDate);
     if (startDate && endDate) {
       return `${dayjs(endDate).diff(startDate, "minute")} минут`;
     } else {

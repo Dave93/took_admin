@@ -34,7 +34,7 @@ import {
 } from "interfaces";
 import { chain } from "lodash";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, FC } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
@@ -47,6 +47,32 @@ dayjs.extend(weekday);
 dayjs.extend(duration);
 
 const { RangePicker } = DatePicker;
+
+interface IOrdersListProps {
+  startDate: Date;
+  endDate: Date;
+}
+
+const IOrdersListPropsDuration: FC<IOrdersListProps> = ({
+  startDate,
+  endDate,
+}) => {
+  const duration = useMemo(() => {
+    console.log(startDate, endDate);
+    if (startDate && endDate) {
+      return `${dayjs(endDate).diff(startDate, "minute")} минут`;
+    } else {
+      return "Доставка не завершена";
+    }
+  }, [startDate, endDate]);
+  return (
+    <Space>
+      <div>
+        <strong>{duration}</strong>
+      </div>
+    </Space>
+  );
+};
 
 export const OrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
@@ -89,7 +115,7 @@ export const OrdersList: React.FC = () => {
         "duration",
         "delivery_price",
         "payment_type",
-
+        "finished_date",
         {
           orders_organization: ["id", "name"],
         },
@@ -792,7 +818,10 @@ export const OrdersList: React.FC = () => {
               dataIndex="duration"
               title="Время доставки"
               render={(value: any, record: IOrders) => (
-                <span>{dayjs.duration(value * 1000).format("HH:mm:ss")}</span>
+                <IOrdersListPropsDuration
+                  startDate={record?.created_at}
+                  endDate={record?.finished_date!}
+                />
               )}
             />
             <Table.Column

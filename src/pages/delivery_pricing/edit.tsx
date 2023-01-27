@@ -59,6 +59,8 @@ export const DeliveryPricingEdit: React.FC = () => {
         "terminal_id",
         "payment_type",
         "min_distance_km",
+        "customer_price_per_km",
+        "customer_rules",
       ],
       pluralize: true,
       updateInputName: "delivery_pricingUncheckedUpdateInput",
@@ -307,6 +309,7 @@ export const DeliveryPricingEdit: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
+
         <Form.List name="rules">
           {(fields, { add, remove }) => {
             return (
@@ -379,6 +382,84 @@ export const DeliveryPricingEdit: React.FC = () => {
           }}
         </Form.List>
         <Form.Item label="Цена за км дальше условий" name="price_per_km">
+          <InputNumber type="number" />
+        </Form.Item>
+        <Divider>Логика цены для клиента</Divider>
+        <Form.List name="customer_rules">
+          {(fields, { add, remove }) => {
+            return (
+              <div>
+                {fields.map((field, index) => (
+                  <Space
+                    key={field.key}
+                    style={{ display: "flex", marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <Form.Item
+                      label="От (км)"
+                      name={[field.name, "from"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    <Form.Item
+                      label="До (км)"
+                      name={[field.name, "to"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Цена"
+                      name={[field.name, "price"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <InputNumber type="number" />
+                    </Form.Item>
+                    {index > 0 && (
+                      <Form.Item label=" ">
+                        <Button
+                          danger
+                          shape="circle"
+                          icon={<DeleteOutlined />}
+                          onClick={() => {
+                            remove(field.name);
+                          }}
+                        />
+                      </Form.Item>
+                    )}
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Добавить условие
+                  </Button>
+                </Form.Item>
+              </div>
+            );
+          }}
+        </Form.List>
+        <Form.Item
+          label="Цена за км дальше условий"
+          name="customer_price_per_km"
+        >
           <InputNumber type="number" />
         </Form.Item>
       </Form>

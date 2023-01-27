@@ -565,6 +565,15 @@ export const OrdersShow = () => {
               </Timeline.Item>
             ))}
           </Timeline>
+          <Row>
+            <Col span={8} offset={8}>
+              <Descriptions bordered column={1} size="small">
+                <Descriptions.Item label="Дата заказа">
+                  {dayjs(record?.created_at).format("DD.MM.YYYY HH:mm")}
+                </Descriptions.Item>
+              </Descriptions>
+            </Col>
+          </Row>
         </Tabs.TabPane>
         <Tabs.TabPane tab="Калькулятор суммы доставки" key="4">
           <OrderDeliveryPricing order={record!} />

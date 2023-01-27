@@ -13,6 +13,8 @@ import {
   Col,
   Row,
   InputNumber,
+  DatePicker,
+  Divider,
 } from "@pankod/refine-antd";
 import { useGetIdentity } from "@pankod/refine-core";
 import dayjs from "dayjs";
@@ -21,7 +23,8 @@ import { client } from "graphConnect";
 import { ISystemConfigs } from "interfaces";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
 export const SystemConfigsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
@@ -35,6 +38,11 @@ export const SystemConfigsList: React.FC = () => {
     setValue,
     formState: { errors },
   } = useForm();
+  const { fields, append, prepend, remove, swap, move, insert, replace } =
+    useFieldArray({
+      control,
+      name: "close_dates",
+    });
 
   const loadDefaultData = async () => {
     setIsLoading(true);
@@ -54,7 +62,11 @@ export const SystemConfigsList: React.FC = () => {
       if (item.name.indexOf("time") !== -1) {
         setValue(item.name, dayjs(item.value));
       } else {
-        setValue(item.name, item.value);
+        if (item.name == "close_dates") {
+          setValue(item.name, JSON.parse(item.value));
+        } else {
+          setValue(item.name, item.value);
+        }
       }
     });
   };
@@ -69,10 +81,18 @@ export const SystemConfigsList: React.FC = () => {
           value: data[key].toISOString(),
         });
       } else {
-        formData.push({
-          name: key,
-          value: data[key].toString(),
-        });
+        if (key == "close_dates") {
+          console.log(JSON.stringify(data[key]));
+          formData.push({
+            name: key,
+            value: JSON.stringify(data[key]),
+          });
+        } else {
+          formData.push({
+            name: key,
+            value: data[key].toString(),
+          });
+        }
       }
     }
 
@@ -161,6 +181,66 @@ export const SystemConfigsList: React.FC = () => {
                       rules={{ required: true }}
                       render={({ field }) => <Input {...field} />}
                     />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Divider>Нерабочие дни</Divider>
+              <Row gutter={16}>
+                <Col span={12}>
+                  {fields.map((field, index) => {
+                    return (
+                      <Row key={field.id}>
+                        <Col span={10}>
+                          <Form.Item label="Дата">
+                            <Controller
+                              name={`close_dates.${index}.date`}
+                              control={control}
+                              rules={{ required: true }}
+                              render={({ field }) => (
+                                <DatePicker format="DD.MM.YYYY" {...field} />
+                              )}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={10}>
+                          <Form.Item label="Причина">
+                            <Controller
+                              name={`close_dates.${index}.reason`}
+                              control={control}
+                              rules={{ required: true }}
+                              render={({ field }) => <Input {...field} />}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={4}>
+                          <Form.Item label="&nbsp;">
+                            <Button
+                              danger
+                              shape="circle"
+                              icon={<DeleteOutlined />}
+                              onClick={() => {
+                                remove(index);
+                              }}
+                            />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() =>
+                        append({
+                          date: null,
+                          reason: "",
+                        })
+                      }
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить нерабочие дни
+                    </Button>
                   </Form.Item>
                 </Col>
               </Row>

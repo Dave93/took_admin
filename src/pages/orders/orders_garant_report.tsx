@@ -1,9 +1,12 @@
 import {
   Button,
   Card,
+  Col,
   DatePicker,
   Form,
+  Input,
   PageHeader,
+  Row,
   Space,
   Spin,
   Table,
@@ -16,6 +19,9 @@ import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import dayjs from "dayjs";
 import { GarantReportItem } from "interfaces";
+import { ExportOutlined } from "@ant-design/icons";
+import { Excel } from "components/export/src";
+import { DebounceInput } from "react-debounce-input";
 
 const OrdersGarantReport = () => {
   const { data: identity } = useGetIdentity<{
@@ -23,6 +29,7 @@ const OrdersGarantReport = () => {
   }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [garantData, setGarantData] = useState<GarantReportItem[]>([]);
+  const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);
   const {
     handleSubmit,
     control,
@@ -44,15 +51,12 @@ const OrdersGarantReport = () => {
     let startDate = DateTime.local().startOf("month").toISODate();
     // end of month using luxon
     let endDate = DateTime.local().endOf("month").toISODate();
-    console.log(month);
     if (month) {
       // start of month using dayjs and to iso date
       startDate = month.startOf("month").toISOString();
       // end of month using dayjs and to iso date
       endDate = month.endOf("month").toISOString();
     }
-    console.log(startDate);
-    console.log(endDate);
 
     const query = gql`
       query {
@@ -70,6 +74,8 @@ const OrdersGarantReport = () => {
             actual_day_offs
             delivery_price
             garant_price
+            earned,
+            balance
         }
       }
     `;
@@ -78,8 +84,95 @@ const OrdersGarantReport = () => {
       calculateGarant: GarantReportItem[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setGarantData(calculateGarant);
+    setFilteredData(calculateGarant);
     setIsLoading(false);
   };
+
+  const columns = [
+    {
+      title: "Курьер",
+      dataIndex: "courier",
+    },
+    {
+      title: "Дата начала",
+      dataIndex: "begin_date",
+      render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
+    },
+    {
+      title: "Дата последнего заказа",
+      dataIndex: "last_order_date",
+      render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
+    },
+    {
+      title: "Дата создания",
+      dataIndex: "created_at",
+      render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
+    },
+    {
+      title: "Статус",
+      dataIndex: "status",
+      render: (value: string) => tr(`users.status.${value}`),
+    },
+    {
+      title: "Среднее время доставки",
+      dataIndex: "formatted_avg_delivery_time",
+    },
+    {
+      title: "Количество заказов",
+      dataIndex: "orders_count",
+    },
+    {
+      title: "Количество дней с заказами",
+      dataIndex: "order_dates_count",
+    },
+    {
+      title: "Возможные дни отгула",
+      dataIndex: "possible_day_offs",
+    },
+    {
+      title: "Фактические дни отгула",
+      dataIndex: "actual_day_offs",
+    },
+    {
+      title: "Стоимость доставки",
+      dataIndex: "delivery_price",
+      excelRender: (value: any) => value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Заработал",
+      dataIndex: "earned",
+      excelRender: (value: any) => value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Не получил",
+      dataIndex: "balance",
+      excelRender: (value: any) => value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Стоимость гаранта",
+      dataIndex: "garant_price",
+      excelRender: (value: any) => +value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+  ];
+
+  const exportData = async () => {
+    setIsLoading(true);
+    const excel = new Excel();
+    excel
+      .addSheet("test")
+      .addColumns(columns)
+      .addDataSource(garantData, {
+        str2Percent: true,
+      })
+      .saveAs("Гарант.xlsx");
+
+    setIsLoading(false);
+  };
+
   const tr = useTranslate();
 
   useEffect(() => {
@@ -90,7 +183,21 @@ const OrdersGarantReport = () => {
 
   return (
     <div>
-      <PageHeader title="Гарант" ghost={false}>
+      <PageHeader
+        title="Гарант"
+        ghost={false}
+        extra={
+          <Space>
+            <Button
+              type="default"
+              icon={<ExportOutlined />}
+              onClick={exportData}
+            >
+              Экспорт
+            </Button>
+          </Space>
+        }
+      >
         <Spin spinning={isLoading}>
           <Form onFinish={handleSubmit(onSubmit)}>
             <Card
@@ -103,70 +210,69 @@ const OrdersGarantReport = () => {
                 </Space>,
               ]}
             >
-              <Form.Item label="Месяц">
-                <Controller
-                  name="month"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <DatePicker {...field} picker="month" format="MMM YYYY" />
-                  )}
-                />
-              </Form.Item>
+              <Row gutter={16}>
+                <Col span={8}>
+                  <Form.Item label="Месяц">
+                    <Controller
+                      name="month"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          picker="month"
+                          format="MMM YYYY"
+                        />
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="Курьер">
+                    <DebounceInput
+                      minLength={2}
+                      debounceTimeout={300}
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                        color: "#626262",
+                        fontSize: "14px",
+                        lineHeight: "1.5715",
+                        backgroundColor: "#fff",
+                        backgroundImage: "none",
+                        border: "1px solid #d9d9d9",
+                        borderRadius: "6px",
+                        transition: "all 0.3s",
+                        flex: "auto",
+                        minWidth: "1px",
+                        height: "auto",
+                        padding: "4px 11px",
+                        background: "transparent",
+                      }}
+                      onChange={(event) =>
+                        setFilteredData(
+                          garantData.filter((item) =>
+                            item.courier
+                              .toLowerCase()
+                              .includes(event.target.value.toLowerCase())
+                          )
+                        )
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
             </Card>
           </Form>
           <Card bordered={false}>
-            <Table dataSource={garantData} rowKey="id" bordered size="small">
-              <Table.Column title="Курьер" dataIndex="courier" />
-              <Table.Column
-                title="Дата начала"
-                dataIndex="begin_date"
-                render={(value) => dayjs(value).format("DD.MM.YYYY")}
-              />
-              <Table.Column
-                title="Дата последнего заказа"
-                dataIndex="last_order_date"
-                render={(value) => dayjs(value).format("DD.MM.YYYY")}
-              />
-              <Table.Column
-                title="Дата создания"
-                dataIndex="created_at"
-                render={(value) => dayjs(value).format("DD.MM.YYYY")}
-              />
-              <Table.Column
-                title="Статус"
-                dataIndex="status"
-                render={(value) => tr(`users.status.${value}`)}
-              />
-              <Table.Column
-                title="Среднее время доставки"
-                dataIndex="formatted_avg_delivery_time"
-              />
-              <Table.Column
-                title="Количество заказов"
-                dataIndex="orders_count"
-              />
-              <Table.Column
-                title="Количество дней с заказами"
-                dataIndex="order_dates_count"
-              />
-              <Table.Column
-                title="Возможные выходные"
-                dataIndex="possible_day_offs"
-              />
-              <Table.Column
-                title="Фактические выходные"
-                dataIndex="actual_day_offs"
-              />
-              <Table.Column
-                title="Стоимость доставки"
-                dataIndex="delivery_price"
-              />
-              <Table.Column
-                title="Стоимость гаранта"
-                dataIndex="garant_price"
-              />
-            </Table>
+            <Table
+              dataSource={filteredData}
+              rowKey="id"
+              bordered
+              size="small"
+              columns={columns}
+            />
           </Card>
         </Spin>
       </PageHeader>

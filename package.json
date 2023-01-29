@@ -36,6 +36,7 @@
     "ms": "^2.1.3",
     "pluralize": "^8.0.0",
     "react": "^18.2.0",
+    "react-debounce-input": "^3.3.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.40.0",
     "react-i18next": "^11.8.11",

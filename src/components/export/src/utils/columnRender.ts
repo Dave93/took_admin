@@ -55,7 +55,6 @@ interface IReactNode {
 }
 function getChildren(data: any) {
   const { props } = data || {};
-  console.log("children", props.children);
   if (typeof props.children === "string") return props.children;
   if (Array.isArray(props.children)) {
     return props.children.reduce((prev: any, cur: any) => {

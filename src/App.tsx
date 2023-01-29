@@ -71,6 +71,7 @@ import PrivacyPage from "pages/privacy";
 import { useMemo } from "react";
 import { BrandsCreate, BrandsEdit, BrandsList } from "pages/brands";
 import WhereCourierList from "pages/users/where_courier_list";
+import OrdersGarantReport from "pages/orders/orders_garant_report";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -146,6 +147,14 @@ function App() {
         parentName: "orders-group",
         list: OrdersList,
         show: OrdersShow,
+      },
+      {
+        name: "orders_garant_report",
+        options: {
+          label: "Гарант",
+        },
+        parentName: "orders-group",
+        list: OrdersGarantReport,
       },
       {
         name: "users-group",

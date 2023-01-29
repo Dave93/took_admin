@@ -497,3 +497,27 @@ export class IBrands {
 
   updated_at: Date;
 }
+
+export class GarantReportItem {
+  begin_date: Date;
+  last_order_date: Date;
+  delivery_price: number;
+  courier: string;
+  orders_count: number;
+  avg_delivery_time: string;
+
+  formatted_avg_delivery_time: string;
+
+  orders_dates: Date[];
+  courier_id: string;
+  created_at: Date;
+  status!: keyof typeof user_status;
+
+  possible_day_offs: number;
+
+  garant_price: number;
+
+  order_dates_count: number;
+
+  actual_day_offs: number;
+}

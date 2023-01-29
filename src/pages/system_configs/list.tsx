@@ -63,7 +63,18 @@ export const SystemConfigsList: React.FC = () => {
         setValue(item.name, dayjs(item.value));
       } else {
         if (item.name == "close_dates") {
-          setValue(item.name, JSON.parse(item.value));
+          try {
+            let closeDates = JSON.parse(item.value);
+            closeDates = closeDates.map((item: any) => {
+              return {
+                date: dayjs(item.date),
+                reason: item.reason,
+              };
+            });
+            setValue(item.name, closeDates);
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           setValue(item.name, item.value);
         }
@@ -180,6 +191,23 @@ export const SystemConfigsList: React.FC = () => {
                       control={control}
                       rules={{ required: true }}
                       render={({ field }) => <Input {...field} />}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item
+                    label="Сумма гаранта"
+                    rules={[
+                      { required: true, message: "Обязательно для заполнения" },
+                    ]}
+                  >
+                    <Controller
+                      name="garant_price"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <InputNumber size="small" {...field} />
+                      )}
                     />
                   </Form.Item>
                 </Col>

@@ -40,6 +40,7 @@ import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import DebounceSelect from "components/select/debounceSelector";
 import { OrdersTableActions } from "components/table_actions/orders";
+import { useTableExport } from "components/export/table";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
@@ -236,7 +237,188 @@ export const OrdersList: React.FC = () => {
     },
   });
 
-  const { triggerExport, isLoading } = useExport<IOrders>({
+  const columns = [
+    {
+      title: "Действия",
+      dataIndex: "actions",
+      exportable: false,
+      render: (_text: any, record: IOrders): React.ReactNode => (
+        <Space>
+          <ShowButton size="small" recordItemId={record.id} hideText />
+        </Space>
+      ),
+    },
+    {
+      title: "№",
+      dataIndex: "order_number",
+      width: 60,
+      render: (value: any, record: any, index: number) => (
+        <div>{index + 1}</div>
+      ),
+    },
+    {
+      title: "Номер заказа",
+      dataIndex: "order_number",
+      width: 100,
+    },
+    {
+      title: "Дата заказа",
+      dataIndex: "created_at",
+      render: (record: any) => (
+        <span>{dayjs(record).format("DD.MM.YYYY HH:mm")}</span>
+      ),
+    },
+    {
+      title: "Статус",
+      dataIndex: "order_status_id",
+      width: 110,
+      excelRender: (value: any, record: any) => record.orders_order_status.name,
+      render: (value: any, record: any) => (
+        <Tag color={record.orders_order_status.color}>
+          <div
+            style={{
+              fontWeight: 800,
+              color: "#000",
+              textTransform: "uppercase",
+            }}
+          >
+            {record.orders_order_status.name}
+          </div>
+        </Tag>
+      ),
+    },
+    {
+      title: "Организация",
+      dataIndex: "organization.name",
+      render: (value: any, record: IOrders) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => goToOrganization(record.orders_organization.id)}
+          style={{
+            whiteSpace: "pre-wrap",
+            textAlign: "left",
+          }}
+        >
+          {record.orders_organization.name}
+        </Button>
+      ),
+    },
+    {
+      title: "Филиал",
+      dataIndex: "orders_terminals.name",
+      render: (value: any, record: IOrders) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => goToTerminal(record.orders_terminals.id)}
+          style={{
+            whiteSpace: "pre-wrap",
+            textAlign: "left",
+          }}
+        >
+          {record.orders_terminals.name}
+        </Button>
+      ),
+    },
+    {
+      title: "Курьер",
+      dataIndex: "orders_couriers.first_name",
+      render: (value: any, record: IOrders) =>
+        record.orders_couriers ? (
+          <Button
+            type="link"
+            size="small"
+            onClick={() => goToCourier(record.orders_couriers.id)}
+            style={{
+              whiteSpace: "pre-wrap",
+              textAlign: "left",
+            }}
+          >
+            {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
+          </Button>
+        ) : (
+          <span>Не назначен</span>
+        ),
+    },
+    {
+      title: "Клиент",
+      dataIndex: "orders_customers.name",
+      render: (value: any, record: IOrders) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => goToCustomer(record.orders_customers.id)}
+          style={{
+            whiteSpace: "pre-wrap",
+            textAlign: "left",
+          }}
+        >
+          {record.orders_customers.name}
+        </Button>
+      ),
+    },
+    {
+      title: "Телефон",
+      dataIndex: "orders_customers.phone",
+      width: 150,
+      render: (value: any, record: IOrders) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => goToCustomer(record.orders_customers.id)}
+        >
+          {record.orders_customers.phone}
+        </Button>
+      ),
+    },
+    {
+      title: "Цена",
+      dataIndex: "order_price",
+      render: (value: any, record: IOrders) => (
+        <span>
+          {new Intl.NumberFormat("ru").format(record.order_price)} сум
+        </span>
+      ),
+    },
+    {
+      title: "Время доставки",
+      dataIndex: "duration",
+      excelRender: (value: any, record: IOrders) => {
+        if (record?.finished_date) {
+          const ft = dayjs(record.created_at);
+          const tt = dayjs(record.finished_date);
+          const mins = tt.diff(ft, "minutes", true);
+          const totalHours = parseInt((mins / 60).toString());
+          const totalMins = dayjs().minute(mins).format("mm");
+          return `${totalHours}:${totalMins}`;
+        } else {
+          return "Не завершен";
+        }
+      },
+      render: (value: any, record: IOrders) => (
+        <IOrdersListPropsDuration
+          startDate={record?.created_at}
+          endDate={record?.finished_date!}
+        />
+      ),
+    },
+    {
+      title: "Цена доставки",
+      dataIndex: "delivery_price",
+      render: (value: any, record: IOrders) => (
+        <span>
+          {new Intl.NumberFormat("ru").format(record.delivery_price)} сум
+        </span>
+      ),
+    },
+    {
+      title: "Тип оплаты",
+      dataIndex: "payment_type",
+    },
+  ];
+
+  const { triggerExport, isLoading } = useTableExport<IOrders>({
     metaData: {
       fields: [
         "id",
@@ -247,7 +429,7 @@ export const OrdersList: React.FC = () => {
         "duration",
         "delivery_price",
         "payment_type",
-
+        "finished_date",
         {
           orders_organization: ["id", "name"],
         },
@@ -272,6 +454,7 @@ export const OrdersList: React.FC = () => {
     },
     filters,
     sorter,
+    columns,
   });
 
   const getAllFilterData = async () => {
@@ -490,7 +673,11 @@ export const OrdersList: React.FC = () => {
       <List
         title="Список заказов"
         headerProps={{
-          extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
+          extra: (
+            <div>
+              <ExportButton onClick={triggerExport} loading={isLoading} />
+            </div>
+          ),
         }}
       >
         <Form
@@ -662,179 +849,8 @@ export const OrdersList: React.FC = () => {
                 </>
               );
             }}
-          >
-            <Table.Column<IOrders>
-              title="Actions"
-              dataIndex="actions"
-              render={(_text, record): React.ReactNode => {
-                return (
-                  <Space>
-                    <ShowButton
-                      size="small"
-                      recordItemId={record.id}
-                      hideText
-                    />
-                  </Space>
-                );
-              }}
-            />
-            <Table.Column
-              dataIndex="oreders_count"
-              title="№"
-              width={60}
-              render={(value: any, record: any, index: number) => (
-                <div>{index + 1}</div>
-              )}
-            />
-            <Table.Column
-              dataIndex="order_number"
-              title="Номер заказа"
-              width={100}
-            />
-            <Table.Column
-              dataIndex="created_at"
-              title="Дата заказа"
-              render={(record: any) => (
-                <span>{dayjs(record).format("DD.MM.YYYY HH:mm")}</span>
-              )}
-            />
-            <Table.Column
-              dataIndex="order_status_id"
-              title="Статус"
-              width={110}
-              render={(value: any, record: any) => (
-                <Tag color={record.orders_order_status.color}>
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      color: "#000",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {record.orders_order_status.name}
-                  </span>
-                </Tag>
-              )}
-            />
-            <Table.Column
-              dataIndex="organization.name"
-              title="Организация"
-              render={(value: any, record: IOrders) => (
-                <Button
-                  type="link"
-                  size="small"
-                  onClick={() =>
-                    goToOrganization(record.orders_organization.id)
-                  }
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    textAlign: "left",
-                  }}
-                >
-                  <span>{record.orders_organization.name}</span>
-                </Button>
-              )}
-            />
-            <Table.Column
-              dataIndex="orders_terminals.name"
-              title="Филиал"
-              render={(value: any, record: IOrders) => (
-                <Button
-                  type="link"
-                  size="small"
-                  onClick={() => goToTerminal(record.orders_terminals.id)}
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    textAlign: "left",
-                  }}
-                >
-                  {record.orders_terminals.name}
-                </Button>
-              )}
-            />
-            <Table.Column
-              dataIndex="orders_couriers.first_name"
-              title="Курьер"
-              render={(value: any, record: IOrders) =>
-                record.orders_couriers ? (
-                  <Button
-                    type="link"
-                    size="small"
-                    onClick={() => goToCourier(record.orders_couriers.id)}
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      textAlign: "left",
-                    }}
-                  >
-                    {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
-                  </Button>
-                ) : (
-                  <span>Не назначен</span>
-                )
-              }
-            />
-            <Table.Column
-              dataIndex="orders_customers.name"
-              title="ФИО"
-              render={(value: any, record: IOrders) => (
-                <Button
-                  type="link"
-                  size="small"
-                  onClick={() => goToCustomer(record.orders_customers.id)}
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    textAlign: "left",
-                  }}
-                >
-                  {record.orders_customers.name}
-                </Button>
-              )}
-            />
-            <Table.Column
-              dataIndex="orders_customers.phone"
-              title="Телефон"
-              width={150}
-              render={(value: any, record: IOrders) => (
-                <Button
-                  type="link"
-                  size="small"
-                  onClick={() => goToCustomer(record.orders_customers.id)}
-                >
-                  {record.orders_customers.phone}
-                </Button>
-              )}
-            />
-            <Table.Column
-              dataIndex="order_price"
-              title="Цена"
-              render={(value: any, record: IOrders) => (
-                <span>
-                  {new Intl.NumberFormat("ru").format(record.order_price)} сум
-                </span>
-              )}
-            />
-            <Table.Column
-              dataIndex="duration"
-              title="Время доставки"
-              render={(value: any, record: IOrders) => (
-                <IOrdersListPropsDuration
-                  startDate={record?.created_at}
-                  endDate={record?.finished_date!}
-                />
-              )}
-            />
-            <Table.Column
-              dataIndex="delivery_price"
-              title="Цена доставки"
-              render={(value: any, record: IOrders) => (
-                <span>
-                  {new Intl.NumberFormat("ru").format(record.delivery_price)}{" "}
-                  сум
-                </span>
-              )}
-            />
-            <Table.Column dataIndex="payment_type" title="Тип оплаты" />
-          </Table>
+            columns={columns}
+          />
         </div>
       </List>
     </>

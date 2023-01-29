@@ -56,7 +56,7 @@ export const useTableExport = <
   sorter,
   filters,
   maxItemCount,
-  pageSize = 500,
+  pageSize = 1000,
   mapData = (item) => item as any,
   exportOptions,
   metaData,

@@ -59,6 +59,8 @@ const OrdersGarantReport = () => {
   const tr = useTranslate();
 
   const month = watch("month");
+  const status = watch("status");
+  const driveType = watch("drive_type");
 
   const onSubmit = async (data: any) => {
     loadData();
@@ -94,18 +96,29 @@ const OrdersGarantReport = () => {
             actual_day_offs
             delivery_price
             garant_price
-            earned,
-            balance,
-            garant_days,
+            earned
+            balance
+            garant_days
             balance_to_pay
+            drive_type
         }
       }
     `;
 
-    const { calculateGarant } = await client.request<{
+    let { calculateGarant } = await client.request<{
       calculateGarant: GarantReportItem[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setGarantData(calculateGarant);
+    if (status) {
+      calculateGarant = calculateGarant.filter(
+        (item) => item.status === status
+      );
+    }
+    if (driveType) {
+      calculateGarant = calculateGarant.filter(
+        (item) => item.drive_type === driveType
+      );
+    }
     setFilteredData(calculateGarant);
     setIsLoading(false);
   };
@@ -168,8 +181,16 @@ const OrdersGarantReport = () => {
 
   const columns = [
     {
+      title: "№",
+      dataIndex: "id",
+      width: 50,
+      render: (value: string, record: any, index: number) => index + 1,
+    },
+    {
       title: "Курьер",
       dataIndex: "courier",
+      width: 100,
+      textWrap: "word-break",
     },
     {
       title: "Дата начала",
@@ -187,25 +208,11 @@ const OrdersGarantReport = () => {
       render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
     },
     {
-      title: "Статус",
-      dataIndex: "status",
-      render: (value: string) => tr(`users.status.${value}`),
-      filters: [
-        {
-          text: tr("users.status.active"),
-          value: "active",
-        },
-        {
-          text: tr("users.status.inactive"),
-          value: "inactive",
-        },
-        {
-          text: tr("users.status.blocked"),
-          value: "blocked",
-        },
-      ],
-      onFilter: (value: string | number | boolean, record: GarantReportItem) =>
-        record.status == value,
+      title: "Тип доставки",
+      dataIndex: "drive_type",
+      width: 100,
+      textWrap: "word-break",
+      render: (value: string) => tr(`deliveryPricing.driveType.${value}`),
     },
     {
       title: "Среднее время доставки",
@@ -384,12 +391,11 @@ const OrdersGarantReport = () => {
               ]}
             >
               <Row gutter={16}>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item label="Месяц">
                     <Controller
                       name="month"
                       control={control}
-                      rules={{ required: true }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
@@ -432,6 +438,56 @@ const OrdersGarantReport = () => {
                           )
                         )
                       }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label="Статус">
+                    <Controller
+                      name="status"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          placeholder="Выберите статус"
+                          allowClear
+                          options={[
+                            {
+                              label: tr("users.status.active"),
+                              value: "active",
+                            },
+                            {
+                              label: tr("users.status.inactive"),
+                              value: "inactive",
+                            },
+                            {
+                              label: tr("users.status.blocked"),
+                              value: "blocked",
+                            },
+                          ]}
+                        />
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label="Тип доставки">
+                    <Controller
+                      name="drive_type"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          placeholder="Выберите тип доставки"
+                          allowClear
+                        >
+                          {Object.keys(drive_type).map((type: string) => (
+                            <Select.Option key={type} value={type}>
+                              {tr(`deliveryPricing.driveType.${type}`)}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      )}
                     />
                   </Form.Item>
                 </Col>

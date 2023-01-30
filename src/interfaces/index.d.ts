@@ -520,4 +520,6 @@ export class GarantReportItem {
   order_dates_count: number;
 
   actual_day_offs: number;
+
+  drive_type: keyof typeof drive_type;
 }

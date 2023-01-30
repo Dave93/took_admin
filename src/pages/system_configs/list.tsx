@@ -15,8 +15,9 @@ import {
   InputNumber,
   DatePicker,
   Divider,
+  Select,
 } from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import dayjs from "dayjs";
 import * as gql from "gql-query-builder";
 import { client } from "graphConnect";
@@ -25,12 +26,14 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import { drive_type } from "interfaces/enums";
 
 export const SystemConfigsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const tr = useTranslate();
   const {
     handleSubmit,
     control,
@@ -38,11 +41,18 @@ export const SystemConfigsList: React.FC = () => {
     setValue,
     formState: { errors },
   } = useForm();
-  const { fields, append, prepend, remove, swap, move, insert, replace } =
-    useFieldArray({
-      control,
-      name: "close_dates",
-    });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "close_dates",
+  });
+  const {
+    fields: garantPriceFields,
+    append: garantPriceAppend,
+    remove: garantPriceRemove,
+  } = useFieldArray({
+    control,
+    name: "garant_prices",
+  });
 
   const loadDefaultData = async () => {
     setIsLoading(true);
@@ -75,6 +85,13 @@ export const SystemConfigsList: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
+        } else if (item.name == "garant_prices") {
+          try {
+            let closeDates = JSON.parse(item.value);
+            setValue(item.name, closeDates);
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           setValue(item.name, item.value);
         }
@@ -93,7 +110,11 @@ export const SystemConfigsList: React.FC = () => {
         });
       } else {
         if (key == "close_dates") {
-          console.log(JSON.stringify(data[key]));
+          formData.push({
+            name: key,
+            value: JSON.stringify(data[key]),
+          });
+        } else if (key == "garant_prices") {
           formData.push({
             name: key,
             value: JSON.stringify(data[key]),
@@ -268,6 +289,76 @@ export const SystemConfigsList: React.FC = () => {
                       icon={<PlusOutlined />}
                     >
                       Добавить нерабочие дни
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Divider>Суммы гаранта</Divider>
+              <Row gutter={16}>
+                <Col span={12}>
+                  {garantPriceFields.map((field, index) => {
+                    return (
+                      <Row key={field.id} gutter={16}>
+                        <Col span={10}>
+                          <Form.Item label="Тип доставки">
+                            <Controller
+                              name={`garant_prices.${index}.drive_type`}
+                              control={control}
+                              rules={{ required: true }}
+                              render={({ field }) => (
+                                <Select {...field}>
+                                  {Object.keys(drive_type).map(
+                                    (type: string) => (
+                                      <Select.Option key={type} value={type}>
+                                        {tr(
+                                          `deliveryPricing.driveType.${type}`
+                                        )}
+                                      </Select.Option>
+                                    )
+                                  )}
+                                </Select>
+                              )}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={10}>
+                          <Form.Item label="Сумма">
+                            <Controller
+                              name={`garant_prices.${index}.price`}
+                              control={control}
+                              rules={{ required: true }}
+                              render={({ field }) => <InputNumber {...field} />}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={4}>
+                          <Form.Item label="&nbsp;">
+                            <Button
+                              danger
+                              shape="circle"
+                              icon={<DeleteOutlined />}
+                              onClick={() => {
+                                garantPriceRemove(index);
+                              }}
+                            />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() =>
+                        garantPriceAppend({
+                          drive_type: null,
+                          price: 0,
+                        })
+                      }
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Добавить сумму гаранта
                     </Button>
                   </Form.Item>
                 </Col>

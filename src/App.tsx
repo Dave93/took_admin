@@ -318,6 +318,20 @@ function App() {
           Layout={Layout}
           accessControlProvider={{
             can: async ({ action, params, resource }) => {
+              // console.log("action", action);
+              // console.log("resource", resource);
+              console.log("params", params);
+
+              if (
+                params?.resource?.children &&
+                params?.resource?.children.length > 0 &&
+                !params?.resource?.parentName
+              ) {
+                return Promise.resolve({
+                  can: true,
+                });
+              }
+
               if (resource === "dashboard") {
                 return Promise.resolve({
                   can: true,

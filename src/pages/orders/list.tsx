@@ -255,6 +255,7 @@ export const OrdersList: React.FC = () => {
       title: "№",
       dataIndex: "order_number",
       width: 60,
+      excelRender: (value: any, record: any, index: number) => index + 1,
       render: (value: any, record: any, index: number) => (
         <div>{index + 1}</div>
       ),
@@ -268,14 +269,16 @@ export const OrdersList: React.FC = () => {
       title: "Дата заказа",
       dataIndex: "created_at",
       width: 110,
-      render: (record: any) => (
-        <span>{dayjs(record).format("DD.MM.YYYY HH:mm")}</span>
+      excelRender: (value: any, record: any) =>
+        dayjs(value).format("DD.MM.YYYY HH:mm"),
+      render: (value: any) => (
+        <span>{dayjs(value).format("DD.MM.YYYY HH:mm")}</span>
       ),
     },
     {
       title: "Статус",
       dataIndex: "order_status_id",
-      width: 110,
+      width: 120,
       excelRender: (value: any, record: any) => record.orders_order_status.name,
       render: (value: any, record: any) => (
         <Tag color={record.orders_order_status.color}>
@@ -313,6 +316,8 @@ export const OrdersList: React.FC = () => {
       title: "Филиал",
       width: 120,
       dataIndex: "orders_terminals.name",
+      excelRender: (value: any, record: IOrders) =>
+        record.orders_terminals.name,
       render: (value: any, record: IOrders) => (
         <Button
           type="link"
@@ -331,6 +336,10 @@ export const OrdersList: React.FC = () => {
       title: "Курьер",
       width: 120,
       dataIndex: "orders_couriers.first_name",
+      excelRender: (value: any, record: IOrders) =>
+        record.orders_couriers
+          ? `${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`
+          : "Не назначен",
       render: (value: any, record: IOrders) =>
         record.orders_couriers ? (
           <span>
@@ -350,6 +359,8 @@ export const OrdersList: React.FC = () => {
       title: "Клиент",
       dataIndex: "orders_customers.name",
       width: 100,
+      excelRender: (value: any, record: IOrders) =>
+        record.orders_customers.name.replace(/[^\x00-\x7F]/g, ""),
       render: (value: any, record: IOrders) => (
         <Button
           type="link"
@@ -368,6 +379,8 @@ export const OrdersList: React.FC = () => {
       title: "Телефон",
       dataIndex: "orders_customers.phone",
       width: 150,
+      excelRender: (value: any, record: IOrders) =>
+        record.orders_customers.phone,
       render: (value: any, record: IOrders) => (
         <Button
           type="link"
@@ -382,6 +395,7 @@ export const OrdersList: React.FC = () => {
       title: "Цена",
       dataIndex: "order_price",
       width: 90,
+      excelRender: (value: any, record: IOrders) => +record.order_price,
       render: (value: any, record: IOrders) => (
         <span>{new Intl.NumberFormat("ru").format(record.order_price)}</span>
       ),
@@ -412,7 +426,8 @@ export const OrdersList: React.FC = () => {
     {
       title: "Цена доставки",
       dataIndex: "delivery_price",
-      width: 90,
+      width: 80,
+      excelRender: (value: any, record: IOrders) => +record.delivery_price,
       render: (value: any, record: IOrders) => (
         <span>{new Intl.NumberFormat("ru").format(record.delivery_price)}</span>
       ),
@@ -420,6 +435,8 @@ export const OrdersList: React.FC = () => {
     {
       title: "Тип оплаты",
       dataIndex: "payment_type",
+      width: 100,
+      excelRender: (value: any, record: IOrders) => record.payment_type,
     },
   ];
 
@@ -460,7 +477,7 @@ export const OrdersList: React.FC = () => {
     filters,
     sorter,
     columns,
-    pageSize: 100,
+    pageSize: 1000,
   });
 
   const getAllFilterData = async () => {
@@ -811,7 +828,7 @@ export const OrdersList: React.FC = () => {
             scroll={
               window.innerWidth < 768
                 ? undefined
-                : { y: "calc(100vh - 390px)", x: "calc(100vw - 200px)" }
+                : { y: "calc(100vh - 390px)", x: "calc(100vw - 350px)" }
             }
             onRow={(record: any) => ({
               onDoubleClick: () => {

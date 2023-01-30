@@ -115,8 +115,8 @@ const OrdersGarantReport = () => {
       );
     }
     if (driveType) {
-      calculateGarant = calculateGarant.filter(
-        (item) => item.drive_type === driveType
+      calculateGarant = calculateGarant.filter((item) =>
+        driveType.includes(item.drive_type)
       );
     }
     setFilteredData(calculateGarant);
@@ -197,22 +197,25 @@ const OrdersGarantReport = () => {
     {
       title: "Дата начала",
       dataIndex: "begin_date",
+      width: 105,
       render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
     },
     {
       title: "Дата последнего заказа",
       dataIndex: "last_order_date",
+      width: 105,
       render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
     },
     {
       title: "Дата создания",
       dataIndex: "created_at",
+      width: 105,
       render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
     },
     {
       title: "Тип доставки",
       dataIndex: "drive_type",
-      width: 100,
+      width: 110,
       textWrap: "word-break",
       render: (value: string) => tr(`deliveryPricing.driveType.${value}`),
     },
@@ -274,6 +277,7 @@ const OrdersGarantReport = () => {
       title: "Действия",
       dataIndex: "id",
       exportable: false,
+      width: 50,
       render: (value: string, record: GarantReportItem) => (
         <Space>
           <Button
@@ -483,6 +487,7 @@ const OrdersGarantReport = () => {
                           {...field}
                           placeholder="Выберите тип доставки"
                           allowClear
+                          mode="multiple"
                         >
                           {Object.keys(drive_type).map((type: string) => (
                             <Select.Option key={type} value={type}>
@@ -507,11 +512,11 @@ const OrdersGarantReport = () => {
               pagination={{
                 pageSize: 200,
               }}
-              // scroll={
-              //   window.innerWidth < 768
-              //     ? undefined
-              //     : { y: "calc(100vh - 390px)", x: "calc(100vw - 200px)" }
-              // }
+              scroll={
+                window.innerWidth < 768
+                  ? undefined
+                  : { y: "calc(100vh - 390px)", x: "calc(100vw - 350px)" }
+              }
             />
           </Card>
         </Spin>

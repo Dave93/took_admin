@@ -272,6 +272,9 @@ const OrdersGarantReport = () => {
               bordered
               size="small"
               columns={columns}
+              pagination={{
+                pageSize: 200,
+              }}
             />
           </Card>
         </Spin>

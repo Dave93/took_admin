@@ -271,6 +271,7 @@ const OrdersGarantReport = () => {
     {
       title: "Действия",
       dataIndex: "id",
+      exportable: false,
       render: (value: string, record: GarantReportItem) => (
         <Space>
           <Button

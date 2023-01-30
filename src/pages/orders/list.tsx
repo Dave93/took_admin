@@ -243,6 +243,7 @@ export const OrdersList: React.FC = () => {
       title: "Действия",
       dataIndex: "actions",
       exportable: false,
+      width: 50,
       render: (_text: any, record: IOrders): React.ReactNode => (
         <Space>
           <ShowButton size="small" recordItemId={record.id} hideText />

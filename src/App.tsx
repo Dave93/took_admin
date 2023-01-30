@@ -318,8 +318,6 @@ function App() {
           Layout={Layout}
           accessControlProvider={{
             can: async ({ action, params, resource }) => {
-              console.log("action", action);
-              console.log("resource", resource);
               if (
                 params?.resource?.children &&
                 params?.resource?.children.length > 0 &&

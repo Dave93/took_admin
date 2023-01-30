@@ -33,7 +33,7 @@ import {
   IUsers,
 } from "interfaces";
 import { chain } from "lodash";
-import { UpOutlined, DownOutlined } from "@ant-design/icons";
+import { UpOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
 import { useState, useEffect, useMemo, FC } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
@@ -99,6 +99,7 @@ export const OrdersList: React.FC = () => {
       order_number: number;
     }
   >({
+    initialPageSize: 200,
     initialSorter: [
       {
         field: "created_at",
@@ -243,6 +244,7 @@ export const OrdersList: React.FC = () => {
       title: "Действия",
       dataIndex: "actions",
       exportable: false,
+      width: 50,
       render: (_text: any, record: IOrders): React.ReactNode => (
         <Space>
           <ShowButton size="small" recordItemId={record.id} hideText />
@@ -260,11 +262,12 @@ export const OrdersList: React.FC = () => {
     {
       title: "Номер заказа",
       dataIndex: "order_number",
-      width: 100,
+      width: 90,
     },
     {
       title: "Дата заказа",
       dataIndex: "created_at",
+      width: 110,
       render: (record: any) => (
         <span>{dayjs(record).format("DD.MM.YYYY HH:mm")}</span>
       ),
@@ -291,6 +294,7 @@ export const OrdersList: React.FC = () => {
     {
       title: "Организация",
       dataIndex: "organization.name",
+      width: 120,
       render: (value: any, record: IOrders) => (
         <Button
           type="link"
@@ -307,6 +311,7 @@ export const OrdersList: React.FC = () => {
     },
     {
       title: "Филиал",
+      width: 120,
       dataIndex: "orders_terminals.name",
       render: (value: any, record: IOrders) => (
         <Button
@@ -324,20 +329,19 @@ export const OrdersList: React.FC = () => {
     },
     {
       title: "Курьер",
+      width: 120,
       dataIndex: "orders_couriers.first_name",
       render: (value: any, record: IOrders) =>
         record.orders_couriers ? (
-          <Button
-            type="link"
-            size="small"
-            onClick={() => goToCourier(record.orders_couriers.id)}
-            style={{
-              whiteSpace: "pre-wrap",
-              textAlign: "left",
-            }}
-          >
-            {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name}`}
-          </Button>
+          <span>
+            {`${record.orders_couriers.first_name} ${record.orders_couriers.last_name} `}
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => goToCourier(record.orders_couriers.id)}
+              icon={<UserOutlined />}
+            />
+          </span>
         ) : (
           <span>Не назначен</span>
         ),
@@ -345,6 +349,7 @@ export const OrdersList: React.FC = () => {
     {
       title: "Клиент",
       dataIndex: "orders_customers.name",
+      width: 100,
       render: (value: any, record: IOrders) => (
         <Button
           type="link"
@@ -376,15 +381,15 @@ export const OrdersList: React.FC = () => {
     {
       title: "Цена",
       dataIndex: "order_price",
+      width: 90,
       render: (value: any, record: IOrders) => (
-        <span>
-          {new Intl.NumberFormat("ru").format(record.order_price)} сум
-        </span>
+        <span>{new Intl.NumberFormat("ru").format(record.order_price)}</span>
       ),
     },
     {
       title: "Время доставки",
       dataIndex: "duration",
+      width: 100,
       excelRender: (value: any, record: IOrders) => {
         if (record?.finished_date) {
           const ft = dayjs(record.created_at);
@@ -407,10 +412,9 @@ export const OrdersList: React.FC = () => {
     {
       title: "Цена доставки",
       dataIndex: "delivery_price",
+      width: 90,
       render: (value: any, record: IOrders) => (
-        <span>
-          {new Intl.NumberFormat("ru").format(record.delivery_price)} сум
-        </span>
+        <span>{new Intl.NumberFormat("ru").format(record.delivery_price)}</span>
       ),
     },
     {
@@ -456,6 +460,7 @@ export const OrdersList: React.FC = () => {
     filters,
     sorter,
     columns,
+    pageSize: 100,
   });
 
   const getAllFilterData = async () => {
@@ -830,6 +835,22 @@ export const OrdersList: React.FC = () => {
                 (sum, record) => sum + record.delivery_price,
                 0
               );
+              const deliveredOrdersCount = pageData.filter(
+                (record) => record.finished_date !== null
+              ).length;
+              let totalMinutes = 0;
+              pageData.forEach((record) => {
+                if (record.finished_date) {
+                  const ft = dayjs(record.created_at);
+                  const tt = dayjs(record.finished_date);
+                  const mins = tt.diff(ft, "minutes", true);
+                  totalMinutes += mins;
+                }
+              });
+              totalMinutes = totalMinutes / deliveredOrdersCount;
+              const totalHours = parseInt((totalMinutes / 60).toString());
+              const totalMins = dayjs().minute(totalMinutes).format("mm");
+              // return `${totalHours}:${totalMins}`;
 
               return (
                 <>
@@ -840,8 +861,11 @@ export const OrdersList: React.FC = () => {
                       </Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={1}
-                        colSpan={11}
+                        colSpan={10}
                       ></Table.Summary.Cell>
+                      <Table.Summary.Cell index={12}>
+                        <b>{`${totalHours}:${totalMins}`} </b>
+                      </Table.Summary.Cell>
                       <Table.Summary.Cell index={13}>
                         <b>{new Intl.NumberFormat("ru").format(total)} </b>
                       </Table.Summary.Cell>

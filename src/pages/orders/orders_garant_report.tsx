@@ -271,6 +271,7 @@ const OrdersGarantReport = () => {
     {
       title: "Действия",
       dataIndex: "id",
+      exportable: false,
       render: (value: string, record: GarantReportItem) => (
         <Space>
           <Button
@@ -504,6 +505,11 @@ const OrdersGarantReport = () => {
               pagination={{
                 pageSize: 200,
               }}
+              // scroll={
+              //   window.innerWidth < 768
+              //     ? undefined
+              //     : { y: "calc(100vh - 390px)", x: "calc(100vw - 200px)" }
+              // }
             />
           </Card>
         </Spin>

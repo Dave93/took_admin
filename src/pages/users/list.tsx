@@ -85,6 +85,13 @@ export const UsersList: React.FC = () => {
             },
           ],
         },
+        {
+          users_work_schedules: [
+            {
+              work_schedules: ["name"],
+            },
+          ],
+        },
       ],
       whereInputType: "usersWhereInput!",
       orderByInputType: "usersOrderByWithRelationInput!",
@@ -92,6 +99,7 @@ export const UsersList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
     onSearch: async (values) => {
       const { first_name, last_name, phone, is_online, terminal_id, roles } =
         values;
@@ -308,7 +316,16 @@ export const UsersList: React.FC = () => {
             title="Тип доставки"
             render={(value) => tr("deliveryPricing.driveType." + value)}
           />
-          <Table.Column dataIndex="card_number" title="Номер карты" />
+          {/* <Table.Column dataIndex="card_number" title="Номер карты" /> */}
+          <Table.Column
+            dataIndex="users_work_schedules"
+            title="График работы"
+            render={(val) => (
+              <div>
+                {val?.map((item: any) => item?.work_schedules.name).join(", ")}
+              </div>
+            )}
+          />
           <Table.Column dataIndex="latitude" title="Широта" />
           <Table.Column dataIndex="longitude" title="Долгота" />
           <Table.Column dataIndex="app_version" title="Версия приложения" />

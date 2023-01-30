@@ -79,7 +79,6 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       const operation = metaData?.operation ?? camelResource;
 
       const operationConnection = `${operation}Connection`;
-
       const { query, variables } = gql.query([
         {
           operation: operationConnection,

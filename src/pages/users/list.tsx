@@ -58,6 +58,7 @@ export const UsersList: React.FC = () => {
       roles: string;
     }
   >({
+    initialPageSize: 200,
     initialSorter: [
       {
         field: "first_name",

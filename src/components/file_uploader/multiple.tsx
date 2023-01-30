@@ -2,7 +2,7 @@ import { Button, Col, Row } from "@pankod/refine-antd";
 import { useMemo, useState } from "react";
 import * as gqlb from "gql-query-builder";
 import { client } from "graphConnect";
-import { CloseCircleFilled } from "@ant-design/icons";
+import { CloseCircleFilled, FullscreenOutlined } from "@ant-design/icons";
 import { useGetIdentity } from "@pankod/refine-core";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
@@ -96,8 +96,10 @@ const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
                       style={{
                         width: "100%",
                         height: "100px",
+                        cursor: "pointer",
                       }}
                       alt="logo"
+                      onClick={() => window.open(file)}
                     />
                   </Col>
                   <Col span={4}>
@@ -107,6 +109,7 @@ const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
                         fontSize: "20px",
                         color: "red",
                         cursor: "pointer",
+                        marginLeft: "5px",
                       }}
                     />
                   </Col>

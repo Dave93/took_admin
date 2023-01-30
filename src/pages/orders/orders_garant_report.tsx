@@ -127,12 +127,14 @@ const OrdersGarantReport = () => {
     drawerProps,
     formProps,
     show,
+    close,
     saveButtonProps,
     deleteButtonProps,
     id,
   } = useDrawerForm<IUsers>({
     action: "edit",
     resource: "users",
+    redirect: false,
     metaData: {
       fields: [
         "id",
@@ -516,7 +518,46 @@ const OrdersGarantReport = () => {
       </PageHeader>
       <Drawer {...drawerProps} width={600}>
         <Edit
-          saveButtonProps={saveButtonProps}
+          saveButtonProps={{
+            disabled: saveButtonProps.disabled,
+            loading: saveButtonProps.loading,
+            onClick: async () => {
+              try {
+                let values: any = await formProps.form?.validateFields();
+                let users_terminals = values.users_terminals;
+                let work_schedules = values.users_work_schedules;
+                let roles = values.users_roles_usersTousers_roles_user_id;
+                delete values.users_terminals;
+                delete values.users_work_schedules;
+                delete values.users_roles_usersTousers_roles_user_id;
+
+                let createQuery = gql`
+                  mutation (
+                    $data: usersUpdateInput!
+                    $where: usersWhereUniqueInput!
+                  ) {
+                    updateUser(data: $data, where: $where) {
+                      id
+                    }
+                  }
+                `;
+                let { updateUser } = await client.request<{
+                  updateUser: IUsers;
+                }>(
+                  createQuery,
+                  {
+                    data: values,
+                    where: { id },
+                  },
+                  { Authorization: `Bearer ${identity?.token.accessToken}` }
+                );
+                if (updateUser) {
+                  close();
+                  loadData();
+                }
+              } catch (error) {}
+            },
+          }}
           deleteButtonProps={deleteButtonProps}
           recordItemId={id}
           title="Редактирование разрешения"

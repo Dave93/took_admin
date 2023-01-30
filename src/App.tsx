@@ -318,10 +318,8 @@ function App() {
           Layout={Layout}
           accessControlProvider={{
             can: async ({ action, params, resource }) => {
-              // console.log("action", action);
-              // console.log("resource", resource);
-              console.log("params", params);
-
+              console.log("action", action);
+              console.log("resource", resource);
               if (
                 params?.resource?.children &&
                 params?.resource?.children.length > 0 &&
@@ -376,7 +374,7 @@ function App() {
           LoginPage={Login}
           OffLayoutArea={OffLayoutArea}
           i18nProvider={i18nProvider}
-          syncWithLocation={true}
+          // syncWithLocation={true}
           Header={Header}
           Title={() => (
             <Link to="/" style={{ width: "100%" }}>

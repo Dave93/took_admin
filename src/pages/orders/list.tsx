@@ -233,6 +233,7 @@ export const OrdersList: React.FC = () => {
           value: { equals: courier_id.value },
         });
       }
+      console.log("filters", filters);
       return filters;
     },
   });

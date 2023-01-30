@@ -8,7 +8,7 @@ type SortOrder = {
   [key: string]: "asc" | "desc";
 };
 
-const genereteSort = (sort?: CrudSorting) => {
+const generateSort = (sort?: CrudSorting) => {
   if (sort && sort.length > 0) {
     const sortQuery = sort.map((i) => {
       let res: SortOrder = {};
@@ -56,7 +56,7 @@ const generateFilter = (filters?: any) => {
       }
     });
   }
-
+  console.log("queryFilters", queryFilters);
   return queryFilters;
 };
 
@@ -71,7 +71,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       metaData,
     }) => {
       const { current = 1, pageSize = 50 } = pagination ?? {};
-      const sortBy = genereteSort(sort);
+      const sortBy = generateSort(sort);
       const filterBy = generateFilter(filters);
 
       const camelResource = camelCase(resource);

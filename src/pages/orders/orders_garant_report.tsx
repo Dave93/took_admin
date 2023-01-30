@@ -3,13 +3,19 @@ import {
   Card,
   Col,
   DatePicker,
+  Drawer,
+  Edit,
+  EditButton,
   Form,
   Input,
+  InputNumber,
   PageHeader,
   Row,
+  Select,
   Space,
   Spin,
   Table,
+  useDrawerForm,
 } from "@pankod/refine-antd";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { DateTime } from "luxon";
@@ -18,10 +24,18 @@ import { Controller, useForm } from "react-hook-form";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import dayjs from "dayjs";
-import { GarantReportItem } from "interfaces";
-import { ExportOutlined } from "@ant-design/icons";
+import {
+  GarantReportItem,
+  IRoles,
+  ITerminals,
+  IUsers,
+  IWorkSchedules,
+} from "interfaces";
+import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
 import { DebounceInput } from "react-debounce-input";
+import { chain } from "lodash";
+import { drive_type, user_status } from "interfaces/enums";
 
 const OrdersGarantReport = () => {
   const { data: identity } = useGetIdentity<{
@@ -30,6 +44,9 @@ const OrdersGarantReport = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [garantData, setGarantData] = useState<GarantReportItem[]>([]);
   const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);
+  const [roles, setRoles] = useState<IRoles[]>([]);
+  const [terminals, setTerminals] = useState<any[]>([]);
+  const [work_schedules, setWorkSchedules] = useState<any[]>([]);
   const {
     handleSubmit,
     control,
@@ -38,6 +55,8 @@ const OrdersGarantReport = () => {
     watch,
     formState: { errors },
   } = useForm();
+
+  const tr = useTranslate();
 
   const month = watch("month");
 
@@ -62,6 +81,7 @@ const OrdersGarantReport = () => {
       query {
         calculateGarant(startDate: "${startDate}", endDate: "${endDate}") {
             courier
+            courier_id
             begin_date
             last_order_date
             created_at
@@ -75,7 +95,9 @@ const OrdersGarantReport = () => {
             delivery_price
             garant_price
             earned,
-            balance
+            balance,
+            garant_days,
+            balance_to_pay
         }
       }
     `;
@@ -87,6 +109,62 @@ const OrdersGarantReport = () => {
     setFilteredData(calculateGarant);
     setIsLoading(false);
   };
+
+  const {
+    drawerProps,
+    formProps,
+    show,
+    saveButtonProps,
+    deleteButtonProps,
+    id,
+  } = useDrawerForm<IUsers>({
+    action: "edit",
+    resource: "users",
+    metaData: {
+      fields: [
+        "id",
+        "first_name",
+        "last_name",
+        "created_at",
+        "drive_type",
+        "car_model",
+        "car_number",
+        "card_name",
+        "card_number",
+        "phone",
+        "latitude",
+        "longitude",
+        "status",
+        "max_active_order_count",
+        "doc_files",
+        {
+          users_terminals: [
+            {
+              terminals: ["id", "name"],
+            },
+          ],
+        },
+        {
+          users_work_schedules: [
+            {
+              work_schedules: ["id", "name"],
+            },
+          ],
+        },
+        {
+          users_roles_usersTousers_roles_user_id: [
+            {
+              roles: ["id", "name"],
+            },
+          ],
+        },
+      ],
+      pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
+    },
+  });
 
   const columns = [
     {
@@ -112,6 +190,22 @@ const OrdersGarantReport = () => {
       title: "Статус",
       dataIndex: "status",
       render: (value: string) => tr(`users.status.${value}`),
+      filters: [
+        {
+          text: tr("users.status.active"),
+          value: "active",
+        },
+        {
+          text: tr("users.status.inactive"),
+          value: "inactive",
+        },
+        {
+          text: tr("users.status.blocked"),
+          value: "blocked",
+        },
+      ],
+      onFilter: (value: string | number | boolean, record: GarantReportItem) =>
+        record.status == value,
     },
     {
       title: "Среднее время доставки",
@@ -126,6 +220,10 @@ const OrdersGarantReport = () => {
       dataIndex: "order_dates_count",
     },
     {
+      title: "Количество гарантных дней",
+      dataIndex: "garant_days",
+    },
+    {
       title: "Возможные дни отгула",
       dataIndex: "possible_day_offs",
     },
@@ -134,13 +232,13 @@ const OrdersGarantReport = () => {
       dataIndex: "actual_day_offs",
     },
     {
-      title: "Стоимость доставки",
+      title: "Сумма всех доставок",
       dataIndex: "delivery_price",
       excelRender: (value: any) => value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {
-      title: "Заработал",
+      title: "Выдано",
       dataIndex: "earned",
       excelRender: (value: any) => value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
@@ -156,6 +254,25 @@ const OrdersGarantReport = () => {
       dataIndex: "garant_price",
       excelRender: (value: any) => +value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Остаток для выплаты",
+      dataIndex: "balance_to_pay",
+      excelRender: (value: any) => +value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Действия",
+      dataIndex: "id",
+      render: (value: string, record: GarantReportItem) => (
+        <Space>
+          <Button
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => show(record.courier_id)}
+          />
+        </Space>
+      ),
     },
   ];
 
@@ -173,9 +290,65 @@ const OrdersGarantReport = () => {
     setIsLoading(false);
   };
 
-  const tr = useTranslate();
+  const fetchAllData = async () => {
+    const query = gql`
+      query {
+        roles {
+          id
+          name
+        }
+        cachedTerminals {
+          id
+          name
+          organization {
+            id
+            name
+          }
+        }
+        workSchedules {
+          id
+          name
+          organization {
+            id
+            name
+          }
+        }
+      }
+    `;
+    const { roles, cachedTerminals, workSchedules } = await client.request<{
+      roles: IRoles[];
+      cachedTerminals: ITerminals[];
+      workSchedules: IWorkSchedules[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+
+    var result = chain(cachedTerminals)
+      .groupBy("organization.name")
+      .toPairs()
+      .map(function (item) {
+        return {
+          name: item[0],
+          children: item[1],
+        };
+      })
+      .value();
+    var workScheduleResult = chain(workSchedules)
+      .groupBy("organization.name")
+      .toPairs()
+      .map(function (item) {
+        return {
+          name: item[0],
+          children: item[1],
+        };
+      })
+      .value();
+
+    setWorkSchedules(workScheduleResult);
+    setTerminals(result);
+    setRoles(roles);
+  };
 
   useEffect(() => {
+    fetchAllData();
     loadData();
 
     return () => {};
@@ -227,7 +400,7 @@ const OrdersGarantReport = () => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item label="Курьер">
                     <DebounceInput
                       minLength={2}
@@ -279,6 +452,118 @@ const OrdersGarantReport = () => {
           </Card>
         </Spin>
       </PageHeader>
+      <Drawer {...drawerProps} width={600}>
+        <Edit
+          saveButtonProps={saveButtonProps}
+          deleteButtonProps={deleteButtonProps}
+          recordItemId={id}
+          title="Редактирование разрешения"
+        >
+          <Form {...formProps} layout="vertical">
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Статус"
+                  name="status"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Select>
+                    {Object.keys(user_status).map((status: string) => (
+                      <Select.Option key={status} value={status}>
+                        {tr(`users.status.${status}`)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Имя"
+                  name="first_name"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Фамилия"
+                  name="last_name"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Телефон" name="phone">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Тип доставки" name="drive_type">
+                  <Select>
+                    {Object.keys(drive_type).map((type: string) => (
+                      <Select.Option key={type} value={type}>
+                        {tr(`deliveryPricing.driveType.${type}`)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Максимальное количество активных заказов"
+                  name="max_active_order_count"
+                >
+                  <InputNumber type="number" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Имя на карте" name="card_name">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Номер карты" name="card_number">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Модель машины" name="car_model">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Гос. номер машины" name="car_number">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Edit>
+      </Drawer>
     </div>
   );
 };

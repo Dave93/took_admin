@@ -5,6 +5,7 @@ export const client = new GraphQLClient(
   process.env.REACT_APP_GRAPHQL_API_URL!,
   {
     headers: {},
+    cache: "no-cache",
   }
 );
 

@@ -96,6 +96,7 @@ export const OrdersShow = () => {
         "pre_distance",
         "pre_duration",
         "finished_date",
+        "delivery_comment",
         {
           orders_organization: ["id", "name"],
         },
@@ -461,7 +462,7 @@ export const OrdersShow = () => {
                     .format("HH:mm:ss")}
                 </Descriptions.Item>
                 <Descriptions.Item label="Комментарий">
-                  {record?.comment}
+                  {record?.delivery_comment}
                 </Descriptions.Item>
                 {record?.cancel_reason && (
                   <Descriptions.Item label="Причина отмены">

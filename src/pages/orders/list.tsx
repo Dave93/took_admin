@@ -121,6 +121,7 @@ export const OrdersList: React.FC = () => {
         "delivery_price",
         "payment_type",
         "finished_date",
+        "pre_distance",
         {
           orders_organization: ["id", "name"],
         },
@@ -445,6 +446,13 @@ export const OrdersList: React.FC = () => {
       ),
     },
     {
+      title: "Дистанция",
+      dataIndex: "pre_distance",
+      width: 100,
+      render: (value: any, record: IOrders) =>
+        `${+record.pre_distance.toFixed(2)} км`,
+    },
+    {
       title: "Цена доставки",
       dataIndex: "delivery_price",
       width: 80,
@@ -473,6 +481,7 @@ export const OrdersList: React.FC = () => {
         "delivery_price",
         "payment_type",
         "finished_date",
+        "pre_distance",
         {
           orders_organization: ["id", "name"],
         },

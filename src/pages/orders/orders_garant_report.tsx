@@ -295,8 +295,8 @@ const OrdersGarantReport = () => {
     const excel = new Excel();
     excel
       .addSheet("test")
-      .addColumns(columns)
-      .addDataSource(garantData, {
+      .addColumns(columns.filter((c) => c.exportable !== false))
+      .addDataSource(filteredData, {
         str2Percent: true,
       })
       .saveAs("Гарант.xlsx");

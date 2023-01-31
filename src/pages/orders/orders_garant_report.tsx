@@ -515,7 +515,7 @@ const OrdersGarantReport = () => {
               scroll={
                 window.innerWidth < 768
                   ? undefined
-                  : { y: "calc(100vh - 390px)", x: "calc(100vw - 350px)" }
+                  : { y: "calc(100vh - 390px)", x: "calc(100vw - 390px)" }
               }
             />
           </Card>

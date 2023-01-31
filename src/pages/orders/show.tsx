@@ -313,7 +313,15 @@ export const OrdersShow = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Статус">
                   <Tag color={record?.orders_order_status?.color}>
-                    {record?.orders_order_status?.name}
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        color: "#000",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {record?.orders_order_status?.name}
+                    </div>
                   </Tag>
                   <CanAccess resource="orders" action="edit">
                     <Popover

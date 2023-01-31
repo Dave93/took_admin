@@ -250,7 +250,7 @@ const OrdersGarantReport = () => {
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {
-      title: "Выдано",
+      title: "Получил",
       dataIndex: "earned",
       excelRender: (value: any) => value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),

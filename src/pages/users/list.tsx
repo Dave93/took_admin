@@ -59,6 +59,7 @@ export const UsersList: React.FC = () => {
     }
   >({
     initialPageSize: 200,
+    defaultSetFilterBehavior: "replace",
     initialSorter: [
       {
         field: "first_name",

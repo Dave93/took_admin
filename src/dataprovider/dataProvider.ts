@@ -73,6 +73,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       const { current = 1, pageSize = 50 } = pagination ?? {};
       const sortBy = generateSort(sort);
       const filterBy = generateFilter(filters);
+      // debugger;
 
       const camelResource = camelCase(resource);
 
@@ -108,7 +109,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           fields: metaData?.fields,
         },
       ]);
-
+      console.log("making request");
       const response = await client.request(
         query,
         variables,

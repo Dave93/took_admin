@@ -316,6 +316,9 @@ function App() {
         <Refine
           notificationProvider={notificationProvider}
           Layout={Layout}
+          options={{
+            syncWithLocation: true,
+          }}
           accessControlProvider={{
             can: async ({ action, params, resource }) => {
               if (

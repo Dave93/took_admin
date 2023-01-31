@@ -21,6 +21,7 @@ import {
   useExport,
   useGetIdentity,
   useNavigation,
+  useTranslate,
 } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
@@ -78,6 +79,7 @@ export const OrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+  const tr = useTranslate();
   const [expand, setExpand] = useState(false);
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
@@ -97,6 +99,7 @@ export const OrdersList: React.FC = () => {
       customer_phone: string;
       courier_id: any;
       order_number: number;
+      orders_couriers: string;
     }
   >({
     initialPageSize: 200,
@@ -106,6 +109,7 @@ export const OrdersList: React.FC = () => {
         order: "desc",
       },
     ],
+    defaultSetFilterBehavior: "replace",
     metaData: {
       fields: [
         "id",
@@ -152,7 +156,7 @@ export const OrdersList: React.FC = () => {
       },
     ],
     onSearch: async (params) => {
-      const filters: CrudFilters = [];
+      const localFilters: CrudFilters = [];
       const {
         organization_id,
         created_at,
@@ -161,8 +165,9 @@ export const OrdersList: React.FC = () => {
         customer_phone,
         courier_id,
         order_number,
+        orders_couriers,
       } = params;
-      filters.push(
+      localFilters.push(
         {
           field: "created_at",
           operator: "gte",
@@ -176,7 +181,7 @@ export const OrdersList: React.FC = () => {
       );
 
       if (organization_id) {
-        filters.push({
+        localFilters.push({
           field: "organization_id",
           operator: "eq",
           value: {
@@ -186,7 +191,7 @@ export const OrdersList: React.FC = () => {
       }
 
       if (terminal_id && terminal_id.length) {
-        filters.push({
+        localFilters.push({
           field: "terminal_id",
           operator: "in",
           value: terminal_id,
@@ -194,7 +199,7 @@ export const OrdersList: React.FC = () => {
       }
 
       if (order_status_id && order_status_id.length) {
-        filters.push({
+        localFilters.push({
           field: "order_status_id",
           operator: "in",
           value: order_status_id,
@@ -202,7 +207,7 @@ export const OrdersList: React.FC = () => {
       }
 
       if (customer_phone) {
-        filters.push({
+        localFilters.push({
           field: "orders_customers",
           operator: "contains",
           value: {
@@ -218,7 +223,7 @@ export const OrdersList: React.FC = () => {
       }
 
       if (order_number) {
-        filters.push({
+        localFilters.push({
           field: "order_number",
           operator: "eq",
           value: {
@@ -228,14 +233,30 @@ export const OrdersList: React.FC = () => {
       }
 
       if (courier_id && courier_id.value) {
-        filters.push({
+        localFilters.push({
           field: "courier_id",
           operator: "eq",
           value: { equals: courier_id.value },
         });
       }
-      console.log("filters", filters);
-      return filters;
+
+      if (orders_couriers) {
+        localFilters.push({
+          field: "orders_couriers",
+          operator: "contains",
+          value: {
+            custom: {
+              is: {
+                status: {
+                  equals: orders_couriers,
+                },
+              },
+            },
+          },
+        });
+      }
+      console.log("filters", localFilters);
+      return localFilters;
     },
   });
 
@@ -726,11 +747,33 @@ export const OrdersList: React.FC = () => {
                 <DebounceSelect fetchOptions={fetchCourier} allowClear />
               </Form.Item>
             </Col>
+            <Col xs={12} sm={12} md={3}>
+              <Form.Item name="orders_couriers" label="Статус курьера">
+                <Select
+                  allowClear
+                  options={[
+                    {
+                      label: tr("users.status.active"),
+                      value: "active",
+                    },
+                    {
+                      label: tr("users.status.inactive"),
+                      value: "inactive",
+                    },
+                    {
+                      label: tr("users.status.blocked"),
+                      value: "blocked",
+                    },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
             {showFullFilter && (
               <>
                 <Col xs={12} sm={12} md={3}>
                   <Form.Item name="organization_id" label="Организация">
                     <Select
+                      allowClear
                       options={organizations.map((org) => ({
                         label: org.name,
                         value: org.id,

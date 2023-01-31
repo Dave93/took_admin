@@ -56,6 +56,7 @@ export const UsersList: React.FC = () => {
       is_online?: boolean;
       terminal_id: string[];
       roles: string;
+      status: string;
     }
   >({
     initialPageSize: 200,
@@ -103,8 +104,15 @@ export const UsersList: React.FC = () => {
     },
 
     onSearch: async (values) => {
-      const { first_name, last_name, phone, is_online, terminal_id, roles } =
-        values;
+      const {
+        first_name,
+        last_name,
+        phone,
+        is_online,
+        terminal_id,
+        roles,
+        status,
+      } = values;
       const filters: CrudFilters = [];
       if (phone) {
         filters.push({
@@ -178,6 +186,14 @@ export const UsersList: React.FC = () => {
               },
             },
           },
+        });
+      }
+
+      if (status) {
+        filters.push({
+          field: "status",
+          operator: "contains",
+          value: { custom: { equals: status } },
         });
       }
 
@@ -256,6 +272,27 @@ export const UsersList: React.FC = () => {
                     </Select.Option>
                   ))}
                 </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="status" label="Статус">
+                <Select
+                  allowClear
+                  options={[
+                    {
+                      label: tr("users.status.active"),
+                      value: "active",
+                    },
+                    {
+                      label: tr("users.status.inactive"),
+                      value: "inactive",
+                    },
+                    {
+                      label: tr("users.status.blocked"),
+                      value: "blocked",
+                    },
+                  ]}
+                />
               </Form.Item>
             </Col>
             <Col span={6}>

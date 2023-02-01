@@ -31,6 +31,7 @@ import duration from "dayjs/plugin/duration";
 import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
 import { ChangeOrdersCouirer } from "components/orders/changeCourier";
 import OrderDeliveryPricing from "components/orders/order_delivery_pricing";
+import OrderNotes from "components/orders/order_notes";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -97,6 +98,7 @@ export const OrdersShow = () => {
         "pre_duration",
         "finished_date",
         "delivery_comment",
+        "operator_notes",
         {
           orders_organization: ["id", "name"],
         },
@@ -472,6 +474,14 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Комментарий">
                   {record?.delivery_comment}
                 </Descriptions.Item>
+                {/* <CanAccess resource="orders" action="edit"> */}
+                <Descriptions.Item label="Заметки">
+                  <OrderNotes
+                    orderId={showId!.toString()}
+                    notes={record?.operator_notes}
+                  />
+                </Descriptions.Item>
+                {/* </CanAccess> */}
                 {record?.cancel_reason && (
                   <Descriptions.Item label="Причина отмены">
                     {record?.cancel_reason}

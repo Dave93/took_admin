@@ -605,10 +605,12 @@ export const OrdersList: React.FC = () => {
             OR: [{
               first_name: {
                 contains: "${queryText}"
+                mode: insensitive
               }
             }, {
               phone: {
                 contains: "${queryText}"
+                mode: insensitive
               }
             }]
           }) {

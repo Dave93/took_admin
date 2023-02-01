@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { drive_type, user_status } from "interfaces/enums";
 import FileUploaderMultiple from "components/file_uploader/multiple";
 import * as gqlb from "gql-query-builder";
+import DebounceSelect from "components/select/debounceSelector";
 
 const OnlineStatus = ({ value }: { value: boolean }) => {
   return (
@@ -65,6 +66,7 @@ export const UsersList: React.FC = () => {
       terminal_id: string[];
       roles: string;
       status: string;
+      id?: IUsers;
     }
   >({
     initialPageSize: 200,
@@ -120,6 +122,7 @@ export const UsersList: React.FC = () => {
         terminal_id,
         roles,
         status,
+        id,
       } = values;
       const filters: CrudFilters = [];
       if (phone) {
@@ -133,6 +136,15 @@ export const UsersList: React.FC = () => {
           },
         });
       }
+
+      if (id) {
+        filters.push({
+          field: "id",
+          operator: "eq",
+          value: { equals: id.value },
+        });
+      }
+
       if (first_name) {
         filters.push({
           field: "first_name",
@@ -323,6 +335,59 @@ export const UsersList: React.FC = () => {
     setTerminals(terminalRes);
     setRoles(roles);
   };
+  const fetchCourier = async (queryText: string) => {
+    const query = gql`
+        query {
+          users(where: {
+            users_roles_usersTousers_roles_user_id: {
+              some: {
+                roles: {
+                  is: {
+                    code: {
+                      equals: "courier"
+                    }
+                  }
+                }
+              }
+            },
+            status: {
+              equals: active
+            },
+            OR: [{
+              first_name: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
+            }, {
+              phone: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
+            }]
+          }) {
+            id
+            first_name
+            last_name
+            phone
+          }
+        }
+    `;
+    const { users } = await client.request<{
+      users: IUsers[];
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+
+    return users.map((user) => ({
+      key: user.id,
+      value: user.id,
+      label: `${user.first_name} ${user.last_name} (${user.phone})`,
+    }));
+  };
 
   const tr = useTranslate();
 
@@ -336,13 +401,8 @@ export const UsersList: React.FC = () => {
         <Form layout="horizontal" {...searchFormProps}>
           <Row gutter={16}>
             <Col span={6}>
-              <Form.Item name="first_name" label="Имя">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="last_name" label="Фамилия">
-                <Input />
+              <Form.Item name="id" label="ФИО">
+                <DebounceSelect fetchOptions={fetchCourier} allowClear />
               </Form.Item>
             </Col>
             <Col span={6}>

@@ -77,6 +77,11 @@ export const OrdersShow = () => {
 
   const { show } = useNavigation();
 
+  const { data: orderCanEdit } = useCan({
+    resource: "orders",
+    action: "edit",
+  });
+
   const { queryResult, showId } = useShow({
     metaData: {
       fields: [
@@ -474,14 +479,14 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Комментарий">
                   {record?.delivery_comment}
                 </Descriptions.Item>
-                {/* <CanAccess resource="orders" action="edit"> */}
-                <Descriptions.Item label="Заметки">
-                  <OrderNotes
-                    orderId={showId!.toString()}
-                    notes={record?.operator_notes}
-                  />
-                </Descriptions.Item>
-                {/* </CanAccess> */}
+                {orderCanEdit?.can && (
+                  <Descriptions.Item label="Заметки">
+                    <OrderNotes
+                      orderId={showId!.toString()}
+                      notes={record?.operator_notes}
+                    />
+                  </Descriptions.Item>
+                )}
                 {record?.cancel_reason && (
                   <Descriptions.Item label="Причина отмены">
                     {record?.cancel_reason}

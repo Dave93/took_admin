@@ -769,8 +769,11 @@ export const UsersList: React.FC = () => {
                     label="Филиалы"
                     name="users_terminals"
                     getValueProps={(value) => {
+                      console.log("value", value);
                       return {
-                        value: value?.map((item: any) => item.terminals.id),
+                        value: value?.map((item: any) =>
+                          item.terminals ? item.terminals.id : item
+                        ),
                       };
                     }}
                   >
@@ -799,8 +802,8 @@ export const UsersList: React.FC = () => {
                     name="users_work_schedules"
                     getValueProps={(value) => {
                       return {
-                        value: value?.map(
-                          (item: any) => item.work_schedules.id
+                        value: value?.map((item: any) =>
+                          item.work_schedules ? item.work_schedules.id : item
                         ),
                       };
                     }}

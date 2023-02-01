@@ -703,7 +703,10 @@ export const UsersList: React.FC = () => {
                     ]}
                     getValueProps={(value) => {
                       return {
-                        value: value?.map((item: any) => item.roles.id),
+                        value:
+                          typeof value == "object"
+                            ? value?.map((item: any) => item.roles.id)
+                            : value,
                       };
                     }}
                   >

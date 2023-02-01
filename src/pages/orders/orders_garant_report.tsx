@@ -37,6 +37,12 @@ import { DebounceInput } from "react-debounce-input";
 import { chain } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const OrdersGarantReport = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
@@ -74,9 +80,12 @@ const OrdersGarantReport = () => {
     let endDate = DateTime.local().endOf("month").toISODate();
     if (month) {
       // start of month using dayjs and to iso date
-      startDate = month.startOf("month").toISOString();
+      startDate = month
+        .tz("Asia/Tashkent")
+        .startOf("month")
+        .format("YYYY-MM-DD");
       // end of month using dayjs and to iso date
-      endDate = month.endOf("month").toISOString();
+      endDate = month.tz("Asia/Tashkent").endOf("month").format("YYYY-MM-DD");
     }
 
     const query = gql`
@@ -101,6 +110,7 @@ const OrdersGarantReport = () => {
             garant_days
             balance_to_pay
             drive_type
+            possible_garant_price
         }
       }
     `;
@@ -119,6 +129,7 @@ const OrdersGarantReport = () => {
         driveType.includes(item.drive_type)
       );
     }
+
     setFilteredData(calculateGarant);
     setIsLoading(false);
   };
@@ -270,6 +281,12 @@ const OrdersGarantReport = () => {
     {
       title: "Остаток для выплаты",
       dataIndex: "balance_to_pay",
+      excelRender: (value: any) => +value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Упущенный гарант",
+      dataIndex: "possible_garant_price",
       excelRender: (value: any) => +value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },

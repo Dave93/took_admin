@@ -769,7 +769,6 @@ export const UsersList: React.FC = () => {
                     label="Филиалы"
                     name="users_terminals"
                     getValueProps={(value) => {
-                      console.log("value", value);
                       return {
                         value: value?.map((item: any) =>
                           item.terminals ? item.terminals.id : item

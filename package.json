@@ -44,6 +44,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-qrcode-logo": "^2.8.0",
     "react-scripts": "^5.0.0",
+    "react-sticky-box": "^1.0.2",
     "react-use": "^17.4.0",
     "react-yandex-maps": "^4.6.0",
     "swr": "^2.0.0",

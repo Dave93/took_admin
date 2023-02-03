@@ -72,6 +72,7 @@ import { useMemo } from "react";
 import { BrandsCreate, BrandsEdit, BrandsList } from "pages/brands";
 import WhereCourierList from "pages/users/where_courier_list";
 import OrdersGarantReport from "pages/orders/orders_garant_report";
+import CourierEfficiency from "pages/users/courier_efficiency";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -208,6 +209,14 @@ function App() {
         list: TerminalsCouriersListPage,
         options: {
           label: "Курьеры по филиалам",
+        },
+      },
+      {
+        name: "courier_efficiency",
+        parentName: "users-group",
+        list: CourierEfficiency,
+        options: {
+          label: "Эффективность курьера",
         },
       },
       {

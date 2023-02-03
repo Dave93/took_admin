@@ -43,6 +43,8 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+const { RangePicker } = DatePicker;
+
 const OrdersGarantReport = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
@@ -50,6 +52,7 @@ const OrdersGarantReport = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [garantData, setGarantData] = useState<GarantReportItem[]>([]);
   const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);
+  const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [roles, setRoles] = useState<IRoles[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [work_schedules, setWorkSchedules] = useState<any[]>([]);
@@ -67,6 +70,8 @@ const OrdersGarantReport = () => {
   const month = watch("month");
   const status = watch("status");
   const driveType = watch("drive_type");
+  const courier_id = watch("courier_id");
+  const walletPeriod = watch("wallet_period");
 
   const onSubmit = async (data: any) => {
     loadData();
@@ -88,9 +93,17 @@ const OrdersGarantReport = () => {
       endDate = month.tz("Asia/Tashkent").endOf("month").format("YYYY-MM-DD");
     }
 
+    console.log("walletPeriod", walletPeriod);
+
     const query = gql`
       query {
-        calculateGarant(startDate: "${startDate}", endDate: "${endDate}") {
+        calculateGarant(startDate: "${startDate}", endDate: "${endDate}"${
+      courier_id ? `, courier_id: ${JSON.stringify(courier_id)}` : ""
+    } ${
+      walletPeriod
+        ? `, walletStartDate: "${walletPeriod[0].toISOString()}", walletEndDate: "${walletPeriod[1].toISOString()}"`
+        : ""
+    }) {
             courier
             courier_id
             begin_date
@@ -344,13 +357,26 @@ const OrdersGarantReport = () => {
             name
           }
         }
+        users(
+          where: {
+            users_roles_usersTousers_roles_user_id: {
+              some: { roles: { is: { code: { equals: "courier" } } } }
+            }
+          }
+        ) {
+          first_name
+          last_name
+          id
+        }
       }
     `;
-    const { roles, cachedTerminals, workSchedules } = await client.request<{
-      roles: IRoles[];
-      cachedTerminals: ITerminals[];
-      workSchedules: IWorkSchedules[];
-    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    const { roles, cachedTerminals, workSchedules, users } =
+      await client.request<{
+        roles: IRoles[];
+        cachedTerminals: ITerminals[];
+        workSchedules: IWorkSchedules[];
+        users: IUsers[];
+      }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
     var result = chain(cachedTerminals)
       .groupBy("organization.name")
@@ -372,7 +398,7 @@ const OrdersGarantReport = () => {
         };
       })
       .value();
-
+    setCouriersList(users);
     setWorkSchedules(workScheduleResult);
     setTerminals(result);
     setRoles(roles);
@@ -432,36 +458,35 @@ const OrdersGarantReport = () => {
                 </Col>
                 <Col span={6}>
                   <Form.Item label="Курьер">
-                    <DebounceInput
-                      minLength={2}
-                      debounceTimeout={300}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        width: "100%",
-                        color: "#626262",
-                        fontSize: "14px",
-                        lineHeight: "1.5715",
-                        backgroundColor: "#fff",
-                        backgroundImage: "none",
-                        border: "1px solid #d9d9d9",
-                        borderRadius: "6px",
-                        transition: "all 0.3s",
-                        flex: "auto",
-                        minWidth: "1px",
-                        height: "auto",
-                        padding: "4px 11px",
-                        background: "transparent",
-                      }}
-                      onChange={(event) =>
-                        setFilteredData(
-                          garantData.filter((item) =>
-                            item.courier
+                    <Controller
+                      name="courier_id"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          placeholder="Выберите курьера"
+                          allowClear
+                          showSearch
+                          optionFilterProp="children"
+                          filterOption={(input, option) =>
+                            (option?.label ?? "")
                               .toLowerCase()
-                              .includes(event.target.value.toLowerCase())
-                          )
-                        )
-                      }
+                              .includes(input.toLowerCase())
+                          }
+                          filterSort={(optionA, optionB) =>
+                            (optionA?.label ?? "")
+                              .toLowerCase()
+                              .localeCompare(
+                                (optionB?.label ?? "").toLowerCase()
+                              )
+                          }
+                          mode="multiple"
+                          options={couriersList.map((c) => ({
+                            label: `${c.first_name} ${c.last_name}`,
+                            value: c.id,
+                          }))}
+                        />
+                      )}
                     />
                   </Form.Item>
                 </Col>
@@ -512,6 +537,21 @@ const OrdersGarantReport = () => {
                             </Select.Option>
                           ))}
                         </Select>
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label="Период кошелька">
+                    <Controller
+                      name="wallet_period"
+                      control={control}
+                      render={({ field }) => (
+                        <RangePicker
+                          {...field}
+                          format={"DD.MM.YYYY HH:mm"}
+                          showTime
+                        />
                       )}
                     />
                   </Form.Item>

@@ -72,6 +72,7 @@ const OrdersGarantReport = () => {
   const driveType = watch("drive_type");
   const courier_id = watch("courier_id");
   const walletPeriod = watch("wallet_period");
+  const terminal_id = watch("terminal_id");
 
   const onSubmit = async (data: any) => {
     loadData();
@@ -92,12 +93,17 @@ const OrdersGarantReport = () => {
       // end of month using dayjs and to iso date
       endDate = month.tz("Asia/Tashkent").endOf("month").format("YYYY-MM-DD");
     }
+
     const query = gql`
       query {
         calculateGarant(startDate: "${startDate}", endDate: "${endDate}"${
       courier_id ? `, courier_id: ${JSON.stringify(courier_id)}` : ""
     } ${
       walletPeriod ? `, walletEndDate: "${walletPeriod.toISOString()}"` : ""
+    } ${
+      terminal_id && terminal_id.length
+        ? `, terminal_id: ${JSON.stringify(terminal_id)}`
+        : ""
     }) {
             courier
             courier_id
@@ -436,7 +442,7 @@ const OrdersGarantReport = () => {
               ]}
             >
               <Row gutter={16}>
-                <Col span={6}>
+                <Col span={4}>
                   <Form.Item label="Месяц">
                     <Controller
                       name="month"
@@ -447,6 +453,39 @@ const OrdersGarantReport = () => {
                           picker="month"
                           format="MMM YYYY"
                         />
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label="Терминал">
+                    <Controller
+                      name="terminal_id"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          showSearch
+                          optionFilterProp="children"
+                          allowClear
+                          mode="multiple"
+                        >
+                          {terminals.map((terminal: any) => (
+                            <Select.OptGroup
+                              key={terminal.name}
+                              label={terminal.name}
+                            >
+                              {terminal.children.map((terminal: ITerminals) => (
+                                <Select.Option
+                                  key={terminal.id}
+                                  value={terminal.id}
+                                >
+                                  {terminal.name}
+                                </Select.Option>
+                              ))}
+                            </Select.OptGroup>
+                          ))}
+                        </Select>
                       )}
                     />
                   </Form.Item>

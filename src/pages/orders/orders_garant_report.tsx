@@ -92,17 +92,12 @@ const OrdersGarantReport = () => {
       // end of month using dayjs and to iso date
       endDate = month.tz("Asia/Tashkent").endOf("month").format("YYYY-MM-DD");
     }
-
-    console.log("walletPeriod", walletPeriod);
-
     const query = gql`
       query {
         calculateGarant(startDate: "${startDate}", endDate: "${endDate}"${
       courier_id ? `, courier_id: ${JSON.stringify(courier_id)}` : ""
     } ${
-      walletPeriod
-        ? `, walletStartDate: "${walletPeriod[0].toISOString()}", walletEndDate: "${walletPeriod[1].toISOString()}"`
-        : ""
+      walletPeriod ? `, walletEndDate: "${walletPeriod.toISOString()}"` : ""
     }) {
             courier
             courier_id
@@ -547,11 +542,7 @@ const OrdersGarantReport = () => {
                       name="wallet_period"
                       control={control}
                       render={({ field }) => (
-                        <RangePicker
-                          {...field}
-                          format={"DD.MM.YYYY HH:mm"}
-                          showTime
-                        />
+                        <DatePicker {...field} format="DD.MM.YYYY" />
                       )}
                     />
                   </Form.Item>

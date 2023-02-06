@@ -73,6 +73,7 @@ import { BrandsCreate, BrandsEdit, BrandsList } from "pages/brands";
 import WhereCourierList from "pages/users/where_courier_list";
 import OrdersGarantReport from "pages/orders/orders_garant_report";
 import CourierEfficiency from "pages/users/courier_efficiency";
+import queryClient from "dataprovider/reactQueryClient";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -327,6 +328,9 @@ function App() {
           Layout={Layout}
           options={{
             syncWithLocation: true,
+            reactQuery: {
+              clientConfig: queryClient,
+            },
           }}
           accessControlProvider={{
             can: async ({ action, params, resource }) => {

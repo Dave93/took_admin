@@ -34,7 +34,7 @@ import {
 import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
 import { DebounceInput } from "react-debounce-input";
-import { chain } from "lodash";
+import { chain, sortBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 
 import utc from "dayjs/plugin/utc";
@@ -401,7 +401,7 @@ const OrdersGarantReport = () => {
       .value();
     setCouriersList(users);
     setWorkSchedules(workScheduleResult);
-    setTerminals(result);
+    setTerminals(sortBy(cachedTerminals, ["name"]));
     setRoles(roles);
   };
 
@@ -471,19 +471,12 @@ const OrdersGarantReport = () => {
                           mode="multiple"
                         >
                           {terminals.map((terminal: any) => (
-                            <Select.OptGroup
-                              key={terminal.name}
-                              label={terminal.name}
+                            <Select.Option
+                              key={terminal.id}
+                              value={terminal.id}
                             >
-                              {terminal.children.map((terminal: ITerminals) => (
-                                <Select.Option
-                                  key={terminal.id}
-                                  value={terminal.id}
-                                >
-                                  {terminal.name}
-                                </Select.Option>
-                              ))}
-                            </Select.OptGroup>
+                              {terminal.name}
+                            </Select.Option>
                           ))}
                         </Select>
                       )}

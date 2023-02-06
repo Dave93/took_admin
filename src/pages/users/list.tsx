@@ -21,11 +21,12 @@ import {
   CrudFilters,
   HttpError,
   useGetIdentity,
+  useQueryClient,
   useTranslate,
 } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
-import { chain } from "lodash";
+import { chain, sortBy } from "lodash";
 import { EditOutlined } from "@ant-design/icons";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
@@ -52,6 +53,8 @@ export const UsersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+
+  const queryClient = useQueryClient();
   const [terminals, setTerminals] = useState<any[]>([]);
   const [roles, setRoles] = useState<IRoles[]>([]);
   const [work_schedules, setWorkSchedules] = useState<any[]>([]);
@@ -125,6 +128,7 @@ export const UsersList: React.FC = () => {
         id,
       } = values;
       const filters: CrudFilters = [];
+      queryClient.invalidateQueries(["default", "users", "list"]);
       if (phone) {
         filters.push({
           field: "phone",
@@ -310,16 +314,6 @@ export const UsersList: React.FC = () => {
       cachedTerminals: ITerminals[];
       workSchedules: IWorkSchedules[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
-    var terminalRes = chain(cachedTerminals)
-      .groupBy("organization.name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
     var workScheduleResult = chain(workSchedules)
       .groupBy("organization.name")
       .toPairs()
@@ -332,7 +326,7 @@ export const UsersList: React.FC = () => {
       .value();
 
     setWorkSchedules(workScheduleResult);
-    setTerminals(terminalRes);
+    setTerminals(sortBy(cachedTerminals, ["name"]));
     setRoles(roles);
   };
   const fetchCourier = async (queryText: string) => {
@@ -451,13 +445,9 @@ export const UsersList: React.FC = () => {
                   mode="multiple"
                 >
                   {terminals.map((terminal: any) => (
-                    <Select.OptGroup key={terminal.name} label={terminal.name}>
-                      {terminal.children.map((terminal: ITerminals) => (
-                        <Select.Option key={terminal.id} value={terminal.id}>
-                          {terminal.name}
-                        </Select.Option>
-                      ))}
-                    </Select.OptGroup>
+                    <Select.Option key={terminal.id} value={terminal.id}>
+                      {terminal.name}
+                    </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -781,19 +771,9 @@ export const UsersList: React.FC = () => {
                   >
                     <Select mode="multiple">
                       {terminals.map((terminal: any) => (
-                        <Select.OptGroup
-                          key={terminal.name}
-                          label={terminal.name}
-                        >
-                          {terminal.children.map((terminal: ITerminals) => (
-                            <Select.Option
-                              key={terminal.id}
-                              value={terminal.id}
-                            >
-                              {terminal.name}
-                            </Select.Option>
-                          ))}
-                        </Select.OptGroup>
+                        <Select.Option key={terminal.id} value={terminal.id}>
+                          {terminal.name}
+                        </Select.Option>
                       ))}
                     </Select>
                   </Form.Item>

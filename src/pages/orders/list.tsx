@@ -21,6 +21,7 @@ import {
   useExport,
   useGetIdentity,
   useNavigation,
+  useQueryClient,
   useTranslate,
 } from "@pankod/refine-core";
 import { client } from "graphConnect";
@@ -33,7 +34,7 @@ import {
   ITerminals,
   IUsers,
 } from "interfaces";
-import { chain } from "lodash";
+import { chain, sortBy } from "lodash";
 import { UpOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
 import { useState, useEffect, useMemo, FC } from "react";
 import dayjs from "dayjs";
@@ -42,6 +43,7 @@ import duration from "dayjs/plugin/duration";
 import DebounceSelect from "components/select/debounceSelector";
 import { OrdersTableActions } from "components/table_actions/orders";
 import { useTableExport } from "components/export/table";
+import queryClient from "dataprovider/reactQueryClient";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
@@ -86,6 +88,8 @@ export const OrdersList: React.FC = () => {
   const [orderStatuses, setOrderStatuses] = useState<any[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
+  const queryClient = useQueryClient();
+
   const { show } = useNavigation();
 
   const { tableProps, searchFormProps, filters, sorter, setFilters } = useTable<
@@ -110,6 +114,9 @@ export const OrdersList: React.FC = () => {
       },
     ],
     defaultSetFilterBehavior: "replace",
+    queryOptions: {
+      queryKey: ["orders"],
+    },
     metaData: {
       fields: [
         "id",
@@ -158,6 +165,8 @@ export const OrdersList: React.FC = () => {
     ],
     onSearch: async (params) => {
       const localFilters: CrudFilters = [];
+      queryClient.invalidateQueries(["default", "orders", "list"]);
+      // queryClient.invalidateQueries();
       const {
         organization_id,
         created_at,
@@ -168,6 +177,7 @@ export const OrdersList: React.FC = () => {
         order_number,
         orders_couriers,
       } = params;
+
       localFilters.push(
         {
           field: "created_at",
@@ -545,28 +555,8 @@ export const OrdersList: React.FC = () => {
         cachedOrderStatuses: IOrderStatus[];
       }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
-    var terminalRes = chain(cachedTerminals)
-      .groupBy("organization.name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
-    var orderStatusRes = chain(cachedOrderStatuses)
-      .groupBy("order_status_organization.name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
-    setTerminals(terminalRes);
-    setOrderStatuses(orderStatusRes);
+    setTerminals(sortBy(cachedTerminals, (item) => item.name));
+    setOrderStatuses(sortBy(cachedOrderStatuses, (item) => item.name));
   };
 
   const goToCustomer = (id: string) => {
@@ -801,19 +791,9 @@ export const OrdersList: React.FC = () => {
                       mode="multiple"
                     >
                       {terminals.map((terminal: any) => (
-                        <Select.OptGroup
-                          key={terminal.name}
-                          label={terminal.name}
-                        >
-                          {terminal.children.map((terminal: ITerminals) => (
-                            <Select.Option
-                              key={terminal.id}
-                              value={terminal.id}
-                            >
-                              {terminal.name}
-                            </Select.Option>
-                          ))}
-                        </Select.OptGroup>
+                        <Select.Option key={terminal.id} value={terminal.id}>
+                          {terminal.name}
+                        </Select.Option>
                       ))}
                     </Select>
                   </Form.Item>
@@ -827,19 +807,9 @@ export const OrdersList: React.FC = () => {
                       mode="multiple"
                     >
                       {orderStatuses.map((terminal: any) => (
-                        <Select.OptGroup
-                          key={terminal.name}
-                          label={terminal.name}
-                        >
-                          {terminal.children.map((terminal: ITerminals) => (
-                            <Select.Option
-                              key={terminal.id}
-                              value={terminal.id}
-                            >
-                              {terminal.name}
-                            </Select.Option>
-                          ))}
-                        </Select.OptGroup>
+                        <Select.Option key={terminal.id} value={terminal.id}>
+                          {terminal.name}
+                        </Select.Option>
                       ))}
                     </Select>
                   </Form.Item>

@@ -792,7 +792,7 @@ export const OrdersList: React.FC = () => {
                     >
                       {terminals.map((terminal: any) => (
                         <Select.Option key={terminal.id} value={terminal.id}>
-                          {terminal.name}
+                          {terminal.name} {terminal.organization?.name}
                         </Select.Option>
                       ))}
                     </Select>

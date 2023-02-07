@@ -25,7 +25,12 @@ import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { YMaps, Map } from "react-yandex-maps";
-import { IOrderActions, IOrderLocation, IOrderStatus } from "interfaces";
+import {
+  IOrderActions,
+  IOrderLocation,
+  IOrderStatus,
+  IUsers,
+} from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
@@ -207,6 +212,10 @@ export const OrdersShow = () => {
             action
             action_text
             duration
+            order_actions_created_byTousers {
+              first_name
+              last_name
+            }
           }
         }
       `;
@@ -582,10 +591,22 @@ export const OrdersShow = () => {
                   </div>
                 }
                 style={{
-                  paddingBottom: "40px",
+                  paddingBottom: item.order_actions_created_byTousers
+                    ? "20px"
+                    : "40px",
                 }}
               >
-                {item.action_text}
+                <Space direction="vertical" style={{ display: "flex" }}>
+                  <div>{item.action_text}</div>
+                  {item.order_actions_created_byTousers && (
+                    <div>
+                      <strong>Пользователь: </strong>
+                      <Tag color="blue">
+                        {item.order_actions_created_byTousers.first_name}
+                      </Tag>
+                    </div>
+                  )}
+                </Space>
               </Timeline.Item>
             ))}
           </Timeline>

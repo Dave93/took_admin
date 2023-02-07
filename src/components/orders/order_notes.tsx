@@ -1,6 +1,9 @@
-import { Descriptions, Button, Input, Space } from "@pankod/refine-antd";
+import { Descriptions, Button, Input, Space, Form } from "@pankod/refine-antd";
 import { FC, useState } from "react";
 import { SaveOutlined, EditOutlined } from "@ant-design/icons";
+import { useGetIdentity } from "@pankod/refine-core";
+import { client } from "graphConnect";
+import { gql } from "graphql-request";
 
 const { TextArea } = Input;
 
@@ -13,47 +16,53 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
   const [orderNotes, setOrderNotes] = useState(notes || "");
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { data: identity } = useGetIdentity<{
+    token: { accessToken: string };
+  }>();
+  const saveNotes = async () => {
+    setIsSaving(true);
+    let createQuery = gql`
+      mutation ($orderId: String!, $notes: String!) {
+        addOrderNotes(orderId: $orderId, notes: $notes)
+      }
+    `;
+    await client.request(
+      createQuery,
+      {
+        orderId,
+        notes: orderNotes,
+      },
+      { Authorization: `Bearer ${identity?.token.accessToken}` }
+    );
+    setIsSaving(false);
+  };
+
   return (
     <>
-      {isEditing ? (
-        <div>
+      <Form
+        layout="vertical"
+        initialValues={{
+          notes: notes,
+        }}
+      >
+        <Space direction="vertical" style={{ display: "flex" }}>
           <TextArea
-            value={orderNotes}
+            defaultValue={notes || ""}
             rows={2}
             onChange={(e) => setOrderNotes(e.target.value)}
-          />
+          >
+            {notes}
+          </TextArea>
           <Button
             type="primary"
+            loading={isSaving}
             icon={<SaveOutlined />}
-            onClick={() => setIsEditing(false)}
+            onClick={saveNotes}
           >
             Сохранить
           </Button>
-        </div>
-      ) : (
-        <div
-          style={{
-            position: "relative",
-          }}
-        >
-          <div>{orderNotes}</div>
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: -10,
-            }}
-          >
-            <Button
-              icon={<EditOutlined />}
-              type="primary"
-              size="small"
-              shape="circle"
-              onClick={() => setIsEditing(true)}
-            />
-          </div>
-        </div>
-      )}
+        </Space>
+      </Form>
     </>
   );
 };

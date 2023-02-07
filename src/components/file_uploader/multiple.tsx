@@ -20,7 +20,9 @@ const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
     token: { accessToken: string };
   }>();
   const [parent, enableAnimations] = useAutoAnimate(/* optional config */);
-  const [additionalFiles, setAdditionalFiles] = useState<string[]>([]);
+  const [additionalFiles, setAdditionalFiles] = useState<string[]>(
+    value ? value.filter((v) => v) : []
+  );
   const [loading, setLoading] = useState(false);
 
   const uploadFile = async (file: File) => {
@@ -44,6 +46,8 @@ const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
   };
 
   const onUpload = async (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
     const file = e.target.files[0];
     if (!file) {
       return;

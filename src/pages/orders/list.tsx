@@ -266,7 +266,6 @@ export const OrdersList: React.FC = () => {
           },
         });
       }
-      console.log("filters", localFilters);
       return localFilters;
     },
   });

@@ -56,7 +56,6 @@ const generateFilter = (filters?: any) => {
       }
     });
   }
-  console.log("queryFilters", queryFilters);
   return queryFilters;
 };
 
@@ -109,7 +108,6 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
           fields: metaData?.fields,
         },
       ]);
-      console.log("making request");
       const response = await client.request(
         query,
         variables,

@@ -104,17 +104,15 @@ export const ChangeOrdersCouirer: FC<ChangeOrderProps> = ({
           optionFilterProp="children"
           onChange={(value) => setSelectedCourier(value)}
           filterOption={(input, option) =>
-            (option!.children as unknown as string)
+            (option!.label as unknown as string)
               .toLowerCase()
               .includes(input.toLowerCase())
           }
-        >
-          {couriers.map((courier) => (
-            <Option key={courier.id} value={courier.id}>
-              {courier.first_name} {courier.last_name}
-            </Option>
-          ))}
-        </Select>
+          options={couriers.map((courier) => ({
+            value: courier.id,
+            label: `${courier.first_name} ${courier.last_name}`,
+          }))}
+        />
       </Modal>
     </>
   );

@@ -109,6 +109,8 @@ export const OrdersShow = () => {
         "finished_date",
         "delivery_comment",
         "operator_notes",
+        "delivery_schedule",
+        "later_time",
         {
           orders_organization: ["id", "name"],
         },
@@ -470,6 +472,16 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Способ оплаты">
                   {record?.payment_type}
                 </Descriptions.Item>
+                <Descriptions.Item label="График доставки">
+                  {record?.delivery_schedule == "later"
+                    ? "На время"
+                    : "В ближайшее время"}
+                </Descriptions.Item>
+                {record?.delivery_schedule == "later" && (
+                  <Descriptions.Item label="Когда доставить">
+                    {record?.later_time}
+                  </Descriptions.Item>
+                )}
                 <Descriptions.Item label="Стоимость заказа">
                   {new Intl.NumberFormat("ru").format(record?.order_price)} сум
                 </Descriptions.Item>

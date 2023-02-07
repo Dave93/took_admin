@@ -12,7 +12,7 @@ import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
-import { chain } from "lodash";
+import { chain, sortBy } from "lodash";
 import * as gqlb from "gql-query-builder";
 import { useEffect, useState } from "react";
 import { drive_type, user_status } from "interfaces/enums";
@@ -105,16 +105,6 @@ export const UsersEdit: React.FC = () => {
       workSchedules: IWorkSchedules[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
-    var result = chain(cachedTerminals)
-      .groupBy("organization.name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
     var workScheduleResult = chain(workSchedules)
       .groupBy("organization.name")
       .toPairs()
@@ -127,7 +117,7 @@ export const UsersEdit: React.FC = () => {
       .value();
 
     setWorkSchedules(workScheduleResult);
-    setTerminals(result);
+    setTerminals(sortBy(cachedTerminals, ["name"]));
     setRoles(roles);
   };
 
@@ -349,13 +339,9 @@ export const UsersEdit: React.FC = () => {
             <Form.Item label="Филиалы" name="users_terminals">
               <Select mode="multiple">
                 {terminals.map((terminal: any) => (
-                  <Select.OptGroup key={terminal.name} label={terminal.name}>
-                    {terminal.children.map((terminal: ITerminals) => (
-                      <Select.Option key={terminal.id} value={terminal.id}>
-                        {terminal.name}
-                      </Select.Option>
-                    ))}
-                  </Select.OptGroup>
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
+                  </Select.Option>
                 ))}
               </Select>
             </Form.Item>

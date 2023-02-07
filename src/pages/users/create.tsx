@@ -15,7 +15,7 @@ import * as gqlb from "gql-query-builder";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
 import { drive_type, user_status } from "interfaces/enums";
 import { useEffect, useState } from "react";
-import { chain } from "lodash";
+import { chain, sortBy } from "lodash";
 
 export const UsersCreate = () => {
   const { data: identity } = useGetIdentity<{
@@ -86,16 +86,6 @@ export const UsersCreate = () => {
       workSchedules: IWorkSchedules[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
-    var result = chain(cachedTerminals)
-      .groupBy("organization.name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
     var workScheduleResult = chain(workSchedules)
       .groupBy("organization.name")
       .toPairs()
@@ -108,7 +98,7 @@ export const UsersCreate = () => {
       .value();
 
     setWorkSchedules(workScheduleResult);
-    setTerminals(result);
+    setTerminals(sortBy(cachedTerminals, ["name"]));
     setRoles(roles);
   };
 
@@ -297,13 +287,9 @@ export const UsersCreate = () => {
             <Form.Item label="Филиалы" name="users_terminals">
               <Select mode="multiple">
                 {terminals.map((terminal: any) => (
-                  <Select.OptGroup key={terminal.name} label={terminal.name}>
-                    {terminal.children.map((terminal: ITerminals) => (
-                      <Select.Option key={terminal.id} value={terminal.id}>
-                        {terminal.name}
-                      </Select.Option>
-                    ))}
-                  </Select.OptGroup>
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
+                  </Select.Option>
                 ))}
               </Select>
             </Form.Item>

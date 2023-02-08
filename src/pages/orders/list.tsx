@@ -540,6 +540,7 @@ export const OrdersList: React.FC = () => {
           name
           color
           organization_id
+          sort
           order_status_organization {
             id
             name
@@ -555,7 +556,7 @@ export const OrdersList: React.FC = () => {
       }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
     setTerminals(sortBy(cachedTerminals, (item) => item.name));
-    setOrderStatuses(sortBy(cachedOrderStatuses, (item) => item.name));
+    setOrderStatuses(sortBy(cachedOrderStatuses, (item) => item.sort));
   };
 
   const goToCustomer = (id: string) => {
@@ -891,6 +892,10 @@ export const OrdersList: React.FC = () => {
               totalMinutes = totalMinutes / deliveredOrdersCount;
               const totalHours = parseInt((totalMinutes / 60).toString());
               const totalMins = dayjs().minute(totalMinutes).format("mm");
+              const totalDistances = pageData.reduce(
+                (sum, record) => sum + record.pre_distance,
+                0
+              );
               // return `${totalHours}:${totalMins}`;
 
               return (
@@ -908,6 +913,9 @@ export const OrdersList: React.FC = () => {
                         <b>{`${totalHours}:${totalMins}`} </b>
                       </Table.Summary.Cell>
                       <Table.Summary.Cell index={13}>
+                        <b>{`${totalDistances.toFixed(2)} км`} </b>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={14}>
                         <b>{new Intl.NumberFormat("ru").format(total)} </b>
                       </Table.Summary.Cell>
                     </Table.Summary.Row>

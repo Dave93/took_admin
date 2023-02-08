@@ -474,6 +474,14 @@ export const UsersList: React.FC = () => {
         </Form>
         <Table {...tableProps} rowKey="id">
           <Table.Column
+            dataIndex="index"
+            title="№"
+            width={60}
+            render={(value: any, record: any, index: number) => (
+              <div>{index + 1}</div>
+            )}
+          />
+          <Table.Column
             dataIndex="status"
             title="Статус"
             render={(value) => tr(`users.status.${value}`)}

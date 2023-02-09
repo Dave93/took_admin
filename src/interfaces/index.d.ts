@@ -523,3 +523,29 @@ export class GarantReportItem {
 
   drive_type: keyof typeof drive_type;
 }
+
+export class RollCallCourier {
+  id: string;
+
+  first_name: string;
+
+  last_name: string;
+
+  created_at?: Date;
+
+  date?: Date;
+
+  is_late: boolean;
+
+  is_online: boolean;
+
+  drive_type: keyof typeof drive_type;
+}
+
+export class RollCallItem {
+  id: string;
+
+  name: string;
+
+  couriers: RollCallCourier[];
+}

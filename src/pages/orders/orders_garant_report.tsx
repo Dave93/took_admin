@@ -36,6 +36,8 @@ import { Excel } from "components/export/src";
 import { DebounceInput } from "react-debounce-input";
 import { chain, sortBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
+import { FaWalking } from "react-icons/fa";
+import { AiFillCar } from "react-icons/ai";
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -218,6 +220,10 @@ const OrdersGarantReport = () => {
       dataIndex: "courier",
       width: 100,
       textWrap: "word-break",
+      excelRender: (value: string) => value,
+      render: (value: string, record: any) => {
+        return record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />;
+      },
     },
     {
       title: "Дата начала",

@@ -74,6 +74,7 @@ import WhereCourierList from "pages/users/where_courier_list";
 import OrdersGarantReport from "pages/orders/orders_garant_report";
 import CourierEfficiency from "pages/users/courier_efficiency";
 import queryClient from "dataprovider/reactQueryClient";
+import { RollCallList } from "pages/users/roll_call_list";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -279,6 +280,14 @@ function App() {
           label: "Отчёт по рабочим графикам",
         },
         list: WorkSchedulesReport,
+      },
+      {
+        name: "roll_call",
+        parentName: "time_management",
+        options: {
+          label: "Перекличка",
+        },
+        list: RollCallList,
       },
       {
         name: "settings",

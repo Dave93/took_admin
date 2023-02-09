@@ -5,6 +5,8 @@ import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import "./i18n";
 
+import "@tremor/react/dist/esm/tremor.css";
+
 ReactDOM.render(
   <React.StrictMode>
     <React.Suspense fallback="loading">

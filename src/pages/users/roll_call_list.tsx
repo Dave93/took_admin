@@ -7,6 +7,7 @@ import {
   Space,
 } from "@pankod/refine-antd";
 import { useGetIdentity } from "@pankod/refine-core";
+import { PhoneOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
@@ -73,6 +74,7 @@ export const RollCallList = () => {
                 date
                 is_online
                 is_late
+                phone
             }
         }
       }
@@ -181,22 +183,36 @@ export const RollCallList = () => {
                       <AiFillCar />
                     )}
                   </Flex>
-                  <Badge
-                    text={
-                      courier.created_at
-                        ? dayjs(courier.created_at).format("HH:mm")
-                        : courier.is_online
-                        ? "не сегодня"
-                        : "не в сети"
-                    }
-                    color={
-                      courier.is_late
-                        ? "red"
-                        : courier.is_online
-                        ? "green"
-                        : "red"
-                    }
-                  />
+                  <Space>
+                    <Badge
+                      text={
+                        courier.created_at
+                          ? dayjs(courier.created_at).format("HH:mm")
+                          : courier.is_online
+                          ? "не сегодня"
+                          : "не в сети"
+                      }
+                      color={
+                        courier.is_late
+                          ? "red"
+                          : courier.is_online
+                          ? "green"
+                          : "red"
+                      }
+                    />
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      icon={<PhoneOutlined />}
+                      size="small"
+                      onClick={() =>
+                        (window.location.href = `tel:${courier.phone.replace(
+                          "+998",
+                          ""
+                        )}`)
+                      }
+                    />
+                  </Space>
                 </ListItem>
               ))}
             </List>

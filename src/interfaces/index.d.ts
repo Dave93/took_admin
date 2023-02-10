@@ -540,6 +540,7 @@ export class RollCallCourier {
   is_online: boolean;
 
   drive_type: keyof typeof drive_type;
+  phone: string;
 }
 
 export class RollCallItem {

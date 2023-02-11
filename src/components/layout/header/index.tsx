@@ -43,23 +43,23 @@ export const Header: React.FC = () => {
 
   const currentLocale = locale();
 
-  const menu = (
-    <Menu selectedKeys={currentLocale ? [currentLocale] : []}>
-      {[...(i18n.languages || [])].sort().map((lang: string) => (
-        <Menu.Item
-          key={lang}
-          onClick={() => changeLanguage(lang)}
-          icon={
-            <span style={{ marginRight: 8 }}>
-              <Avatar size={16} src={`/images/flags/${lang}.svg`} />
-            </span>
-          }
-        >
-          {LangStrings[lang as keyof typeof LangStrings]}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+  // const menu = (
+  //   <Menu selectedKeys={currentLocale ? [currentLocale] : []}>
+  //     {[...(i18n.languages || [])].sort().map((lang: string) => (
+  //       <Menu.Item
+  //         key={lang}
+  //         onClick={() => changeLanguage(lang)}
+  //         icon={
+  //           <span style={{ marginRight: 8 }}>
+  //             <Avatar size={16} src={`/images/flags/${lang}.svg`} />
+  //           </span>
+  //         }
+  //       >
+  //         {LangStrings[lang as keyof typeof LangStrings]}
+  //       </Menu.Item>
+  //     ))}
+  //   </Menu>
+  // );
 
   const loadQrCode = async () => {
     const query = gql`
@@ -117,7 +117,7 @@ export const Header: React.FC = () => {
       >
         <QRCode value={qrCode} size={200} />
       </Modal>
-      <Dropdown overlay={menu}>
+      {/* <Dropdown menu={menu}>
         <Button type="link">
           <Space>
             <Avatar size={16} src={`/images/flags/${currentLocale}.svg`} />
@@ -125,7 +125,7 @@ export const Header: React.FC = () => {
             <DownOutlined />
           </Space>
         </Button>
-      </Dropdown>
+      </Dropdown> */}
       <Space style={{ marginLeft: "8px" }}>
         {user?.name && (
           <Text ellipsis strong>

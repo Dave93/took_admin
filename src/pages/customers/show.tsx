@@ -4,7 +4,7 @@ import {
   Typography,
   Row,
   Col,
-  Comment,
+  // Comment,
   AntdList,
   Tabs,
 } from "@pankod/refine-antd";
@@ -49,7 +49,7 @@ export const CustomersShow = () => {
             </Col>
             <Col span={12}>
               <Title level={5}>Комментарии</Title>
-              <AntdList
+              {/* <AntdList
                 className="comment-list"
                 header={`${record?.customers_comments_customers.length} комментариев`}
                 itemLayout="horizontal"
@@ -64,7 +64,7 @@ export const CustomersShow = () => {
                     />
                   </li>
                 )}
-              />
+              /> */}
             </Col>
           </Row>
         </Tabs.TabPane>

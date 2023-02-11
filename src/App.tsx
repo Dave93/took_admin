@@ -3,9 +3,10 @@ import {
   notificationProvider,
   Layout,
   ErrorComponent,
+  ConfigProvider,
 } from "@pankod/refine-antd";
 
-import "@pankod/refine-antd/dist/styles.min.css";
+import "@pankod/refine-antd/dist/reset.css";
 import "./styles/main.css";
 
 import routerProvider from "@pankod/refine-react-router-v6";
@@ -118,6 +119,37 @@ function App() {
   const resources = useMemo(() => {
     const res = [
       {
+        name: "orders",
+        options: {
+          label: "Заказы",
+        },
+        list: OrdersList,
+        show: OrdersShow,
+      },
+      {
+        name: "orders_garant_report",
+        options: {
+          label: "Гарант",
+        },
+        list: OrdersGarantReport,
+      },
+      {
+        name: "users",
+        list: UsersList,
+        create: UsersCreate,
+        edit: UsersEdit,
+        options: {
+          label: "Список пользователей",
+        },
+      },
+      {
+        name: "roll_call",
+        options: {
+          label: "Перекличка",
+        },
+        list: RollCallList,
+      },
+      {
         name: "orders-group",
         options: {
           label: "Заказы",
@@ -141,23 +173,6 @@ function App() {
         list: OrderStatusList,
         create: OrderStatusCreate,
         edit: OrderStatusEdit,
-      },
-      {
-        name: "orders",
-        options: {
-          label: "Заказы",
-        },
-        parentName: "orders-group",
-        list: OrdersList,
-        show: OrdersShow,
-      },
-      {
-        name: "orders_garant_report",
-        options: {
-          label: "Гарант",
-        },
-        parentName: "orders-group",
-        list: OrdersGarantReport,
       },
       {
         name: "users-group",
@@ -185,16 +200,6 @@ function App() {
         create: PermissionsCreate,
         options: {
           label: "Разрешения",
-        },
-      },
-      {
-        name: "users",
-        parentName: "users-group",
-        list: UsersList,
-        create: UsersCreate,
-        edit: UsersEdit,
-        options: {
-          label: "Список пользователей",
         },
       },
       {
@@ -282,14 +287,6 @@ function App() {
         list: WorkSchedulesReport,
       },
       {
-        name: "roll_call",
-        parentName: "time_management",
-        options: {
-          label: "Перекличка",
-        },
-        list: RollCallList,
-      },
-      {
         name: "settings",
         options: {
           label: "Настройки",
@@ -332,84 +329,94 @@ function App() {
   return (
     <RefineKbarProvider>
       <ApolloProvider client={gqlClient}>
-        <Refine
-          notificationProvider={notificationProvider}
-          Layout={Layout}
-          options={{
-            syncWithLocation: true,
-            reactQuery: {
-              clientConfig: queryClient,
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#00b96b",
             },
           }}
-          accessControlProvider={{
-            can: async ({ action, params, resource }) => {
-              if (
-                params?.resource?.children &&
-                params?.resource?.children.length > 0 &&
-                !params?.resource?.parentName
-              ) {
-                return Promise.resolve({
-                  can: true,
-                });
-              }
-
-              if (resource === "dashboard") {
-                return Promise.resolve({
-                  can: true,
-                });
-              }
-              const token = localStorage.getItem(TOKEN_KEY);
-              if (token) {
-                let password = process.env.REACT_APP_CRYPTO_KEY!;
-                var bytes = AES.decrypt(token, password);
-                var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
-                const {
-                  access: { additionalPermissions },
-                } = decryptedData;
-                return Promise.resolve({
-                  can: additionalPermissions.includes(`${resource}.${action}`),
-                  reason: additionalPermissions.includes(
-                    `${resource}.${action}`
-                  )
-                    ? undefined
-                    : "You are not allowed to do this",
-                });
-              }
-              return Promise.resolve({
-                can: true,
-              });
-            },
-          }}
-          // ReadyPage={ReadyPage}
-          catchAll={<ErrorComponent />}
-          DashboardPage={MainPage}
-          routerProvider={{
-            ...routerProvider,
-            routes: [
-              {
-                element: <PrivacyPage />,
-                path: "/privacy",
+        >
+          <Refine
+            notificationProvider={notificationProvider}
+            Layout={Layout}
+            options={{
+              syncWithLocation: true,
+              reactQuery: {
+                clientConfig: queryClient,
               },
-            ],
-          }}
-          dataProvider={gqlDataProvider}
-          authProvider={authProvider}
-          LoginPage={Login}
-          OffLayoutArea={OffLayoutArea}
-          i18nProvider={i18nProvider}
-          // syncWithLocation={true}
-          Header={Header}
-          Title={() => (
-            <Link to="/" style={{ width: "100%" }}>
-              <img
-                src="/images/logo-white.svg"
-                alt="Refine"
-                style={{ width: "80%", margin: "0 auto", display: "block" }}
-              />
-            </Link>
-          )}
-          resources={resources}
-        />
+            }}
+            accessControlProvider={{
+              can: async ({ action, params, resource }) => {
+                if (
+                  params?.resource?.children &&
+                  params?.resource?.children.length > 0 &&
+                  !params?.resource?.parentName
+                ) {
+                  return Promise.resolve({
+                    can: true,
+                  });
+                }
+
+                if (resource === "dashboard") {
+                  return Promise.resolve({
+                    can: true,
+                  });
+                }
+                const token = localStorage.getItem(TOKEN_KEY);
+                if (token) {
+                  let password = process.env.REACT_APP_CRYPTO_KEY!;
+                  var bytes = AES.decrypt(token, password);
+                  var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
+                  const {
+                    access: { additionalPermissions },
+                  } = decryptedData;
+                  return Promise.resolve({
+                    can: additionalPermissions.includes(
+                      `${resource}.${action}`
+                    ),
+                    reason: additionalPermissions.includes(
+                      `${resource}.${action}`
+                    )
+                      ? undefined
+                      : "You are not allowed to do this",
+                  });
+                }
+                return Promise.resolve({
+                  can: true,
+                });
+              },
+            }}
+            // ReadyPage={ReadyPage}
+            catchAll={<ErrorComponent />}
+            DashboardPage={MainPage}
+            routerProvider={{
+              ...routerProvider,
+              routes: [
+                {
+                  element: <PrivacyPage />,
+                  path: "/privacy",
+                },
+              ],
+            }}
+            dataProvider={gqlDataProvider}
+            authProvider={authProvider}
+            LoginPage={Login}
+            OffLayoutArea={OffLayoutArea}
+            i18nProvider={i18nProvider}
+            // syncWithLocation={true}
+            Header={Header}
+            Title={() => (
+              <Link to="/" style={{ width: "100%" }}>
+                <img
+                  src="/images/logo-white.svg"
+                  alt="Refine"
+                  style={{ width: "80%", margin: "0 auto", display: "block" }}
+                />
+              </Link>
+            )}
+            resources={resources}
+          />
+        </ConfigProvider>
       </ApolloProvider>
     </RefineKbarProvider>
   );

@@ -44,6 +44,7 @@ import DebounceSelect from "components/select/debounceSelector";
 import { OrdersTableActions } from "components/table_actions/orders";
 import { useTableExport } from "components/export/table";
 import queryClient from "dataprovider/reactQueryClient";
+import { rangePresets } from "components/dates/RangePresets";
 
 var weekday = require("dayjs/plugin/weekday");
 dayjs.locale("ru");
@@ -735,7 +736,11 @@ export const OrdersList: React.FC = () => {
           <Row gutter={16}>
             <Col xs={12} sm={12} md={5}>
               <Form.Item label="Дата заказа" name="created_at">
-                <RangePicker format={"DD.MM.YYYY HH:mm"} showTime />
+                <RangePicker
+                  format={"DD.MM.YYYY HH:mm"}
+                  showTime
+                  presets={rangePresets}
+                />
               </Form.Item>
             </Col>
             <Col xs={12} sm={12} md={3}>

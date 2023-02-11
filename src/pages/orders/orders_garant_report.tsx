@@ -222,7 +222,12 @@ const OrdersGarantReport = () => {
       textWrap: "word-break",
       excelRender: (value: string) => value,
       render: (value: string, record: any) => {
-        return record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />;
+        return (
+          <>
+            {record.courier}
+            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
+          </>
+        );
       },
     },
     {

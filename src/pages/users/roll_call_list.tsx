@@ -75,6 +75,7 @@ export const RollCallList = () => {
                 is_online
                 is_late
                 phone
+                drive_type
             }
         }
       }

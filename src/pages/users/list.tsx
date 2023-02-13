@@ -338,6 +338,11 @@ export const UsersList: React.FC = () => {
                 contains: "${queryText}"
                 mode: insensitive
               }
+            },{
+              last_name: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
             }, {
               phone: {
                 contains: "${queryText}"

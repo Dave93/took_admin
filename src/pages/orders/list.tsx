@@ -598,6 +598,11 @@ export const OrdersList: React.FC = () => {
                 contains: "${queryText}"
                 mode: insensitive
               }
+            },{
+              last_name: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
             }, {
               phone: {
                 contains: "${queryText}"

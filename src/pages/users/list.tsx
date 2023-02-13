@@ -333,20 +333,6 @@ export const UsersList: React.FC = () => {
     const query = gql`
         query {
           users(where: {
-            users_roles_usersTousers_roles_user_id: {
-              some: {
-                roles: {
-                  is: {
-                    code: {
-                      equals: "courier"
-                    }
-                  }
-                }
-              }
-            },
-            status: {
-              equals: active
-            },
             OR: [{
               first_name: {
                 contains: "${queryText}"

@@ -19,7 +19,12 @@ import {
 } from "@pankod/refine-antd";
 import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
-import { ITerminals, IUsers, IWorkSchedules } from "interfaces";
+import {
+  CourierEfficiencyReportItem,
+  ITerminals,
+  IUsers,
+  IWorkSchedules,
+} from "interfaces";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
@@ -28,6 +33,10 @@ import { client } from "graphConnect";
 import { chain, sortBy } from "lodash";
 import { Excel } from "components/export/src";
 import { rangePresets } from "components/dates/RangePresets";
+import { FaWalking } from "react-icons/fa";
+import { AiFillCar } from "react-icons/ai";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
+import { CourierEfficiencyDetails } from "components/orders/courierEfficiencyDetails";
 
 const { RangePicker } = DatePicker;
 
@@ -99,22 +108,138 @@ const CourierEfficiency = () => {
     setTerminals(sortBy(cachedTerminals, ["name"]));
   };
 
+  const columns = [
+    {
+      title: "№",
+      dataIndex: "id",
+      width: 50,
+      render: (value: string, record: any, index: number) => index + 1,
+    },
+    {
+      title: "Курьер",
+      dataIndex: "first_name",
+      width: 100,
+      textWrap: "word-break",
+      excelRender: (value: string) => value,
+      render: (value: string, record: any) => {
+        return (
+          <>
+            {record.first_name} {record.last_name}{" "}
+            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
+          </>
+        );
+      },
+    },
+    {
+      title: "Телефон",
+      dataIndex: "phone",
+      width: 100,
+      textWrap: "word-break",
+      excelRender: (value: string) => value,
+      render: (value: string, record: any) => {
+        return <>{formatPhoneNumberIntl(record.phone)}</>;
+      },
+    },
+    {
+      title: "Кол-во обработанных заказов",
+      dataIndex: "courier_count",
+      width: 100,
+      excelRender: (value: string) => value,
+      render: (value: string, record: any) => {
+        return <>{new Intl.NumberFormat("ru-RU").format(+value)}</>;
+      },
+    },
+    {
+      title: "Кол-во всех заказов",
+      dataIndex: "total_count",
+      width: 100,
+      excelRender: (value: string) => value,
+      render: (value: string, record: any) => {
+        return <>{new Intl.NumberFormat("ru-RU").format(+value)}</>;
+      },
+    },
+    {
+      title: "Эффективность",
+      dataIndex: "efficiency",
+      width: 50,
+      excelRender: (value: string) => value,
+      render: (value: string, record: any) => {
+        return (
+          <>
+            {new Intl.NumberFormat("ru-RU").format(
+              +Number.parseFloat(value).toFixed(0)
+            )}
+            %
+          </>
+        );
+      },
+    },
+    {
+      title: "Действия",
+      dataIndex: "id",
+      width: 50,
+      exportable: false,
+      render: (value: string, record: any) => {
+        return (
+          <>
+            <CourierEfficiencyDetails data={record.terminals} />
+          </>
+        );
+      },
+    },
+  ];
+
   const loadData = async () => {
     setIsLoading(true);
 
     const { created_at, courier_id, terminal_id, status } = getValues();
+
+    const query = gql`
+      query {
+        getCouriersEfficiency(
+          startDate: "${created_at[0].toISOString()}"
+          endDate: "${created_at[1].toISOString()}"
+          ${courier_id ? `courier_id: ${JSON.stringify(courier_id)}` : ""}
+          ${terminal_id ? `terminal_id: ${JSON.stringify(terminal_id)}` : ""}
+          ${status ? `status: ${JSON.stringify(status)}` : ""}
+        ) {
+          courier_id
+          first_name
+          last_name
+          phone
+          drive_type
+          courier_count
+          total_count
+          efficiency
+          terminals {
+            terminal_id
+            terminal_name
+            courier_count
+            total_count
+            efficiency
+            hour_period
+          }
+        }
+      }
+    `;
+    const { getCouriersEfficiency } = await client.request<{
+      getCouriersEfficiency: CourierEfficiencyReportItem[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+
+    setEfficiencyData(getCouriersEfficiency);
+    setIsLoading(false);
   };
 
   const exportData = async () => {
     setIsLoading(true);
     const excel = new Excel();
-    // excel
-    //   .addSheet("test")
-    //   .addColumns(columns.filter((c) => c.exportable !== false))
-    //   .addDataSource(efficiencyData, {
-    //     str2Percent: true,
-    //   })
-    //   .saveAs("Гарант.xlsx");
+    excel
+      .addSheet("test")
+      .addColumns(columns.filter((c) => c.exportable !== false))
+      .addDataSource(efficiencyData, {
+        str2Percent: true,
+      })
+      .saveAs("Эффективность.xlsx");
 
     setIsLoading(false);
   };
@@ -263,6 +388,16 @@ const CourierEfficiency = () => {
               </Row>
             </Card>
           </Form>
+          <Table
+            dataSource={sortBy(efficiencyData, ["efficiency"])}
+            rowKey="id"
+            bordered
+            size="small"
+            columns={columns}
+            pagination={{
+              pageSize: 200,
+            }}
+          />
         </Spin>
       </PageHeader>
     </>

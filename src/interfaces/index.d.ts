@@ -573,3 +573,37 @@ export class WalletStatus {
   courier_terminal_balance_terminals?: terminals;
   courier_terminal_balance_organizations?: organization;
 }
+
+export class CourierEfficiencyTerminalItem {
+  terminal_id: string;
+
+  terminal_name: string;
+
+  courier_count: number;
+
+  total_count: number;
+
+  efficiency: number;
+
+  hour_period: string;
+}
+
+export class CourierEfficiencyReportItem {
+  courier_id: string;
+
+  first_name: string;
+
+  last_name: string;
+
+  phone: string;
+
+  drive_type: string;
+
+  courier_count: number;
+
+  total_count: number;
+
+  efficiency: number;
+
+  terminals: CourierEfficiencyTerminalItem[];
+}

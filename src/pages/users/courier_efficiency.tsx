@@ -120,7 +120,8 @@ const CourierEfficiency = () => {
       dataIndex: "first_name",
       width: 100,
       textWrap: "word-break",
-      excelRender: (value: string) => value,
+      excelRender: (value: string, record: any) =>
+        `${record.first_name} ${record.last_name}`,
       render: (value: string, record: any) => {
         return (
           <>
@@ -236,7 +237,7 @@ const CourierEfficiency = () => {
     excel
       .addSheet("test")
       .addColumns(columns.filter((c) => c.exportable !== false))
-      .addDataSource(efficiencyData, {
+      .addDataSource(sortBy(efficiencyData, ["efficiency"]), {
         str2Percent: true,
       })
       .saveAs("Эффективность.xlsx");

@@ -121,14 +121,14 @@ const CourierBalance = () => {
     setIsLoading(true);
     let query = "";
     if (courier_id || terminal_id || status) {
-      console.log("status", status);
+      console.log("terminal_id", terminal_id);
       query = gql`
             query {
                 couriersTerminalBalance(${
                   courier_id ? `courier_id: "${courier_id}"` : ""
-                } ${terminal_id ? `terminal_id: "${terminal_id}"` : ""} ${
-        status ? `status: ${JSON.stringify(status)}` : ""
-      }) {
+                } ${
+        terminal_id ? `terminal_id: ${JSON.stringify(terminal_id)}` : ""
+      } ${status ? `status: ${JSON.stringify(status)}` : ""}) {
                     id
                     courier_id
                     terminal_id

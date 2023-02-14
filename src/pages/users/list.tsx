@@ -35,6 +35,7 @@ import { drive_type, user_status } from "interfaces/enums";
 import FileUploaderMultiple from "components/file_uploader/multiple";
 import * as gqlb from "gql-query-builder";
 import DebounceSelect from "components/select/debounceSelector";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
 
 const OnlineStatus = ({ value }: { value: boolean }) => {
   return (
@@ -482,7 +483,12 @@ export const UsersList: React.FC = () => {
             title="Онлайн"
             render={(value) => <OnlineStatus value={value} />}
           />
-          <Table.Column dataIndex="phone" title="Телефон" />
+          <Table.Column
+            dataIndex="phone"
+            title="Телефон"
+            width={200}
+            render={(value: string) => formatPhoneNumberIntl(value)}
+          />
           <Table.Column dataIndex="first_name" title="Имя" />
           <Table.Column dataIndex="last_name" title="Фамилия" />
           {/* <Table.Column dataIndex="roles" title="Роль" render={(value, record: IUsers) => } /> */}

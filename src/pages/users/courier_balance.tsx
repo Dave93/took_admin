@@ -43,6 +43,7 @@ import { AiFillCar } from "react-icons/ai";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import CourierWithdrawModal from "components/orders/courier_withdraw_modal";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -204,7 +205,7 @@ const CourierBalance = () => {
       dataIndex: "courier_terminal_balance_couriers",
       excelRender: (value: any) => value.phone,
       render: (value: any) => {
-        return <div>{value.phone}</div>;
+        return <div>{formatPhoneNumberIntl(value.phone)}</div>;
       },
     },
     {

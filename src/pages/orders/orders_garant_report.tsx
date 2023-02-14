@@ -469,7 +469,7 @@ const OrdersGarantReport = () => {
                   </Form.Item>
                 </Col>
                 <Col span={6}>
-                  <Form.Item label="Терминал">
+                  <Form.Item label="Филиал">
                     <Controller
                       name="terminal_id"
                       control={control}

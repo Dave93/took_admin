@@ -180,11 +180,17 @@ export const OrdersShow = () => {
       title: "Цена",
       dataIndex: "price",
       key: "price",
+      render: (text: string, record: any) => (
+        <div>{new Intl.NumberFormat("ru").format(+text)}</div>
+      ),
     },
     {
       title: "Сумма",
       dataIndex: "sum",
       key: "sum",
+      render: (text: string, record: any) => (
+        <div>{new Intl.NumberFormat("ru").format(+text)}</div>
+      ),
     },
   ];
 
@@ -585,7 +591,34 @@ export const OrdersShow = () => {
           </Row>
         </Tabs.TabPane>
         <Tabs.TabPane tab="Товары" key="2">
-          <Table columns={productsColumns} dataSource={productsData} />
+          <Table
+            columns={productsColumns}
+            dataSource={productsData}
+            summary={(pageData) => {
+              let total = 0;
+              pageData.forEach(({ sum }: { sum: number }) => {
+                total += sum;
+              });
+              return (
+                <>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell index={0}>
+                      <strong>Итого</strong>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell
+                      index={1}
+                      colSpan={2}
+                    ></Table.Summary.Cell>
+                    <Table.Summary.Cell index={3}>
+                      <strong>
+                        {new Intl.NumberFormat("ru").format(total)}
+                      </strong>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                </>
+              );
+            }}
+          />
         </Tabs.TabPane>
         <Space direction="vertical" />
         <Tabs.TabPane tab="История" key="3">

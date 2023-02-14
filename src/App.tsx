@@ -76,6 +76,7 @@ import OrdersGarantReport from "pages/orders/orders_garant_report";
 import CourierEfficiency from "pages/users/courier_efficiency";
 import queryClient from "dataprovider/reactQueryClient";
 import { RollCallList } from "pages/users/roll_call_list";
+import CourierBalance from "pages/users/courier_balance";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -150,6 +151,20 @@ function App() {
         list: RollCallList,
       },
       {
+        name: "courier_balance",
+        options: {
+          label: "Кошелёк",
+        },
+        list: CourierBalance,
+      },
+      {
+        name: "courier_efficiency",
+        list: CourierEfficiency,
+        options: {
+          label: "Эффективность курьера",
+        },
+      },
+      {
         name: "orders-group",
         options: {
           label: "Заказы",
@@ -216,14 +231,6 @@ function App() {
         list: TerminalsCouriersListPage,
         options: {
           label: "Курьеры по филиалам",
-        },
-      },
-      {
-        name: "courier_efficiency",
-        parentName: "users-group",
-        list: CourierEfficiency,
-        options: {
-          label: "Эффективность курьера",
         },
       },
       {

@@ -550,3 +550,26 @@ export class RollCallItem {
 
   couriers: RollCallCourier[];
 }
+
+export class WalletStatus {
+  id!: string;
+
+  courier_id!: string;
+
+  terminal_id!: string;
+
+  organization_id!: string;
+
+  balance!: number;
+
+  created_at!: Date;
+
+  created_by!: string | null;
+
+  courier_terminal_balance_created_byTousers?: users | null;
+
+  courier_terminal_balance_couriers?: users;
+
+  courier_terminal_balance_terminals?: terminals;
+  courier_terminal_balance_organizations?: organization;
+}

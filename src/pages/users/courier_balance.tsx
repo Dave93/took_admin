@@ -17,28 +17,46 @@ import {
   Table,
   useDrawerForm,
 } from "@pankod/refine-antd";
-import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
-import { ITerminals, IUsers, IWorkSchedules } from "interfaces";
-import { useEffect, useState } from "react";
+import { DateTime } from "luxon";
+import { useEffect, useReducer, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import dayjs from "dayjs";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
-import { chain, sortBy } from "lodash";
+import dayjs from "dayjs";
+import {
+  GarantReportItem,
+  IRoles,
+  ITerminals,
+  IUsers,
+  IWorkSchedules,
+  WalletStatus,
+} from "interfaces";
+import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
-import { rangePresets } from "components/dates/RangePresets";
+import { DebounceInput } from "react-debounce-input";
+import { chain, sortBy } from "lodash";
+import { drive_type, user_status } from "interfaces/enums";
+import { FaWalking } from "react-icons/fa";
+import { AiFillCar } from "react-icons/ai";
+
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import CourierWithdrawModal from "components/orders/courier_withdraw_modal";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const { RangePicker } = DatePicker;
 
-const CourierEfficiency = () => {
+const CourierBalance = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
-  const [efficiencyData, setEfficiencyData] = useState<any[]>([]);
+  const [wallet, setWallet] = useState<WalletStatus[]>([]);
   const {
     handleSubmit,
     control,
@@ -46,25 +64,18 @@ const CourierEfficiency = () => {
     setValue,
     watch,
     formState: { errors },
-    getValues,
-  } = useForm<{
-    created_at: [dayjs.Dayjs, dayjs.Dayjs];
-    courier_id: string;
-    terminal_id: string;
-    status: string;
-  }>({
+  } = useForm({
     defaultValues: {
-      created_at: [dayjs().startOf("d"), dayjs().endOf("d")],
       courier_id: undefined,
       terminal_id: undefined,
       status: "active",
     },
   });
-  const tr = useTranslate();
 
-  const onSubmit = async (data: any) => {
-    loadData();
-  };
+  const tr = useTranslate();
+  const courier_id = watch("courier_id");
+  const terminal_id = watch("terminal_id");
+  const status = watch("status");
 
   const fetchAllData = async () => {
     const query = gql`
@@ -91,7 +102,9 @@ const CourierEfficiency = () => {
       }
     `;
     const { cachedTerminals, users } = await client.request<{
+      roles: IRoles[];
       cachedTerminals: ITerminals[];
+      workSchedules: IWorkSchedules[];
       users: IUsers[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
@@ -99,22 +112,144 @@ const CourierEfficiency = () => {
     setTerminals(sortBy(cachedTerminals, ["name"]));
   };
 
+  const onSubmit = async (data: any) => {
+    loadData();
+  };
+
   const loadData = async () => {
     setIsLoading(true);
+    let query = "";
+    if (courier_id || terminal_id || status) {
+      query = gql`
+            query {
+                couriersTerminalBalance(${
+                  courier_id ? `courier_id: "${courier_id}"` : ""
+                } ${terminal_id ? `terminal_id: "${terminal_id}"` : ""} ${
+        status ? `status: "${status}"` : ""
+      }) {
+                    id
+                    courier_id
+                    terminal_id
+                    balance
+                    courier_terminal_balance_couriers {
+                        first_name
+                        last_name
+                        phone
+                        drive_type
+                    },
+                    courier_terminal_balance_terminals {
+                        name
+                    }
+                }
+            }
+            `;
+    } else {
+      query = gql`
+        query {
+          couriersTerminalBalance {
+            id
+            courier_id
+            terminal_id
+            balance
+            courier_terminal_balance_couriers {
+              first_name
+              last_name
+              phone
+              drive_type
+            }
+            courier_terminal_balance_terminals {
+              name
+            }
+          }
+        }
+      `;
+    }
+    const { couriersTerminalBalance } = await client.request<{
+      couriersTerminalBalance: WalletStatus[];
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    setWallet(couriersTerminalBalance);
 
-    const { created_at, courier_id, terminal_id, status } = getValues();
+    setIsLoading(false);
   };
+
+  const columns = [
+    {
+      title: "№",
+      dataIndex: "id",
+      width: 50,
+      exportable: false,
+      render: (value: string, record: any, index: number) => index + 1,
+    },
+    {
+      title: "Курьер",
+      dataIndex: "courier_terminal_balance_couriers",
+      excelRender: (value: any) => `${value.first_name} ${value.last_name}`,
+      render: (value: any, record: any) => {
+        return (
+          <div>
+            {value.first_name} {value.last_name}{" "}
+            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Телефон",
+      dataIndex: "courier_terminal_balance_couriers",
+      excelRender: (value: any) => value.phone,
+      render: (value: any) => {
+        return <div>{value.phone}</div>;
+      },
+    },
+    {
+      title: "Филиал",
+      dataIndex: "courier_terminal_balance_terminals",
+      excelRender: (value: any) => value.name,
+      render: (value: any) => {
+        return <div>{value.name}</div>;
+      },
+    },
+    {
+      title: "Баланс",
+      dataIndex: "balance",
+      excelRender: (value: any) => value,
+      render: (value: any) => {
+        return <div>{new Intl.NumberFormat("ru-RU").format(+value)}</div>;
+      },
+    },
+    {
+      title: "Действия",
+      dataIndex: "id",
+      width: 50,
+      exportable: false,
+      render: (value: string, record: any) => {
+        return (
+          <CourierWithdrawModal
+            order={record}
+            onWithdraw={() => loadData()}
+            identity={identity}
+          />
+        );
+      },
+    },
+  ];
 
   const exportData = async () => {
     setIsLoading(true);
     const excel = new Excel();
-    // excel
-    //   .addSheet("test")
-    //   .addColumns(columns.filter((c) => c.exportable !== false))
-    //   .addDataSource(efficiencyData, {
-    //     str2Percent: true,
-    //   })
-    //   .saveAs("Гарант.xlsx");
+    excel
+      .addSheet("test")
+      .addColumns(columns.filter((c) => c.exportable !== false))
+      .addDataSource(wallet, {
+        str2Percent: true,
+      })
+      .saveAs("Кошелёк.xlsx");
 
     setIsLoading(false);
   };
@@ -127,9 +262,9 @@ const CourierEfficiency = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <PageHeader
-        title="Эффективность курьеров"
+        title="Кошелёк"
         ghost={false}
         extra={
           <Space>
@@ -156,22 +291,6 @@ const CourierEfficiency = () => {
               ]}
             >
               <Row gutter={16}>
-                <Col span={6}>
-                  <Form.Item label="Дата">
-                    <Controller
-                      name="created_at"
-                      control={control}
-                      render={({ field }) => (
-                        <RangePicker
-                          {...field}
-                          showTime
-                          format="DD.MM.YYYY HH:mm"
-                          presets={rangePresets}
-                        />
-                      )}
-                    />
-                  </Form.Item>
-                </Col>
                 <Col span={6}>
                   <Form.Item label="Филиал">
                     <Controller
@@ -263,10 +382,22 @@ const CourierEfficiency = () => {
               </Row>
             </Card>
           </Form>
+          <Card bordered={false}>
+            <Table
+              dataSource={wallet}
+              rowKey="id"
+              bordered
+              size="small"
+              columns={columns}
+              pagination={{
+                pageSize: 200,
+              }}
+            />
+          </Card>
         </Spin>
       </PageHeader>
-    </>
+    </div>
   );
 };
 
-export default CourierEfficiency;
+export default CourierBalance;

@@ -17,7 +17,7 @@ import drawCell from "./utils/cell";
 export class Excel {
   file: File;
   sheet: Sheet | undefined;
-  columns: IExcelColumn[] | undefined;
+  columns: any[] | undefined;
   currentRow = 0;
   currentCol = 0;
   defaultTheadCellStyle: IStyle = {
@@ -107,7 +107,7 @@ export class Excel {
    * @param columns antd table columns
    * @param direction 'h' | 'v' 添加的方向，适用于追加表
    */
-  addColumns(columns: IExcelColumn[]) {
+  addColumns(columns: any[]) {
     if (!this.sheet) {
       throw new Error("please use addSheet before this");
     }

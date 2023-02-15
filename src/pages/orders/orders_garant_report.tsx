@@ -17,6 +17,7 @@ import {
   Table,
   useDrawerForm,
 } from "@pankod/refine-antd";
+import { SortOrder } from "antd/lib/table/interface";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -262,39 +263,46 @@ const OrdersGarantReport = () => {
     {
       title: "Количество заказов",
       dataIndex: "orders_count",
+      sorter: (a: any, b: any) => a.orders_count - b.orders_count,
     },
     {
       title: "Количество дней с заказами",
       dataIndex: "order_dates_count",
+      sorter: (a: any, b: any) => a.order_dates_count - b.order_dates_count,
     },
     {
       title: "Количество гарантных дней",
       dataIndex: "garant_days",
+      sorter: (a: any, b: any) => a.garant_days - b.garant_days,
     },
     {
       title: "Возможные дни отгула",
       dataIndex: "possible_day_offs",
     },
     {
-      title: "Фактические дни отгула",
+      title: "Дни без заказа",
       dataIndex: "actual_day_offs",
+      sorter: (a: any, b: any) => a.actual_day_offs - b.actual_day_offs,
     },
     {
       title: "Сумма всех доставок",
       dataIndex: "delivery_price",
       excelRender: (value: any) => value,
+      sorter: (a: any, b: any) => a.delivery_price - b.delivery_price,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {
       title: "Получил",
       dataIndex: "earned",
       excelRender: (value: any) => value,
+      sorter: (a: any, b: any) => a.earned - b.earned,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {
       title: "Кошелёк",
       dataIndex: "balance",
       excelRender: (value: any) => value,
+      sorter: (a: any, b: any) => a.balance - b.balance,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {
@@ -306,12 +314,16 @@ const OrdersGarantReport = () => {
     {
       title: "Остаток для выплаты",
       dataIndex: "balance_to_pay",
+      sorter: (a: any, b: any) => a.balance_to_pay - b.balance_to_pay,
+      defaultSortOrder: "descend" as SortOrder | undefined,
       excelRender: (value: any) => +value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {
       title: "Упущенный гарант",
       dataIndex: "possible_garant_price",
+      sorter: (a: any, b: any) =>
+        a.possible_garant_price - b.possible_garant_price,
       excelRender: (value: any) => +value,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },

@@ -145,6 +145,7 @@ const CourierEfficiency = () => {
       title: "Кол-во обработанных заказов",
       dataIndex: "courier_count",
       width: 100,
+      sorter: (a: any, b: any) => a.courier_count - b.courier_count,
       excelRender: (value: string) => value,
       render: (value: string, record: any) => {
         return <>{new Intl.NumberFormat("ru-RU").format(+value)}</>;
@@ -154,6 +155,7 @@ const CourierEfficiency = () => {
       title: "Кол-во всех заказов",
       dataIndex: "total_count",
       width: 100,
+      sorter: (a: any, b: any) => a.total_count - b.total_count,
       excelRender: (value: string) => value,
       render: (value: string, record: any) => {
         return <>{new Intl.NumberFormat("ru-RU").format(+value)}</>;
@@ -163,6 +165,7 @@ const CourierEfficiency = () => {
       title: "Эффективность",
       dataIndex: "efficiency",
       width: 50,
+      sorter: (a: any, b: any) => a.efficiency - b.efficiency,
       excelRender: (value: string) => value,
       render: (value: string, record: any) => {
         return (

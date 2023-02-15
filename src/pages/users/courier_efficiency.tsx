@@ -222,6 +222,7 @@ const CourierEfficiency = () => {
             total_count
             efficiency
             hour_period
+            courier_ids
           }
         }
       }

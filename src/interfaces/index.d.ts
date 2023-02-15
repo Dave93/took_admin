@@ -586,6 +586,8 @@ export class CourierEfficiencyTerminalItem {
   efficiency: number;
 
   hour_period: string;
+
+  courier_ids: string[] | null;
 }
 
 export class CourierEfficiencyReportItem {

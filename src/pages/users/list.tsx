@@ -8,6 +8,7 @@ import {
   ShowButton,
   Form,
   Select,
+  DatePicker,
   Input,
   Button,
   Row,
@@ -36,6 +37,7 @@ import FileUploaderMultiple from "components/file_uploader/multiple";
 import * as gqlb from "gql-query-builder";
 import DebounceSelect from "components/select/debounceSelector";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
+import dayjs from "dayjs";
 
 const OnlineStatus = ({ value }: { value: boolean }) => {
   return (
@@ -255,6 +257,7 @@ export const UsersList: React.FC = () => {
         "status",
         "max_active_order_count",
         "doc_files",
+        "order_start_date",
         {
           users_terminals: [
             {
@@ -824,6 +827,17 @@ export const UsersList: React.FC = () => {
                     name="max_active_order_count"
                   >
                     <InputNumber type="number" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Дата начала заказов для гаранта"
+                    name="order_start_date"
+                    getValueProps={(value) => ({
+                      value: value ? dayjs(value) : "",
+                    })}
+                  >
+                    <DatePicker allowClear format="DD.MM.YYYY" />
                   </Form.Item>
                 </Col>
               </Row>

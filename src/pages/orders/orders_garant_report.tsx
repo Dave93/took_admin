@@ -180,6 +180,7 @@ const OrdersGarantReport = () => {
         "status",
         "max_active_order_count",
         "doc_files",
+        "order_start_date",
         {
           users_terminals: [
             {
@@ -745,6 +746,17 @@ const OrdersGarantReport = () => {
                   name="max_active_order_count"
                 >
                   <InputNumber type="number" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Дата начала заказов для гаранта"
+                  name="order_start_date"
+                  getValueProps={(value) => ({
+                    value: value ? dayjs(value) : "",
+                  })}
+                >
+                  <DatePicker allowClear format="DD.MM.YYYY" />
                 </Form.Item>
               </Col>
             </Row>

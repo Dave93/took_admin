@@ -7,9 +7,7 @@ import {
   Select,
   Row,
   Col,
-  InputNumber,
-  Upload,
-  getValueFromEvent,
+  InputNumber
 } from "@pankod/refine-antd";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import FileUploader from "components/file_uploader";

@@ -9,7 +9,7 @@ import {
   Switch,
   useForm,
 } from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useGetIdentity } from "@pankod/refine-core";
 
 import { IApiTokens, IOrganization } from "interfaces";
 import { useEffect, useState } from "react";

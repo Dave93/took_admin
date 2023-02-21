@@ -1,21 +1,7 @@
-import {
-  Button,
-  Col,
-  Create,
-  Form,
-  Input,
-  Row,
-  Select,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { Col, Create, Form, Input, Row, useForm } from "@pankod/refine-antd";
+import { useGetIdentity } from "@pankod/refine-core";
 
-import { IApiTokens, IBrands, IOrganization } from "interfaces";
-import { useEffect, useState } from "react";
-import { gql } from "graphql-request";
-import { client } from "graphConnect";
-import FileUploader from "components/file_uploader";
+import { IBrands } from "interfaces";
 
 export const BrandsCreate = () => {
   const { data: identity } = useGetIdentity<{

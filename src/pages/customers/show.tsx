@@ -1,16 +1,5 @@
 import { useGetIdentity, useShow } from "@pankod/refine-core";
-import {
-  Show,
-  Typography,
-  Row,
-  Col,
-  // Comment,
-  AntdList,
-  Tabs,
-} from "@pankod/refine-antd";
-
-import { customers_comments } from "interfaces";
-import dayjs from "dayjs";
+import { Show, Typography, Row, Col, Tabs } from "@pankod/refine-antd";
 
 const { Title, Text } = Typography;
 

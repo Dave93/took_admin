@@ -2,13 +2,10 @@ import {
   Card,
   Form,
   Input,
-  Layout,
   PageHeader,
   Space,
   Spin,
-  Table,
   TimePicker,
-  useTable,
   Button,
   Col,
   Row,
@@ -23,8 +20,7 @@ import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import dayjs from "dayjs";
 import * as gql from "gql-query-builder";
 import { client } from "graphConnect";
-import { ISystemConfigs, ITerminals } from "interfaces";
-import moment from "moment";
+import { ITerminals } from "interfaces";
 import { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";

@@ -77,6 +77,7 @@ import CourierEfficiency from "pages/users/courier_efficiency";
 import queryClient from "dataprovider/reactQueryClient";
 import { RollCallList } from "pages/users/roll_call_list";
 import CourierBalance from "pages/users/courier_balance";
+import UsersShow from "pages/users/show";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -139,6 +140,7 @@ function App() {
         list: UsersList,
         create: UsersCreate,
         edit: UsersEdit,
+        show: UsersShow,
         options: {
           label: "Список пользователей",
         },

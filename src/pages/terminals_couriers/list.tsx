@@ -33,7 +33,7 @@ export const TerminalsCouriersListPage = () => {
     initialFilter: [],
     onSearch: async (params) => {
       const filters: CrudFilters = [];
-      const { terminal_id, status } = params;
+      const { terminal_id } = params;
 
       if (terminal_id) {
         filters.push({

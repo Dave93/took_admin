@@ -1,12 +1,8 @@
 import {
   List,
-  DateField,
   Table,
   useTable,
-  Switch,
   Space,
-  EditButton,
-  ShowButton,
   Tag,
   DatePicker,
   Form,
@@ -16,7 +12,7 @@ import {
 } from "@pankod/refine-antd";
 import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
 
-import { IWorkSchedules, WorkScheduleEntriesReportForPeriod } from "interfaces";
+import { WorkScheduleEntriesReportForPeriod } from "interfaces";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";

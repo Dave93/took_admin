@@ -4,7 +4,6 @@ import {
   Input,
   Edit,
   Switch,
-  Select,
   Row,
   Col,
   InputNumber,

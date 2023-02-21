@@ -611,3 +611,19 @@ export class CourierEfficiencyReportItem {
 
   terminals: CourierEfficiencyTerminalItem[];
 }
+
+export class ITimesheet {
+  id: string;
+
+  user_id: string;
+
+  is_late: boolean;
+
+  date: Date;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  timesheet_users?: users;
+}

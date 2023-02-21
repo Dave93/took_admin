@@ -1,17 +1,7 @@
-import {
-  Col,
-  Edit,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
+import { Col, Edit, Form, Input, Row, useForm } from "@pankod/refine-antd";
 import { useGetIdentity } from "@pankod/refine-core";
 
-import { IBrands, IOrderStatus } from "interfaces";
-import { Colorpicker } from "antd-colorpicker";
+import { IBrands } from "interfaces";
 import FileUploader from "components/file_uploader";
 
 export const BrandsEdit: React.FC = () => {

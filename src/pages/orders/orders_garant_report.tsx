@@ -5,7 +5,6 @@ import {
   DatePicker,
   Drawer,
   Edit,
-  EditButton,
   Form,
   Input,
   InputNumber,
@@ -25,16 +24,9 @@ import { Controller, useForm } from "react-hook-form";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import dayjs from "dayjs";
-import {
-  GarantReportItem,
-  IRoles,
-  ITerminals,
-  IUsers,
-  IWorkSchedules,
-} from "interfaces";
+import { GarantReportItem, ITerminals, IUsers } from "interfaces";
 import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
-import { DebounceInput } from "react-debounce-input";
 import { chain, sortBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 import { FaWalking } from "react-icons/fa";
@@ -46,8 +38,6 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const { RangePicker } = DatePicker;
-
 const OrdersGarantReport = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
@@ -56,17 +46,8 @@ const OrdersGarantReport = () => {
   const [garantData, setGarantData] = useState<GarantReportItem[]>([]);
   const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
-  const [roles, setRoles] = useState<IRoles[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
-  const [work_schedules, setWorkSchedules] = useState<any[]>([]);
-  const {
-    handleSubmit,
-    control,
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit, control, watch } = useForm();
 
   const tr = useTranslate();
 
@@ -362,19 +343,7 @@ const OrdersGarantReport = () => {
   const fetchAllData = async () => {
     const query = gql`
       query {
-        roles {
-          id
-          name
-        }
         cachedTerminals {
-          id
-          name
-          organization {
-            id
-            name
-          }
-        }
-        workSchedules {
           id
           name
           organization {
@@ -395,13 +364,10 @@ const OrdersGarantReport = () => {
         }
       }
     `;
-    const { roles, cachedTerminals, workSchedules, users } =
-      await client.request<{
-        roles: IRoles[];
-        cachedTerminals: ITerminals[];
-        workSchedules: IWorkSchedules[];
-        users: IUsers[];
-      }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    const { cachedTerminals, users } = await client.request<{
+      cachedTerminals: ITerminals[];
+      users: IUsers[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
     var result = chain(cachedTerminals)
       .groupBy("organization.name")
@@ -413,20 +379,8 @@ const OrdersGarantReport = () => {
         };
       })
       .value();
-    var workScheduleResult = chain(workSchedules)
-      .groupBy("organization.name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
     setCouriersList(users);
-    setWorkSchedules(workScheduleResult);
     setTerminals(sortBy(cachedTerminals, ["name"]));
-    setRoles(roles);
   };
 
   useEffect(() => {

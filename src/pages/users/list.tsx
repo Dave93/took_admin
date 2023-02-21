@@ -4,7 +4,6 @@ import {
   Table,
   useTable,
   Space,
-  EditButton,
   ShowButton,
   Form,
   Select,

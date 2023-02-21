@@ -2,41 +2,30 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
-  Drawer,
-  Edit,
-  EditButton,
   Form,
-  Input,
-  InputNumber,
   PageHeader,
   Row,
   Select,
   Space,
   Spin,
   Table,
-  useDrawerForm,
 } from "@pankod/refine-antd";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
-import { DateTime } from "luxon";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import dayjs from "dayjs";
 import {
-  GarantReportItem,
   IRoles,
   ITerminals,
   IUsers,
   IWorkSchedules,
   WalletStatus,
 } from "interfaces";
-import { ExportOutlined, EditOutlined } from "@ant-design/icons";
+import { ExportOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
-import { DebounceInput } from "react-debounce-input";
-import { chain, sortBy } from "lodash";
-import { drive_type, user_status } from "interfaces/enums";
+import { sortBy } from "lodash";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
 
@@ -48,8 +37,6 @@ import { formatPhoneNumberIntl } from "react-phone-number-input";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const { RangePicker } = DatePicker;
-
 const CourierBalance = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
@@ -58,14 +45,7 @@ const CourierBalance = () => {
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [wallet, setWallet] = useState<WalletStatus[]>([]);
-  const {
-    handleSubmit,
-    control,
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
+  const { handleSubmit, control, watch } = useForm({
     defaultValues: {
       courier_id: undefined,
       terminal_id: undefined,

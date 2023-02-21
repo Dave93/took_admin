@@ -1,26 +1,12 @@
-import {
-  List,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  Button,
-  DeleteButton,
-} from "@pankod/refine-antd";
-import { useCopyToClipboard } from "usehooks-ts";
-
-import Hashids from "hashids";
+import { List, Table, useTable, Space, EditButton } from "@pankod/refine-antd";
 
 import { IApiTokens, IBrands } from "interfaces";
-import { useGetIdentity, useNotification } from "@pankod/refine-core";
+import { useGetIdentity } from "@pankod/refine-core";
 
 export const BrandsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
-  const [value, copy] = useCopyToClipboard();
-  const { open } = useNotification();
   const { tableProps } = useTable<IBrands>({
     initialSorter: [],
     metaData: {

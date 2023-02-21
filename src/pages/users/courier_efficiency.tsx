@@ -3,34 +3,23 @@ import {
   Card,
   Col,
   DatePicker,
-  Drawer,
-  Edit,
-  EditButton,
   Form,
-  Input,
-  InputNumber,
   PageHeader,
   Row,
   Select,
   Space,
   Spin,
   Table,
-  useDrawerForm,
 } from "@pankod/refine-antd";
-import { ExportOutlined, EditOutlined } from "@ant-design/icons";
+import { ExportOutlined } from "@ant-design/icons";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
-import {
-  CourierEfficiencyReportItem,
-  ITerminals,
-  IUsers,
-  IWorkSchedules,
-} from "interfaces";
+import { CourierEfficiencyReportItem, ITerminals, IUsers } from "interfaces";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
-import { chain, sortBy } from "lodash";
+import { sortBy } from "lodash";
 import { Excel } from "components/export/src";
 import { rangePresets } from "components/dates/RangePresets";
 import { FaWalking } from "react-icons/fa";
@@ -48,15 +37,7 @@ const CourierEfficiency = () => {
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [efficiencyData, setEfficiencyData] = useState<any[]>([]);
-  const {
-    handleSubmit,
-    control,
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-    getValues,
-  } = useForm<{
+  const { handleSubmit, control, getValues } = useForm<{
     created_at: [dayjs.Dayjs, dayjs.Dayjs];
     courier_id: string;
     terminal_id: string;
@@ -279,7 +260,7 @@ const CourierEfficiency = () => {
               bordered={false}
               actions={[
                 <Space key="save-btn">
-                  <Button type="primary" htmlType="submit">
+                  <Button type="primary" htmlType="submit" loading={isLoading}>
                     Фильтровать
                   </Button>
                 </Space>,

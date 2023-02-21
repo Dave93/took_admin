@@ -41,14 +41,7 @@ export const RollCallList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RollCallItem[]>([]);
   const [filteredData, setFilteredData] = useState<RollCallItem[]>([]);
-  const {
-    handleSubmit,
-    control,
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
+  const { handleSubmit, control, watch } = useForm({
     defaultValues: {
       date: dayjs(),
     },
@@ -118,7 +111,7 @@ export const RollCallList = () => {
   };
   const debouncedChangeHandler = useMemo(
     () => debounce(changeHandler, 300),
-    []
+    [data]
   );
 
   useEffect(() => {
@@ -144,7 +137,7 @@ export const RollCallList = () => {
             />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={isLoading}>
               Обновить
             </Button>
           </Form.Item>

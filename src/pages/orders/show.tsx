@@ -25,15 +25,10 @@ import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { YMaps, Map } from "react-yandex-maps";
-import {
-  IOrderActions,
-  IOrderLocation,
-  IOrderStatus,
-  IUsers,
-} from "interfaces";
+import { IOrderActions, IOrderLocation, IOrderStatus } from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
-import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import { ChangeOrdersCouirer } from "components/orders/changeCourier";
 import OrderDeliveryPricing from "components/orders/order_delivery_pricing";
 import OrderNotes from "components/orders/order_notes";

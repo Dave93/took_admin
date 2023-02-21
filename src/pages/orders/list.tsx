@@ -379,7 +379,9 @@ export const OrdersList: React.FC = () => {
             <Button
               type="primary"
               size="small"
-              onClick={() => goToCourier(record.orders_couriers.id)}
+              onClick={() =>
+                window.open(`/users/show/${record.orders_couriers.id}`)
+              }
               icon={<UserOutlined />}
             />
           </span>

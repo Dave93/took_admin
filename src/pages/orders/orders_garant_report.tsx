@@ -31,6 +31,7 @@ import { chain, sortBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -313,15 +314,20 @@ const OrdersGarantReport = () => {
       title: "Действия",
       dataIndex: "id",
       exportable: false,
-      width: 50,
+      width: 55,
       render: (value: string, record: GarantReportItem) => (
-        <Space>
+        <div>
           <Button
             size="small"
             icon={<EditOutlined />}
             onClick={() => show(record.courier_id)}
           />
-        </Space>
+          <Button
+            icon={<ArrowTopRightOnSquareIcon />}
+            size="small"
+            onClick={() => window.open(`/users/show/${record.courier_id}`)}
+          />
+        </div>
       ),
     },
   ];

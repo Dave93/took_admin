@@ -37,6 +37,7 @@ import * as gqlb from "gql-query-builder";
 import DebounceSelect from "components/select/debounceSelector";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import dayjs from "dayjs";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 
 const OnlineStatus = ({ value }: { value: boolean }) => {
   return (
@@ -534,7 +535,11 @@ export const UsersList: React.FC = () => {
                     icon={<EditOutlined />}
                     onClick={() => show(record.id)}
                   />
-                  <ShowButton size="small" recordItemId={record.id} hideText />
+                  <Button
+                    icon={<ArrowTopRightOnSquareIcon />}
+                    size="small"
+                    onClick={() => window.open(`/users/show/${record.id}`)}
+                  />
                 </Space>
               );
             }}

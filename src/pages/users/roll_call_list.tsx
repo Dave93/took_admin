@@ -76,6 +76,7 @@ export const RollCallList = () => {
                 is_late
                 phone
                 drive_type
+                app_version
             }
         }
       }
@@ -185,6 +186,7 @@ export const RollCallList = () => {
                     )}
                   </Flex>
                   <Space>
+                    {courier.app_version && `v${courier.app_version}`}
                     <Badge
                       text={
                         courier.created_at

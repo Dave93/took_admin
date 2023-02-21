@@ -541,6 +541,8 @@ export class RollCallCourier {
 
   drive_type: keyof typeof drive_type;
   phone: string;
+
+  app_version: string;
 }
 
 export class RollCallItem {

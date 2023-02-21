@@ -627,3 +627,59 @@ export class ITimesheet {
 
   timesheet_users?: users;
 }
+
+export class IManagerWithdraw {
+  id: string;
+
+  manager_id: string;
+
+  courier_id: string;
+
+  terminal_id: string;
+
+  organization_id: string;
+
+  amount: number;
+
+  amount_before: number;
+
+  amount_after: number;
+
+  created_at: Date;
+
+  payed_date: Date | null;
+
+  created_by: string | null;
+
+  manager_withdraw_created_byTousers?: users | null;
+
+  manager_withdraw_managers?: users;
+
+  manager_withdraw_organizations?: organization;
+
+  manager_withdraw_couriers?: users;
+
+  manager_withdraw_terminals?: terminals;
+
+  manager_withdraw_transactions_withdraw?: Array<manager_withdraw_transactions>;
+
+  _count?: Manager_withdrawCount;
+}
+
+export class IManagerWithdrawTransactions {
+  id: string;
+
+  withdraw_id: string;
+
+  transaction_id: string;
+
+  amount: number;
+
+  created_at: Date;
+
+  payed_date: Date | null;
+
+  manager_withdraw_transactions_withdraw?: manager_withdraw;
+
+  manager_withdraw_transactions_transaction?: order_transactions;
+}

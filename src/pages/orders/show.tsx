@@ -25,13 +25,19 @@ import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { YMaps, Map } from "react-yandex-maps";
-import { IOrderActions, IOrderLocation, IOrderStatus } from "interfaces";
+import {
+  IGroupedLocations,
+  IOrderActions,
+  IOrderLocation,
+  IOrderStatus,
+} from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import { CloseOutlined } from "@ant-design/icons";
 import { ChangeOrdersCouirer } from "components/orders/changeCourier";
 import OrderDeliveryPricing from "components/orders/order_delivery_pricing";
 import OrderNotes from "components/orders/order_notes";
+import { chain, zipObject, zipObjectDeep } from "lodash";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -72,7 +78,7 @@ export const OrdersShow = () => {
     token: { accessToken: string };
   }>();
   const [orderActions, setOrderActions] = useState<IOrderActions[]>([]);
-  const [orderLocations, setOrderLocations] = useState<IOrderLocation[]>([]);
+  const [orderLocations, setOrderLocations] = useState<IGroupedLocations[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<IOrderStatus[]>([]);
 
   const { show } = useNavigation();
@@ -242,6 +248,9 @@ export const OrdersShow = () => {
       query ($id: String!) {
         locationsForOrder(orderId: $id) {
           created_at
+          order_status_id
+          status_color
+          status_name
           location {
             lat
             lon
@@ -259,12 +268,19 @@ export const OrdersShow = () => {
       }
     );
 
-    setOrderLocations(locationsForOrder);
-  };
+    const result = chain(locationsForOrder)
+      .groupBy(
+        (item) =>
+          `${item.order_status_id}_${item.status_color}_${item.status_name}`
+      )
+      .toPairs()
+      .map((currentItem) => {
+        return zipObjectDeep(["order_status", "location"], currentItem);
+      })
+      .value() as IGroupedLocations[];
 
-  const mapPoints = useMemo(() => {
-    return orderLocations.map((item) => [item.location.lat, item.location.lon]);
-  }, [orderLocations]);
+    setOrderLocations(result);
+  };
 
   const updateOrderStatus = async (id: string) => {
     const query = gql`
@@ -536,21 +552,43 @@ export const OrdersShow = () => {
                   modules={["control.ZoomControl"]}
                   onLoad={(ymaps) => {
                     // Создадим ломаную.
-                    var polyline = new ymaps.Polyline(
-                      mapPoints,
-                      {
-                        hintContent: "Траектория курьера",
-                      },
-                      {
-                        // draggable: true,
-                        strokeColor: "#000000",
-                        strokeWidth: 5,
-                        // Первой цифрой задаем длину штриха. Второй — длину разрыва.
-                        // strokeStyle: "1 5",
-                      }
-                    );
-                    // Добавляем линию на карту.
-                    map.current.geoObjects.add(polyline);
+                    if (orderLocations?.length > 0) {
+                      // itterate over orderLocations
+                      orderLocations.forEach((location, index) => {
+                        var mapPoints: any[] = [];
+                        const status_color =
+                          location.order_status.split("_")[1];
+                        const status_name = location.order_status.split("_")[2];
+
+                        location.location.map((point) => {
+                          mapPoints.push([
+                            point.location.lat,
+                            point.location.lon,
+                          ]);
+                        });
+                        if (orderLocations[index + 1]) {
+                          mapPoints.push([
+                            orderLocations[index + 1].location[0].location.lat,
+                            orderLocations[index + 1].location[0].location.lon,
+                          ]);
+                        }
+                        var polyline = new ymaps.Polyline(
+                          mapPoints,
+                          {
+                            hintContent: status_name,
+                          },
+                          {
+                            // draggable: true,
+                            strokeColor: status_color,
+                            strokeWidth: 5,
+                            // Первой цифрой задаем длину штриха. Второй — длину разрыва.
+                            // strokeStyle: "1 5",
+                          }
+                        );
+                        // Добавляем линию на карту.
+                        map.current.geoObjects.add(polyline);
+                      });
+                    }
                     var placemark = new ymaps.Placemark(
                       [record?.from_lat, record?.from_lon],
                       {

@@ -442,6 +442,18 @@ export class IOrderLocation {
   created_at: Date;
 
   location: any;
+
+  order_status_id: string;
+
+  status_color: string;
+
+  status_name: string;
+}
+
+export class IGroupedLocations {
+  order_status: string;
+
+  location: IOrderLocation[];
 }
 
 export class IApiTokens {
@@ -682,4 +694,20 @@ export class IManagerWithdrawTransactions {
   manager_withdraw_transactions_withdraw?: manager_withdraw;
 
   manager_withdraw_transactions_transaction?: order_transactions;
+}
+
+export class INotifications {
+  id: string;
+
+  title: string;
+
+  body: string;
+
+  created_at: Date;
+
+  send_at: Date;
+
+  status: string;
+
+  role: string;
 }

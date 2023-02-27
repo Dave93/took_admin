@@ -7,6 +7,7 @@ import duration from "dayjs/plugin/duration";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import UserRollCallList from "components/users/user_roll_call";
 import CourierWithdraws from "components/users/courier_withdraws";
+import CourierEffectiveness from "components/users/courier_effectiveness";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -71,8 +72,8 @@ const UsersShow = () => {
       isLoading={isLoading}
       title={`Пользователь ${record?.last_name} ${record?.first_name}`}
     >
-      <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="Основная информация" key="1">
+      <Tabs defaultActiveKey="main">
+        <Tabs.TabPane tab="Основная информация" key="main">
           <Row gutter={16}>
             <Col xs={24} md={12}>
               <Descriptions bordered>
@@ -156,8 +157,11 @@ const UsersShow = () => {
             </Col>
           </Row>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="Выплаты" key="2">
+        <Tabs.TabPane tab="Выплаты" key="withdraws">
           {record && <CourierWithdraws user={record} />}
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Эффективность" key="efficiency">
+          {record && <CourierEffectiveness user={record} />}
         </Tabs.TabPane>
       </Tabs>
     </Show>

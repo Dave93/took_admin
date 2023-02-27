@@ -622,6 +622,8 @@ export class CourierEfficiencyReportItem {
   efficiency: number;
 
   terminals: CourierEfficiencyTerminalItem[];
+
+  period: string;
 }
 
 export class ITimesheet {
@@ -710,4 +712,14 @@ export class INotifications {
   status: string;
 
   role: string;
+}
+
+export class ICourierEfficiencyReportPerDayItem {
+  courier_id: string;
+
+  order_day: string;
+
+  efficiency: number;
+
+  hour_period?: CourierEfficiencyReportItem[];
 }

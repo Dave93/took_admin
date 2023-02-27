@@ -44,7 +44,7 @@ const CourierWithdraws = ({ user }: { user: IUsers }) => {
         getCourierWithdraws(
           startDate: "${created_at[0].toISOString()}"
           endDate: "${created_at[1].toISOString()}"
-            courierId: "${user.id}"
+          courierId: "${user.id}"
         ) {
             id
             amount

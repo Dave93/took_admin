@@ -34,7 +34,7 @@ import {
   ITerminals,
   IUsers,
 } from "interfaces";
-import { chain, sortBy } from "lodash";
+import { sortBy } from "lodash";
 import { UpOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
 import { useState, useEffect, useMemo, FC } from "react";
 import dayjs from "dayjs";
@@ -43,7 +43,6 @@ import duration from "dayjs/plugin/duration";
 import DebounceSelect from "components/select/debounceSelector";
 import { OrdersTableActions } from "components/table_actions/orders";
 import { useTableExport } from "components/export/table";
-import queryClient from "dataprovider/reactQueryClient";
 import { rangePresets } from "components/dates/RangePresets";
 
 var weekday = require("dayjs/plugin/weekday");

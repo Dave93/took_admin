@@ -78,6 +78,7 @@ import queryClient from "dataprovider/reactQueryClient";
 import { RollCallList } from "pages/users/roll_call_list";
 import CourierBalance from "pages/users/courier_balance";
 import UsersShow from "pages/users/show";
+import NotificationsList from "pages/notifications/list";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -164,6 +165,13 @@ function App() {
         list: CourierEfficiency,
         options: {
           label: "Эффективность курьера",
+        },
+      },
+      {
+        name: "notifications",
+        list: NotificationsList,
+        options: {
+          label: "Рассылки",
         },
       },
       {

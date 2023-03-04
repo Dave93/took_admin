@@ -1,4 +1,20 @@
-import { useTable } from "@pankod/refine-antd";
+import {
+  Button,
+  Col,
+  Create,
+  DatePicker,
+  Drawer,
+  Form,
+  Input,
+  List,
+  Row,
+  Select,
+  ShowButton,
+  Space,
+  Table,
+  useDrawerForm,
+  useTable,
+} from "@pankod/refine-antd";
 import {
   CrudFilters,
   HttpError,
@@ -9,6 +25,10 @@ import {
 } from "@pankod/refine-core";
 import dayjs from "dayjs";
 import { INotifications } from "interfaces";
+import { rangePresets } from "components/dates/RangePresets";
+import { PlusOutlined } from "@ant-design/icons";
+
+const { RangePicker } = DatePicker;
 
 const NotificationsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
@@ -17,8 +37,6 @@ const NotificationsList: React.FC = () => {
   const tr = useTranslate();
 
   const queryClient = useQueryClient();
-
-  const { show } = useNavigation();
 
   const { tableProps, searchFormProps, filters, sorter, setFilters } = useTable<
     INotifications,
@@ -43,15 +61,12 @@ const NotificationsList: React.FC = () => {
     metaData: {
       fields: [
         "id",
-        "delivery_type",
+        "title",
         "created_at",
-        "order_price",
-        "order_number",
-        "duration",
-        "delivery_price",
-        "payment_type",
-        "finished_date",
-        "pre_distance",
+        "body",
+        "send_at",
+        "status",
+        "role",
       ],
       whereInputType: "notificationsWhereInput!",
       orderByInputType: "notificationsOrderByWithRelationInput!",
@@ -73,7 +88,7 @@ const NotificationsList: React.FC = () => {
     ],
     onSearch: async (params) => {
       const localFilters: CrudFilters = [];
-      queryClient.invalidateQueries(["default", "orders", "list"]);
+      queryClient.invalidateQueries(["default", "notifications", "list"]);
       // queryClient.invalidateQueries();
       const { created_at, status, role } = params;
 
@@ -93,7 +108,213 @@ const NotificationsList: React.FC = () => {
     },
   });
 
-  return <></>;
+  const {
+    drawerProps,
+    formProps,
+    show,
+    close,
+    saveButtonProps,
+    deleteButtonProps,
+    id,
+  } = useDrawerForm<INotifications>({
+    action: "create",
+    resource: "notifications",
+    redirect: false,
+    metaData: {
+      fields: [
+        "id",
+        "title",
+        "created_at",
+        "body",
+        "send_at",
+        "status",
+        "role",
+      ],
+      pluralize: true,
+      requestHeaders: {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      },
+    },
+  });
+
+  const columns = [
+    {
+      title: "Действия",
+      dataIndex: "actions",
+      exportable: false,
+      width: 50,
+      render: (_text: any, record: INotifications): React.ReactNode => (
+        <Space>
+          <ShowButton size="small" recordItemId={record.id} hideText />
+        </Space>
+      ),
+    },
+    {
+      title: "№",
+      dataIndex: "order_number",
+      width: 60,
+      excelRender: (value: any, record: any, index: number) => index + 1,
+      render: (value: any, record: any, index: number) => (
+        <div>{index + 1}</div>
+      ),
+    },
+    {
+      title: "Дата",
+      dataIndex: "created_at",
+      width: 150,
+      excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
+      render: (value: any) => <div>{dayjs(value).format("DD.MM.YYYY")}</div>,
+    },
+    {
+      title: "Дата отправки",
+      dataIndex: "send_at",
+      width: 150,
+      excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
+      render: (value: any) => <div>{dayjs(value).format("DD.MM.YYYY")}</div>,
+    },
+    {
+      title: "Заголовок",
+      dataIndex: "title",
+      width: 200,
+    },
+    {
+      title: "Текст",
+      dataIndex: "body",
+      width: 200,
+    },
+    {
+      title: "Статус",
+      dataIndex: "status",
+      width: 100,
+    },
+  ];
+
+  return (
+    <>
+      <List
+        title="Список рассылок"
+        headerProps={{
+          extra: (
+            <div>
+              <Button
+                onClick={() => {
+                  show();
+                }}
+                icon={<PlusOutlined />}
+              >
+                Создать
+              </Button>
+            </div>
+          ),
+        }}
+      >
+        <Form
+          layout="vertical"
+          {...searchFormProps}
+          initialValues={{
+            created_at: [dayjs().startOf("d"), dayjs().endOf("d")],
+          }}
+        >
+          <Row gutter={16} align="bottom">
+            <Col xs={12} sm={12} md={5}>
+              <Form.Item label="Дата заказа" name="created_at">
+                <RangePicker
+                  format={"DD.MM.YYYY HH:mm"}
+                  showTime
+                  presets={rangePresets}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={2}>
+              <Form.Item>
+                <Button htmlType="submit" type="primary">
+                  Фильтровать
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+        <div
+          style={{
+            overflow: "auto",
+          }}
+        >
+          <Table
+            {...tableProps}
+            rowKey="id"
+            bordered
+            size="small"
+            scroll={
+              window.innerWidth < 768
+                ? undefined
+                : { y: "calc(100vh - 390px)", x: "calc(100vw - 350px)" }
+            }
+            pagination={{
+              ...tableProps.pagination,
+              showSizeChanger: true,
+            }}
+            columns={columns}
+          />
+        </div>
+        <Drawer {...drawerProps} width={800}>
+          <Create title="Добавить рассылку">
+            <Form {...formProps} layout="vertical">
+              <Row gutter={16}>
+                <Col xs={24} sm={24} md={12}>
+                  <Form.Item
+                    label="Заголовок"
+                    name="title"
+                    rules={[{ required: true }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={12}>
+                  <Form.Item
+                    label="Дата отправки"
+                    name="send_at"
+                    rules={[{ required: true }]}
+                  >
+                    <DatePicker
+                      format={"DD.MM.YYYY HH:mm"}
+                      showTime
+                      style={{ width: "100%" }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col>
+                  <Form.Item
+                    label="Текст"
+                    name="body"
+                    rules={[{ required: true }]}
+                  >
+                    <Input.TextArea />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col xs={24} sm={24} md={12}>
+                  <Form.Item
+                    label="Роль"
+                    name="role"
+                    rules={[{ required: true }]}
+                  >
+                    <Select>
+                      <Select.Option value="admin">Администратор</Select.Option>
+                      <Select.Option value="manager">Менеджер</Select.Option>
+                      <Select.Option value="user">Пользователь</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          </Create>
+        </Drawer>
+      </List>
+    </>
+  );
 };
 
 export default NotificationsList;

@@ -182,6 +182,36 @@ const CourierWithdraws = ({ user }: { user: IUsers }) => {
         pagination={{
           pageSize: 200,
         }}
+        summary={(pageData) => {
+          let total = 0;
+          let amountBefore = 0;
+          let amountAfter = 0;
+          pageData.forEach(({ amount, amount_before, amount_after }) => {
+            total += +amount;
+            amountBefore += +amount_before;
+            amountAfter += +amount_after;
+          });
+          return (
+            <>
+              <Table.Summary fixed>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0} colSpan={3}>
+                    Итого
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                    {new Intl.NumberFormat("ru-RU").format(total)}
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                    {new Intl.NumberFormat("ru-RU").format(amountBefore)}
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                    {new Intl.NumberFormat("ru-RU").format(amountAfter)}
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              </Table.Summary>
+            </>
+          );
+        }}
       />
     </>
   );

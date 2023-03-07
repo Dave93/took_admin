@@ -9,11 +9,13 @@ import { DateTime } from "luxon";
 export const TOKEN_KEY = "refine-auth";
 
 export const authProvider: AuthProvider = {
-  login: async ({ phone, code, otpSecret }) => {
+  login: async ({ phone, code, otpSecret, deviceToken }) => {
     try {
       let query = gql`
         mutation {
-          verifyOtp(phone: "${phone}", otp: "${code}", verificationKey: "${otpSecret}") {
+          verifyOtp(phone: "${phone}", otp: "${code}", verificationKey: "${otpSecret}" ${
+        deviceToken ? `, deviceToken: "${deviceToken}"` : ""
+      }) {
             access {
             additionalPermissions
             roles {

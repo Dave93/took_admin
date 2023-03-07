@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLogin, useNotification } from "@pankod/refine-core";
 import { gql } from "graphql-request";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -16,12 +16,14 @@ import {
 } from "@pankod/refine-antd";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { getMessageToken } from "lib/firebase";
 
 const { NumberOutlined } = Icons;
 export interface ILoginForm {
   phone: string;
   code: string;
   otpSecret: string;
+  deviceToken: string | undefined;
 }
 
 export const Login: React.FC = () => {
@@ -29,6 +31,9 @@ export const Login: React.FC = () => {
   const [otpSecret, setOtpSecret] = useState("");
   const [gsmNumber, setGsmNumber] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [deviceToken, setDeviceToken] = useState<string | undefined>(
+    "" || undefined
+  );
 
   const { open } = useNotification();
 
@@ -52,6 +57,8 @@ export const Login: React.FC = () => {
       }
       setLoading(false);
       setCurrent("code");
+      const tempDeviceToken = await getMessageToken();
+      setDeviceToken(tempDeviceToken);
     } catch (e: any) {
       setLoading(false);
       open &&
@@ -68,7 +75,12 @@ export const Login: React.FC = () => {
   };
 
   const onCodeFormSubmit = async (values: Pick<ILoginForm, "code">) => {
-    login({ phone: gsmNumber, code: values.code, otpSecret });
+    login({
+      phone: gsmNumber,
+      code: values.code,
+      otpSecret,
+      deviceToken: deviceToken,
+    });
   };
 
   const renderGSMForm = () => (
@@ -144,6 +156,18 @@ export const Login: React.FC = () => {
       </Form>
     </>
   );
+
+  useEffect(() => {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("Notification permission granted.");
+      } else {
+        console.log("Unable to get permission to notify.");
+      }
+    });
+
+    return () => {};
+  }, []);
 
   return (
     <AntdLayout

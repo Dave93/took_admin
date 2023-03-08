@@ -31,6 +31,7 @@ messaging.onBackgroundMessage(function (payload) {
 
 // Add an event listener for the notificationclick event
 self.addEventListener("notificationclick", function (event) {
+  event.stopImmediatePropagation();
   event.notification.close();
   console.log("nofitication event", event);
   // Open the URL specified in the notification

@@ -32,12 +32,13 @@ messaging.onBackgroundMessage(function (payload) {
 // Add an event listener for the notificationclick event
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-
+  console.log("nofitication event", event);
   // Open the URL specified in the notification
   event.waitUntil(
     clients.matchAll({ type: "window" }).then(function (clientList) {
       for (var i = 0; i < clientList.length; i++) {
         var client = clientList[i];
+        console.log("client", client);
         if (
           event.notification.data.url &&
           client.url.includes("admin.arryt.uz") &&

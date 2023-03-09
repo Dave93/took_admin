@@ -35,7 +35,7 @@ self.addEventListener("notificationclick", function (event) {
   console.log("before propagation");
   event.stopImmediatePropagation();
   console.log("after propagation");
-  console.log("clients", clients);
+  console.log("clients", self.clients);
   clients.matchAll({ type: "window" }).then(function (clientList) {
     console.log("nofitication event", event);
     for (var i = 0; i < clientList.length; i++) {

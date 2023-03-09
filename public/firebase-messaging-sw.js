@@ -38,6 +38,7 @@ self.addEventListener("notificationclick", function (event) {
   console.log("after propagation");
   console.log("clients", self.clients);
   console.log("nofitication event", JSON.stringify(event));
+  console.log("nofitication", event);
   self.clients
     .matchAll({ includeUncontrolled: true })
     .then(function (clientList) {

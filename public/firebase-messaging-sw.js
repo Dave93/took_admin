@@ -23,9 +23,9 @@ messaging.onBackgroundMessage(function (payload) {
   // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
-    body: payload.notification.body,
-    data: payload.notification.data,
-    click_action: payload.notification.click_action,
+    body: payload.data.body,
+    data: payload.data.data,
+    click_action: payload.data.click_action,
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);

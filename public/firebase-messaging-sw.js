@@ -24,7 +24,7 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    data: payload.notification.data,
+    data: payload.data,
     click_action: payload.notification.click_action,
   };
 

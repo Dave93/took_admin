@@ -32,7 +32,9 @@ messaging.onBackgroundMessage(function (payload) {
 
 // Add an event listener for the notificationclick event
 self.addEventListener("notificationclick", function (event) {
+  console.log("before propagation");
   event.stopImmediatePropagation();
+  console.log("after propagation");
 
   event.waitUntil(async () => {
     console.log("clients", clients);

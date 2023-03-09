@@ -35,7 +35,12 @@ import {
   IUsers,
 } from "interfaces";
 import { sortBy } from "lodash";
-import { UpOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  UpOutlined,
+  DownOutlined,
+  UserOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { useState, useEffect, useMemo, FC } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
@@ -278,7 +283,11 @@ export const OrdersList: React.FC = () => {
       width: 50,
       render: (_text: any, record: IOrders): React.ReactNode => (
         <Space>
-          <ShowButton size="small" recordItemId={record.id} hideText />
+          <Button
+            size="small"
+            onClick={() => window.open(`/orders/show/${record.id}`)}
+            icon={<EyeOutlined />}
+          />
         </Space>
       ),
     },

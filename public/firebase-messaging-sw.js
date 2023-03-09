@@ -36,33 +36,35 @@ self.addEventListener("notificationclick", function (event) {
   event.stopImmediatePropagation();
   console.log("after propagation");
   console.log("clients", self.clients);
-  clients.matchAll({ type: "window" }).then(function (clientList) {
-    console.log("nofitication event", event);
-    for (var i = 0; i < clientList.length; i++) {
-      var client = clientList[i];
-      console.log("client", client);
-      if (event.notification.data != null) {
-        if (
-          event.notification.data.url &&
-          client.url.includes("admin.arryt.uz") &&
-          "navigate" in client
-        ) {
-          return client.navigate(event.notification.data.url);
-        } else if (
-          client.url == event.notification.data.url &&
-          "focus" in client
-        ) {
-          return client.focus();
+  self.clients
+    .matchAll({ includeUncontrolled: true })
+    .then(function (clientList) {
+      console.log("nofitication event", event);
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
+        console.log("client", client);
+        if (event.notification.data != null) {
+          if (
+            event.notification.data.url &&
+            client.url.includes("admin.arryt.uz") &&
+            "navigate" in client
+          ) {
+            return client.navigate(event.notification.data.url);
+          } else if (
+            client.url == event.notification.data.url &&
+            "focus" in client
+          ) {
+            return client.focus();
+          }
         }
       }
-    }
-    if (event.notification.data != null) {
-      if (clients.openWindow) {
-        return clients.openWindow(event.notification.data.url);
+      if (event.notification.data != null) {
+        if (clients.openWindow) {
+          return clients.openWindow(event.notification.data.url);
+        }
       }
-    }
 
-    event.notification.close();
-  });
+      event.notification.close();
+    });
   event.waitUntil(async () => {});
 });

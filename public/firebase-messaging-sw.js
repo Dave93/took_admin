@@ -23,10 +23,8 @@ messaging.onBackgroundMessage(function (payload) {
   // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
-    body: {
-      ...payload.notification.body,
-      data: payload.notification.data,
-    },
+    body: payload.notification.body,
+    data: payload.notification.data,
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -35,11 +33,10 @@ messaging.onBackgroundMessage(function (payload) {
 // Add an event listener for the notificationclick event
 self.addEventListener("notificationclick", function (event) {
   event.stopImmediatePropagation();
-  event.notification.close();
-  console.log("nofitication event", event);
-  // Open the URL specified in the notification
-  event.waitUntil(
+
+  event.waitUntil(async () => {
     clients.matchAll({ type: "window" }).then(function (clientList) {
+      console.log("nofitication event", event);
       for (var i = 0; i < clientList.length; i++) {
         var client = clientList[i];
         console.log("client", client);
@@ -63,6 +60,10 @@ self.addEventListener("notificationclick", function (event) {
           return clients.openWindow(event.notification.data.url);
         }
       }
-    })
-  );
+
+      event.notification.close();
+    });
+  });
+  // Open the URL specified in the notification
+  event.waitUntil();
 });

@@ -21,7 +21,7 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function (payload) {
   console.log(
     "Received background message ",
-    JSON.stringify(payload.notification.data)
+    JSON.stringify(payload.notification)
   );
   // Customize notification here
   const notificationTitle = payload.notification.title;

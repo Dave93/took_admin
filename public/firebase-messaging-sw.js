@@ -64,6 +64,4 @@ self.addEventListener("notificationclick", function (event) {
       event.notification.close();
     });
   });
-  // Open the URL specified in the notification
-  event.waitUntil();
 });

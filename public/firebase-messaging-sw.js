@@ -40,7 +40,7 @@ self.addEventListener("notificationclick", function (event) {
   console.log("clients", self.clients);
   console.log("nofitication event", JSON.stringify(event));
   console.log("nofitication", event);
-  const additionalData = {};
+  let additionalData = {};
   if (
     event.notification.data != null &&
     event.notification.data["gcm.notification.data"]

@@ -61,6 +61,10 @@ self.addEventListener("notificationclick", function (event) {
         }
       }
       if (event.notification.data != null) {
+        client.postMessage({
+          type: "openWindow",
+          url: event.notification.data.url,
+        });
         if (self.clients.openWindow) {
           return self.clients.openWindow(event.notification.data.url);
         }

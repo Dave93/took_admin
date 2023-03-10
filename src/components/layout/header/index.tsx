@@ -78,7 +78,7 @@ export const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    loadQrCode();
+    // loadQrCode();
   }, [identity]);
 
   return (

@@ -40,38 +40,41 @@ self.addEventListener("notificationclick", function (event) {
   console.log("clients", self.clients);
   console.log("nofitication event", JSON.stringify(event));
   console.log("nofitication", event);
-  self.clients
-    .matchAll({ includeUncontrolled: true })
-    .then(function (clientList) {
-      for (var i = 0; i < clientList.length; i++) {
-        var client = clientList[i];
-        console.log("client", client);
-        if (event.notification.data != null) {
+  const additionalData = {};
+  if (
+    event.notification.data != null &&
+    event.notification.data["gcm.notification.data"]
+  ) {
+    additionalData = JSON.parse(
+      event.notification.data["gcm.notification.data"]
+    );
+  }
+  if (Object.keys(additionalData).length > 0) {
+    self.clients
+      .matchAll({ includeUncontrolled: true })
+      .then(function (clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+          var client = clientList[i];
+          console.log("client", client);
           if (
-            event.notification.data.url &&
+            additionalData.url &&
             client.url.includes("admin.arryt.uz") &&
             "navigate" in client
           ) {
-            return client.navigate(event.notification.data.url);
-          } else if (
-            client.url == event.notification.data.url &&
-            "focus" in client
-          ) {
+            return client.navigate(additionalData.url);
+          } else if (client.url == additionalData.url && "focus" in client) {
             return client.focus();
           }
         }
-      }
-      if (event.notification.data != null) {
         client.postMessage({
           type: "openWindow",
-          url: event.notification.data.url,
+          url: additionalData.url,
         });
         if (self.clients.openWindow) {
-          return self.clients.openWindow(event.notification.data.url);
+          return self.clients.openWindow(additionalData.url);
         }
-      }
-
-      event.notification.close();
-    });
+      });
+  }
+  event.notification.close();
   event.waitUntil(async () => {});
 });

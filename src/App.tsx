@@ -348,7 +348,7 @@ function App() {
       navigator.serviceWorker.addEventListener("message", (event) => {
         console.log("before data", event.data);
         if (event.data.type === "openWindow") {
-          window.open(event.data.url, "_blank");
+          window.open(event.data.url);
         }
       });
     }

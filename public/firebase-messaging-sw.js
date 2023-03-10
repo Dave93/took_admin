@@ -61,15 +61,16 @@ self.addEventListener("notificationclick", function (event) {
             client.url.includes("admin.arryt.uz") &&
             "navigate" in client
           ) {
+            return client.postMessage({
+              type: "openWindow",
+              url: additionalData.url,
+            });
             return client.navigate(additionalData.url);
           } else if (client.url == additionalData.url && "focus" in client) {
             return client.focus();
           }
         }
-        client.postMessage({
-          type: "openWindow",
-          url: additionalData.url,
-        });
+
         if (self.clients.openWindow) {
           return self.clients.openWindow(additionalData.url);
         }

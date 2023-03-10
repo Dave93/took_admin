@@ -347,8 +347,9 @@ function App() {
     if (navigator !== undefined) {
       navigator.serviceWorker.addEventListener("message", (event) => {
         console.log("before data", event.data);
-        const data = JSON.parse(event.data);
-        console.log("after data", data);
+        if (event.data.type === "openWindow") {
+          window.open(event.data.url, "_blank");
+        }
       });
     }
 

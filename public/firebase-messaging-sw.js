@@ -27,6 +27,7 @@ messaging.onBackgroundMessage(function (payload) {
     data: payload.data,
     click_action: payload.notification.click_action,
   };
+  console.log("notificationOptions", notificationOptions);
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });

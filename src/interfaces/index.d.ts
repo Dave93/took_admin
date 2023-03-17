@@ -517,6 +517,7 @@ export class GarantReportItem {
   courier: string;
   orders_count: number;
   avg_delivery_time: string;
+  table_name: string;
 
   formatted_avg_delivery_time: string;
 

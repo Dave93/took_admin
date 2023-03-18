@@ -19,7 +19,7 @@ import {
 import { SortOrder } from "antd/lib/table/interface";
 import { useGetIdentity, useTranslate } from "@pankod/refine-core";
 import { DateTime } from "luxon";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
@@ -27,11 +27,12 @@ import dayjs from "dayjs";
 import { GarantReportItem, ITerminals, IUsers } from "interfaces";
 import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
-import { chain, filter, sortBy } from "lodash";
+import { chain, filter, sortBy, sumBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
+import { useDownloadExcel } from "react-export-table-to-excel";
 
 import {
   GroupingState,
@@ -53,6 +54,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const OrdersGarantReport = () => {
+  const tableRef = useRef(null);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
@@ -75,6 +77,12 @@ const OrdersGarantReport = () => {
   const onSubmit = async (data: any) => {
     loadData();
   };
+
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: "Garant",
+    sheet: "Garant",
+  });
 
   const loadData = async () => {
     setIsLoading(true);
@@ -124,6 +132,15 @@ const OrdersGarantReport = () => {
             drive_type
             possible_garant_price
             terminal_name
+            delivery_price_orgs {
+              id
+              name
+              children {
+                terminal_id
+                terminal_name
+                delivery_price
+              }
+            }
         }
       }
     `;
@@ -206,272 +223,16 @@ const OrdersGarantReport = () => {
     },
   });
 
-  const tableColumn = useMemo<ColumnDef<GarantReportItem>[]>(() => {
-    return [
-      {
-        header: "Курьер",
-        accessorKey: "courier",
-        width: 50,
-        cell: (info) => (
-          <>
-            {info.getValue()}{" "}
-            {info.row.getValue("drive_type") == "foot" ? (
-              <FaWalking />
-            ) : (
-              <AiFillCar />
-            )}
-          </>
-        ),
-      },
-      // {
-      //   Header: "Курьер",
-      //   accessor: "courier",
-      //   width: 100,
-      //   Cell: ({ value, row }: any) => {
-      //     return (
-      //       <>
-      //         {value}
-      //         {row.original.drive_type == "foot" ? (
-      //           <FaWalking />
-      //         ) : (
-      //           <AiFillCar />
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
-      // {
-      //   Header: "Остаток для выплаты",
-      //   accessor: "balance_to_pay",
-      //   Cell: ({ value }: any) => {
-      //     return (
-      //       <div style={{ textAlign: "right" }}>
-      //         {value.toLocaleString("ru-RU", {
-      //           style: "currency",
-      //           currency: "UZS",
-      //         })}
-      //       </div>
-      //     );
-      //   },
-      // },
-      // {
-      //   Header: "Количество заказов",
-      //   accessor: "orders_count",
-      //   Cell: ({ value }: any) => {
-      //     return (
-      //       <div style={{ textAlign: "right" }}>{value.toLocaleString()}</div>
-      //     );
-      //   },
-      // },
-      // {
-      //   Header: "Дата начала",
-      //   accessor: "begin_date",
-      //   Cell: ({ value }: any) => {
-      //     return (
-      //       <div style={{ textAlign: "right" }}>
-      //         {DateTime.fromISO(value).toFormat("dd.MM.yyyy")}
-      //       </div>
-      //     );
-      //   },
-      // },
-      // {
-      //   Header: "Дата последнего заказа",
-      //   accessor: "last_order_date",
-      //   Cell: ({ value }: any) => {
-      //     return (
-      //       <div style={{ textAlign: "right" }}>
-      //         {DateTime.fromISO(value).toFormat("dd.MM.yyyy")}
-      //       </div>
-      //     );
-      //   },
-      // },
-      // {
-      //   Header: "Дата создания",
-      //   accessor: "created_at",
-      //   Cell: ({ value }: any) => {
-      //     return (
-      //       <div style={{ textAlign: "right" }}>
-      //         {DateTime.fromISO(value).toFormat("dd.MM.yyyy")}
-      //       </div>
-      //     );
-      //   },
-      // },
-      // {
-      //   Header: "Количество отработанных дней",
-      //   accessor: "order_dates_count",
-      //   Cell: ({ value }: any) => {
-      //     return (
-      //       <div style={{ textAlign: "right" }}>{value.toLocaleString()}</div>
-      //     );
-      //   },
-      // },
-    ];
-  }, []);
-
-  // const table = useReactTable({
-  //   data: filteredData,
-  //   columns: tableColumn,
-  //   state: {
-  //     grouping: ["table_name"],
-  //   },
-  //   getExpandedRowModel: getExpandedRowModel(),
-  //   getGroupedRowModel: getGroupedRowModel(),
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   debugTable: true,
-  // });
-
-  const columns = [
-    {
-      title: "№",
-      dataIndex: "id",
-      width: 50,
-      render: (value: string, record: any, index: number) => index + 1,
-    },
-    {
-      title: "Курьер",
-      dataIndex: "courier",
-      width: 100,
-      textWrap: "word-break",
-      excelRender: (value: string) => value,
-      render: (value: string, record: any) => {
-        return (
-          <>
-            {record.courier}
-            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
-          </>
-        );
-      },
-    },
-    {
-      title: "Остаток для выплаты",
-      dataIndex: "balance_to_pay",
-      sorter: (a: any, b: any) => a.balance_to_pay - b.balance_to_pay,
-      defaultSortOrder: "descend" as SortOrder | undefined,
-      excelRender: (value: any) => +value,
-      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
-    },
-    {
-      title: "Количество заказов",
-      dataIndex: "orders_count",
-      sorter: (a: any, b: any) => a.orders_count - b.orders_count,
-    },
-    {
-      title: "Дата начала",
-      dataIndex: "begin_date",
-      width: 105,
-      render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
-    },
-    {
-      title: "Дата последнего заказа",
-      dataIndex: "last_order_date",
-      width: 105,
-      render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
-    },
-    {
-      title: "Дата создания",
-      dataIndex: "created_at",
-      width: 105,
-      render: (value: string) => dayjs(value).format("DD.MM.YYYY"),
-    },
-    {
-      title: "Количество отработанных дней",
-      dataIndex: "order_dates_count",
-      sorter: (a: any, b: any) => a.order_dates_count - b.order_dates_count,
-    },
-    // {
-    //   title: "Тип доставки",
-    //   dataIndex: "drive_type",
-    //   width: 110,
-    //   textWrap: "word-break",
-    //   render: (value: string) => tr(`deliveryPricing.driveType.${value}`),
-    // },
-    // {
-    //   title: "Среднее время доставки",
-    //   dataIndex: "formatted_avg_delivery_time",
-    // },
-    // {
-    //   title: "Количество гарантных дней",
-    //   dataIndex: "garant_days",
-    //   sorter: (a: any, b: any) => a.garant_days - b.garant_days,
-    // },
-    // {
-    //   title: "Возможные дни отгула",
-    //   dataIndex: "possible_day_offs",
-    // },
-    // {
-    //   title: "Дни без заказа",
-    //   dataIndex: "actual_day_offs",
-    //   sorter: (a: any, b: any) => a.actual_day_offs - b.actual_day_offs,
-    // },
-    // {
-    //   title: "Сумма всех доставок",
-    //   dataIndex: "delivery_price",
-    //   excelRender: (value: any) => value,
-    //   sorter: (a: any, b: any) => a.delivery_price - b.delivery_price,
-    //   render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
-    // },
-    // {
-    //   title: "Получил",
-    //   dataIndex: "earned",
-    //   excelRender: (value: any) => value,
-    //   sorter: (a: any, b: any) => a.earned - b.earned,
-    //   render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
-    // },
-    // {
-    //   title: "Кошелёк",
-    //   dataIndex: "balance",
-    //   excelRender: (value: any) => value,
-    //   sorter: (a: any, b: any) => a.balance - b.balance,
-    //   render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
-    // },
-    // {
-    //   title: "Стоимость гаранта",
-    //   dataIndex: "garant_price",
-    //   excelRender: (value: any) => +value,
-    //   render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
-    // },
-    // {
-    //   title: "Упущенный гарант",
-    //   dataIndex: "possible_garant_price",
-    //   sorter: (a: any, b: any) =>
-    //     a.possible_garant_price - b.possible_garant_price,
-    //   excelRender: (value: any) => +value,
-    //   render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
-    // },
-    {
-      title: "Действия",
-      dataIndex: "id",
-      exportable: false,
-      width: 55,
-      render: (value: string, record: GarantReportItem) => (
-        <div>
-          <Button
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => show(record.courier_id)}
-          />
-          <Button
-            icon={<ArrowTopRightOnSquareIcon />}
-            size="small"
-            onClick={() => window.open(`/users/show/${record.courier_id}`)}
-          />
-        </div>
-      ),
-    },
-  ];
-
   const exportData = async () => {
     setIsLoading(true);
-    const excel = new Excel();
-    excel
-      .addSheet("test")
-      .addColumns(columns.filter((c) => c.exportable !== false))
-      .addDataSource(filteredData, {
-        str2Percent: true,
-      })
-      .saveAs("Гарант.xlsx");
+    // const excel = new Excel();
+    // excel
+    //   .addSheet("test")
+    //   .addColumns(columns.filter((c) => c.exportable !== false))
+    //   .addDataSource(filteredData, {
+    //     str2Percent: true,
+    //   })
+    //   .saveAs("Гарант.xlsx");
 
     setIsLoading(false);
   };
@@ -521,7 +282,7 @@ const OrdersGarantReport = () => {
   };
 
   const resultData = useMemo(() => {
-    var result = chain(filteredData)
+    let result = chain(filteredData)
       .groupBy("terminal_name")
       .toPairs()
       .map(function (item) {
@@ -531,9 +292,43 @@ const OrdersGarantReport = () => {
         };
       })
       .value();
+    result = result.map((item: any) => {
+      item.total_balance_to_pay = sumBy(item.children, "balance_to_pay");
+      return item;
+    });
     return result;
   }, [filteredData]);
-  console.log("resultData", resultData);
+
+  const [totalColspan, organizations] = useMemo(() => {
+    const organizations: any = {};
+    filteredData.forEach((item) => {
+      item.delivery_price_orgs &&
+        item.delivery_price_orgs.forEach((org) => {
+          if (!organizations[org.id]) {
+            organizations[org.id] = {
+              id: org.id,
+              name: org.name,
+              terminal_count: 0,
+            };
+          }
+
+          if (
+            (org.children.length + 1) * 2 >
+              organizations[org.id].terminal_count &&
+            org.children.length < 5
+          ) {
+            organizations[org.id].terminal_count =
+              (org.children.length + 1) * 2;
+          }
+        });
+    });
+    let totalColspan = 0;
+    Object.keys(organizations).forEach((key) => {
+      totalColspan += organizations[key].terminal_count;
+    });
+    return [totalColspan, Object.values(organizations)];
+  }, [filteredData]);
+
   useEffect(() => {
     fetchAllData();
     loadData();
@@ -551,7 +346,7 @@ const OrdersGarantReport = () => {
             <Button
               type="default"
               icon={<ExportOutlined />}
-              onClick={exportData}
+              onClick={onDownload}
             >
               Экспорт
             </Button>
@@ -712,48 +507,170 @@ const OrdersGarantReport = () => {
             </Card>
           </Form>
           <Card bordered={false}>
-            <table>
-              <thead>
+            <table
+              className="w-full text-left  border garant-table"
+              ref={tableRef}
+            >
+              <thead className="  uppercase bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th>№</th>
-                  <th>Курьер</th>
-                  <th>Остаток для выплаты</th>
-                  <th>Кол-во заказов</th>
-                  <th>Дата начала</th>
-                  <th>Дата последнего заказа</th>
-                  <th>Дата создания</th>
-                  <th>Кол-во отработанных дней</th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    №
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Курьер
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Сумма всех доставок
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Остаток для выплаты
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Кол-во заказов
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Дата начала
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Дата последнего заказа
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Дата создания
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                  >
+                    Кол-во отработанных дней
+                  </th>
+                  {organizations.length > 0 &&
+                    organizations.map((org: any) => (
+                      <th
+                        scope="col"
+                        className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                        key={org.id}
+                        colSpan={org.terminal_count}
+                      >
+                        {org.name}
+                      </th>
+                    ))}
                 </tr>
               </thead>
               <tbody>
                 {resultData.map((item: any, index: number) => (
                   <Fragment key={item.name}>
-                    <tr>
-                      <th colSpan={8}>{item.name}</th>
+                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <th
+                        colSpan={9 + totalColspan}
+                        align="left"
+                        className="px-2 py-2"
+                      >
+                        {item.name}
+                      </th>
                     </tr>
+                    {item.children.map((child: any, index: number) => (
+                      <tr
+                        key={child.courier_id}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600"
+                      >
+                        <td className="px-2 py-2">{index + 1}</td>
+                        <td className="px-2 py-2">{child.courier}</td>
+                        <td className="px-2 py-2">
+                          {new Intl.NumberFormat("ru-RU").format(
+                            child.delivery_price
+                          )}
+                        </td>
+                        <td align="right" className="px-2 py-2">
+                          {new Intl.NumberFormat("ru-RU").format(
+                            +child.balance_to_pay
+                          )}
+                        </td>
+                        <td align="right" className="px-2 py-2">
+                          {child.orders_count}
+                        </td>
+                        <td className="px-2 py-2">
+                          {dayjs(child.begin_date).format("DD.MM.YYYY")}
+                        </td>
+                        <td className="px-2 py-2">
+                          {dayjs(child.last_order_date).format("DD.MM.YYYY")}
+                        </td>
+                        <td className="px-2 py-2">
+                          {dayjs(child.created_at).format("DD.MM.YYYY")}
+                        </td>
+                        <td className="px-2 py-2">{child.order_dates_count}</td>
+                        {organizations.length > 0 &&
+                          child.delivery_price_orgs &&
+                          child.delivery_price_orgs.length > 0 &&
+                          child.delivery_price_orgs.map((org: any) => (
+                            <Fragment key={`${child.courier_id}_${org.id}`}>
+                              {org.children.length < 5 &&
+                                org.children.map((children: any) => (
+                                  <Fragment
+                                    key={`${child.courier_id}_${children.terminal_id}`}
+                                  >
+                                    <td align="right" className="px-2 py-2">
+                                      {children.terminal_name}
+                                    </td>
+                                    <td align="right" className="px-2 py-2">
+                                      {new Intl.NumberFormat("ru-RU").format(
+                                        +children.delivery_price
+                                      )}
+                                    </td>
+                                  </Fragment>
+                                ))}
+                              {5 - org.children.length > 0 &&
+                                Array(5 - org.children.length)
+                                  .fill(0)
+                                  .map((item: any, index: number) => (
+                                    <td
+                                      align="right"
+                                      className="px-2 py-2"
+                                      key={`${child.courier_id}_${index}`}
+                                    ></td>
+                                  ))}
+                            </Fragment>
+                          ))}
+                      </tr>
+                    ))}
+                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <th colSpan={3} align="right" className="px-2 py-2">
+                        Итого
+                      </th>
+                      <th align="right" className="px-2 py-2">
+                        {new Intl.NumberFormat("ru-RU").format(
+                          item.total_balance_to_pay
+                        )}
+                      </th>
+                    </tr>
+                    <tr></tr>
                   </Fragment>
                 ))}
               </tbody>
             </table>
-            {/* {filteredData && filteredData.length > 0 && (
-              <GarantReactTable filteredData={filteredData} />
-            )} */}
-            {/*             
-            <Table
-              dataSource={filteredData}
-              rowKey="id"
-              bordered
-              size="small"
-              columns={columns}
-              pagination={{
-                pageSize: 200,
-              }}
-              scroll={
-                window.innerWidth < 768
-                  ? undefined
-                  : { y: "calc(100vh - 390px)", x: "calc(100vw - 390px)" }
-              }
-            /> */}
           </Card>
         </Spin>
       </PageHeader>

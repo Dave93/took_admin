@@ -510,6 +510,22 @@ export class IBrands {
   updated_at: Date;
 }
 
+class GarantDeliveryPriceTerminal {
+  terminal_id: string;
+
+  terminal_name: string;
+
+  delivery_price: number;
+}
+
+class GarantDeliveryPriceOrg {
+  id: string;
+
+  name: string;
+
+  children: GarantDeliveryPriceTerminal[];
+}
+
 export class GarantReportItem {
   begin_date: Date;
   last_order_date: Date;
@@ -535,6 +551,7 @@ export class GarantReportItem {
   actual_day_offs: number;
 
   drive_type: keyof typeof drive_type;
+  delivery_price_orgs: GarantDeliveryPriceOrg[];
 }
 
 export class RollCallCourier {

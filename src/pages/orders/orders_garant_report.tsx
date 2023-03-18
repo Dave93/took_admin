@@ -34,21 +34,8 @@ import { AiFillCar } from "react-icons/ai";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { useDownloadExcel } from "react-export-table-to-excel";
 
-import {
-  GroupingState,
-  useReactTable,
-  getPaginationRowModel,
-  getFilteredRowModel,
-  getCoreRowModel,
-  getGroupedRowModel,
-  getExpandedRowModel,
-  ColumnDef,
-  flexRender,
-} from "@tanstack/react-table";
-
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import GarantReactTable from "components/orders/react_table_garant";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

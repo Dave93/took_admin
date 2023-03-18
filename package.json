@@ -19,7 +19,6 @@
     "@pankod/refine-strapi-graphql": "4.9.0",
     "@pbe/react-yandex-maps": "^1.2.2",
     "@supercharge/strings": "^1.28.0",
-    "@tanstack/react-table": "^8.7.9",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",

@@ -8,6 +8,7 @@ import { formatPhoneNumberIntl } from "react-phone-number-input";
 import UserRollCallList from "components/users/user_roll_call";
 import CourierWithdraws from "components/users/courier_withdraws";
 import CourierEffectiveness from "components/users/courier_effectiveness";
+import CourierTransactions from "components/users/courier_transactions";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -159,6 +160,9 @@ const UsersShow = () => {
         </Tabs.TabPane>
         <Tabs.TabPane tab="Выплаты" key="withdraws">
           {record && <CourierWithdraws user={record} />}
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Начисления" key="transactions">
+          {record && <CourierTransactions user={record} />}
         </Tabs.TabPane>
         <Tabs.TabPane tab="Эффективность" key="efficiency">
           {record && <CourierEffectiveness user={record} />}

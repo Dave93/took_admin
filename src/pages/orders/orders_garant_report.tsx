@@ -27,11 +27,14 @@ import dayjs from "dayjs";
 import { GarantReportItem, ITerminals, IUsers } from "interfaces";
 import { ExportOutlined, EditOutlined } from "@ant-design/icons";
 import { Excel } from "components/export/src";
-import { chain, filter, sortBy, sumBy } from "lodash";
+import { chain, filter, orderBy, sortBy, sumBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowDownIcon,
+  ArrowTopRightOnSquareIcon,
+} from "@heroicons/react/24/solid";
 import { useDownloadExcel } from "react-export-table-to-excel";
 
 import utc from "dayjs/plugin/utc";
@@ -50,6 +53,8 @@ const OrdersGarantReport = () => {
   const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
+  const [orderField, setOrderField] = useState<string | undefined>();
+  const [direction, setDirection] = useState<"asc" | "desc" | undefined>();
   const { handleSubmit, control, watch } = useForm();
 
   const tr = useTranslate();
@@ -268,23 +273,64 @@ const OrdersGarantReport = () => {
     setTerminals(sortBy(cachedTerminals, ["name"]));
   };
 
+  const setTableOrdering = (field: string) => {
+    if (field === orderField) {
+      if (direction === "asc") {
+        setDirection("desc");
+      } else {
+        setDirection(undefined);
+        setOrderField(undefined);
+      }
+    } else {
+      setOrderField(field);
+      setDirection("asc");
+    }
+  };
+
   const resultData = useMemo(() => {
-    let result = chain(filteredData)
-      .groupBy("terminal_name")
-      .toPairs()
-      .map(function (item) {
-        return {
-          name: item[0],
-          children: item[1],
-        };
-      })
-      .value();
-    result = result.map((item: any) => {
-      item.total_balance_to_pay = sumBy(item.children, "balance_to_pay");
-      return item;
-    });
+    let data = [...filteredData];
+    let result = [];
+    if (orderField !== undefined && direction !== undefined) {
+      if (direction === "asc") {
+        data = data.sort((a: any, b: any) => {
+          if (+a[orderField] < +b[orderField]) {
+            return -1;
+          }
+          if (+a[orderField] > +b[orderField]) {
+            return 1;
+          }
+          return 0;
+        });
+      } else {
+        data = data.sort((a: any, b: any) => {
+          if (+a[orderField] < +b[orderField]) {
+            return 1;
+          }
+          if (+a[orderField] > +b[orderField]) {
+            return -1;
+          }
+          return 0;
+        });
+      }
+      result = data;
+    } else {
+      result = chain(data)
+        .groupBy("terminal_name")
+        .toPairs()
+        .map(function (item) {
+          return {
+            name: item[0],
+            children: item[1],
+          };
+        })
+        .value();
+      result = result.map((item: any) => {
+        item.total_balance_to_pay = sumBy(item.children, "balance_to_pay");
+        return item;
+      });
+    }
     return result;
-  }, [filteredData]);
+  }, [filteredData, orderField, direction]);
 
   const [totalColspan, organizations] = useMemo(() => {
     const organizations: any = {};
@@ -495,7 +541,7 @@ const OrdersGarantReport = () => {
           </Form>
           <Card bordered={false}>
             <table
-              className="w-full text-left  border garant-table"
+              className="w-full text-left border garant-table"
               ref={tableRef}
             >
               <thead className="  uppercase bg-gray-50 dark:bg-gray-700">
@@ -514,15 +560,49 @@ const OrdersGarantReport = () => {
                   </th>
                   <th
                     scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700 cursor-pointer"
+                    onClick={() => {
+                      setTableOrdering("delivery_price");
+                    }}
                   >
-                    Сумма всех доставок
+                    <div className="flex items-center">
+                      <div>Сумма всех доставок</div>
+                      {orderField == "delivery_price" &&
+                        direction !== undefined && (
+                          <div className="flex justify-center">
+                            <div
+                              className={`${
+                                direction === "asc" ? "rotate-180" : ""
+                              }`}
+                            >
+                              <ArrowDownIcon className="w-4" />
+                            </div>
+                          </div>
+                        )}
+                    </div>
                   </th>
                   <th
                     scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700 cursor-pointer"
+                    onClick={() => {
+                      setTableOrdering("balance_to_pay");
+                    }}
                   >
-                    Остаток для выплаты
+                    <div className="flex items-center">
+                      <div>Остаток для выплаты</div>
+                      {orderField == "balance_to_pay" &&
+                        direction !== undefined && (
+                          <div className="flex justify-center">
+                            <div
+                              className={`${
+                                direction === "asc" ? "rotate-180" : ""
+                              }`}
+                            >
+                              <ArrowDownIcon className="w-4" />
+                            </div>
+                          </div>
+                        )}
+                    </div>
                   </th>
                   <th
                     scope="col"
@@ -568,18 +648,8 @@ const OrdersGarantReport = () => {
                 </tr>
               </thead>
               <tbody>
-                {resultData.map((item: any, index: number) => (
-                  <Fragment key={item.name}>
-                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th
-                        colSpan={9 + totalColspan}
-                        align="left"
-                        className="px-2 py-2"
-                      >
-                        {item.name}
-                      </th>
-                    </tr>
-                    {item.children.map((child: any, index: number) => (
+                {direction !== undefined && orderField !== undefined
+                  ? resultData.map((child: any, index: number) => (
                       <tr
                         key={child.courier_id}
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -642,20 +712,99 @@ const OrdersGarantReport = () => {
                             </Fragment>
                           ))}
                       </tr>
+                    ))
+                  : resultData.map((item: any, index: number) => (
+                      <Fragment key={item.name}>
+                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <th
+                            colSpan={9 + totalColspan}
+                            align="left"
+                            className="px-2 py-2"
+                          >
+                            {item.name}
+                          </th>
+                        </tr>
+                        {item.children.map((child: any, index: number) => (
+                          <tr
+                            key={child.courier_id}
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600"
+                          >
+                            <td className="px-2 py-2">{index + 1}</td>
+                            <td className="px-2 py-2">{child.courier}</td>
+                            <td className="px-2 py-2">
+                              {new Intl.NumberFormat("ru-RU").format(
+                                child.delivery_price
+                              )}
+                            </td>
+                            <td align="right" className="px-2 py-2">
+                              {new Intl.NumberFormat("ru-RU").format(
+                                +child.balance_to_pay
+                              )}
+                            </td>
+                            <td align="right" className="px-2 py-2">
+                              {child.orders_count}
+                            </td>
+                            <td className="px-2 py-2">
+                              {dayjs(child.begin_date).format("DD.MM.YYYY")}
+                            </td>
+                            <td className="px-2 py-2">
+                              {dayjs(child.last_order_date).format(
+                                "DD.MM.YYYY"
+                              )}
+                            </td>
+                            <td className="px-2 py-2">
+                              {dayjs(child.created_at).format("DD.MM.YYYY")}
+                            </td>
+                            <td className="px-2 py-2">
+                              {child.order_dates_count}
+                            </td>
+                            {organizations.length > 0 &&
+                              child.delivery_price_orgs &&
+                              child.delivery_price_orgs.length > 0 &&
+                              child.delivery_price_orgs.map((org: any) => (
+                                <Fragment key={`${child.courier_id}_${org.id}`}>
+                                  {org.children.length < 5 &&
+                                    org.children.map((children: any) => (
+                                      <Fragment
+                                        key={`${child.courier_id}_${children.terminal_id}`}
+                                      >
+                                        <td align="right" className="px-2 py-2">
+                                          {children.terminal_name}
+                                        </td>
+                                        <td align="right" className="px-2 py-2">
+                                          {new Intl.NumberFormat(
+                                            "ru-RU"
+                                          ).format(+children.delivery_price)}
+                                        </td>
+                                      </Fragment>
+                                    ))}
+                                  {5 - org.children.length > 0 &&
+                                    Array(5 - org.children.length)
+                                      .fill(0)
+                                      .map((item: any, index: number) => (
+                                        <td
+                                          align="right"
+                                          className="px-2 py-2"
+                                          key={`${child.courier_id}_${index}`}
+                                        ></td>
+                                      ))}
+                                </Fragment>
+                              ))}
+                          </tr>
+                        ))}
+                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <th colSpan={3} align="right" className="px-2 py-2">
+                            Итого
+                          </th>
+                          <th align="right" className="px-2 py-2">
+                            {new Intl.NumberFormat("ru-RU").format(
+                              item.total_balance_to_pay
+                            )}
+                          </th>
+                        </tr>
+                        <tr></tr>
+                      </Fragment>
                     ))}
-                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <th colSpan={3} align="right" className="px-2 py-2">
-                        Итого
-                      </th>
-                      <th align="right" className="px-2 py-2">
-                        {new Intl.NumberFormat("ru-RU").format(
-                          item.total_balance_to_pay
-                        )}
-                      </th>
-                    </tr>
-                    <tr></tr>
-                  </Fragment>
-                ))}
               </tbody>
             </table>
           </Card>

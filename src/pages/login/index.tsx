@@ -4,13 +4,22 @@ import { gql } from "graphql-request";
 // It is recommended to use explicit import as seen below to reduce bundle size.
 // import { IconName } from "@ant-design/icons";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { AuthPage as AntdAuthPage, AuthProps } from "@refinedev/antd";
 import { client } from "graphConnect";
 
 // It is recommended to use explicit import as seen below to reduce bundle size.
 // import { IconName } from "@ant-design/icons";
 import * as Icons from "@ant-design/icons";
 
-import { Row, Col, Layout as AntdLayout, Card, Form, Input, Button } from "antd";
+import {
+  Row,
+  Col,
+  Layout as AntdLayout,
+  Card,
+  Form,
+  Input,
+  Button,
+} from "antd";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { getMessageToken } from "lib/firebase";
@@ -34,9 +43,7 @@ export const Login: React.FC = () => {
 
   const { open } = useNotification();
 
-  const { mutate: login, isLoading } = useLogin<ILoginForm>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  const { mutate: login, isLoading } = useLogin<ILoginForm>();
 
   const onGsmFormSubmit = async (values: Pick<ILoginForm, "phone">) => {
     setLoading(true);

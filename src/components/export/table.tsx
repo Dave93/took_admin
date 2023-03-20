@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { useResourceWithRoute, useRouterContext, useDataProvider } from "@refinedev/core";
+import {
+  useRouterContext,
+  useDataProvider,
+  useResource,
+} from "@refinedev/core";
 import {
   ResourceRouterParams,
   BaseRecord,
@@ -62,13 +66,14 @@ export const useTableExport = <
 }: UseExportOptionsType<TData, TVariables> = {}): UseExportReturnType => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const resourceWithRoute = useResourceWithRoute();
+  const resourceWithRoute = useResource();
   const dataProvider = useDataProvider();
 
   const { useParams } = useRouterContext();
 
   const { resource: routeResourceName } = useParams<ResourceRouterParams>();
-  let { name: resource } = resourceWithRoute(routeResourceName);
+  let { resource: resourceResource } = useResource(routeResourceName);
+  let resource = resourceResource?.name;
 
   if (resourceName) {
     resource = resourceName;

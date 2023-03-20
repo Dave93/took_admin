@@ -1,19 +1,18 @@
-import { Refine } from "@refinedev/core";
-import {
-  notificationProvider,
-  Layout,
-  ErrorComponent,
-  ConfigProvider,
-} from "@pankod/refine-antd";
+import { Authenticated, Refine } from "@refinedev/core";
+import { notificationProvider, Layout, ErrorComponent } from "@refinedev/antd";
 
-import "@pankod/refine-antd/dist/reset.css";
+import "@refinedev/antd/dist/reset.css";
 import "./styles/main.css";
 
-import routerProvider from "@refinedev/react-router-v6/legacy";
-import { RefineKbarProvider } from "@pankod/refine-kbar";
+import routerProvider, {
+  CatchAllNavigate,
+  NavigateToResource,
+  UnsavedChangesNotifier,
+} from "@refinedev/react-router-v6";
+import { RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";
-import { Header } from "components/layout";
+import { Header, Title } from "components/layout";
 import { authProvider, TOKEN_KEY } from "./authProvider";
 import { Login } from "pages/login";
 import {
@@ -79,6 +78,7 @@ import { RollCallList } from "pages/users/roll_call_list";
 import CourierBalance from "pages/users/courier_balance";
 import UsersShow from "pages/users/show";
 import NotificationsList from "pages/notifications/list";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -123,185 +123,184 @@ function App() {
     const res = [
       {
         name: "orders",
-        options: {
+        meta: {
           label: "Заказы",
         },
-        list: OrdersList,
-        show: OrdersShow,
+        list: "/orders",
+        show: "/orders/show/:id",
       },
       {
         name: "orders_garant_report",
-        options: {
+        meta: {
           label: "Гарант",
         },
-        list: OrdersGarantReport,
+        list: "/orders_garant_report",
       },
       {
         name: "users",
-        list: UsersList,
-        create: UsersCreate,
-        edit: UsersEdit,
-        show: UsersShow,
-        options: {
+        list: "/users",
+        create: "/users/create",
+        edit: "/users/edit/:id",
+        show: "/users/show/:id",
+        meta: {
           label: "Список пользователей",
         },
       },
       {
         name: "roll_call",
-        options: {
+        meta: {
           label: "Перекличка",
         },
-        list: RollCallList,
+        list: "/roll_call",
       },
       {
         name: "courier_balance",
-        options: {
+        meta: {
           label: "Кошелёк",
         },
-        list: CourierBalance,
+        list: "/courier_balance",
       },
       {
         name: "courier_efficiency",
-        list: CourierEfficiency,
-        options: {
+        list: "/courier_efficiency",
+        meta: {
           label: "Эффективность курьера",
         },
       },
       {
         name: "notifications",
-        list: NotificationsList,
-        options: {
+        list: "/notifications",
+        meta: {
           label: "Рассылки",
         },
       },
       {
         name: "orders-group",
-        options: {
+        meta: {
           label: "Заказы",
         },
       },
       {
         name: "customers",
-        options: {
+        meta: {
           label: "Клиенты",
+          parent: "orders-group",
         },
-        parentName: "orders-group",
-        list: CustomersList,
-        show: CustomersShow,
+        list: "/customers",
+        show: "/customers/show/:id",
       },
       {
         name: "order_status",
-        options: {
+        meta: {
           label: "Статусы заказов",
+          parent: "orders-group",
         },
-        parentName: "orders-group",
-        list: OrderStatusList,
-        create: OrderStatusCreate,
-        edit: OrderStatusEdit,
+        list: "/order_status",
+        create: "/order_status/create",
+        edit: "/order_status/edit/:id",
       },
       {
         name: "users-group",
-        options: {
+        meta: {
           label: "Пользователи",
         },
-        list: UsersList,
       },
       {
         name: "roles",
-        parentName: "users-group",
-        list: RolesList,
-        create: RolesCreate,
-        edit: RolesEdit,
-        show: RolesShow,
-        options: {
+        list: "/roles",
+        create: "/roles/create",
+        edit: "/roles/edit/:id",
+        show: "/roles/show/:id",
+        meta: {
           label: "Роли",
+          parent: "users-group",
         },
       },
       {
         name: "permissions",
-        parentName: "users-group",
-        list: PermissionsList,
-        edit: PermissionsEdit,
-        create: PermissionsCreate,
-        options: {
+        list: "/permissions",
+        edit: "/permissions/edit/:id",
+        create: "/permissions/create",
+        meta: {
           label: "Разрешения",
+          parent: "users-group",
         },
       },
       {
         name: "where_courier",
-        parentName: "users-group",
-        list: WhereCourierList,
-        options: {
+        list: "/where_courier",
+        meta: {
           label: "Где курьер",
+          parent: "users-group",
         },
       },
       {
         name: "terminals_couriers",
-        parentName: "users-group",
-        list: TerminalsCouriersListPage,
-        options: {
+        list: "/terminals_couriers",
+        meta: {
           label: "Курьеры по филиалам",
+          parent: "users-group",
         },
       },
       {
         name: "organizations_menu",
-        options: {
+        meta: {
           label: "Организации",
         },
       },
       {
         name: "organization",
-        parentName: "organizations_menu",
-        options: {
+        meta: {
           label: "Список организации",
+          parent: "organizations_menu",
         },
-        list: OrganizationList,
-        create: OrganizationsCreate,
-        edit: OrganizationsEdit,
+        list: "/organizations",
+        create: "/organizations/create",
+        edit: "/organizations/edit/:id",
       },
       {
         name: "terminals",
-        parentName: "organizations_menu",
-        options: {
+        meta: {
           label: "Филиалы",
+          parent: "organizations_menu",
         },
-        list: TerminalsList,
-        create: TerminalsCreate,
-        edit: TerminalsEdit,
+        list: "/terminals",
+        create: "/terminals/create",
+        edit: "/terminals/edit/:id",
       },
       {
         name: "delivery_pricing",
-        parentName: "organizations_menu",
-        options: {
+        meta: {
           label: "Условия доставки",
+          parent: "organizations_menu",
         },
-        list: DeliveryPricingList,
-        create: DeliveryPricingCreate,
-        edit: DeliveryPricingEdit,
+        list: "/delivery_pricing",
+        create: "/delivery_pricing/create",
+        edit: "/delivery_pricing/edit/:id",
       },
       {
         name: "time_management",
-        options: {
+        meta: {
           label: "Время и отчёты",
         },
       },
       {
         name: "work_schedules",
-        parentName: "time_management",
-        options: {
+        meta: {
           label: "Рабочие графики",
+          parent: "time_management",
         },
-        list: WorkSchedulesList,
-        create: WorkSchedulesCreate,
-        edit: WorkSchedulesEdit,
+        list: "/work_schedules",
+        create: "/work_schedules/create",
+        edit: "/work_schedules/edit/:id",
       },
       {
         name: "work_schedule_entries_report",
-        parentName: "time_management",
-        options: {
+        meta: {
           label: "Отчёт по рабочим графикам",
+          parent: "time_management",
         },
-        list: WorkSchedulesReport,
+        list: "/work_schedule_entries_report",
       },
       {
         name: "settings",
@@ -311,33 +310,33 @@ function App() {
       },
       {
         name: "api_tokens",
-        parentName: "settings",
-        options: {
+        meta: {
           label: "API Токены",
+          parent: "settings",
         },
-        list: ApiTokensList,
-        create: ApiTokensCreate,
+        list: "/api_tokens",
+        create: "/api_tokens/create",
       },
       {
         name: "system_configs",
-        parentName: "settings",
-        options: {
+        meta: {
           label: "Системные настройки",
+          parent: "settings",
         },
-        list: SystemConfigsList,
+        list: "/system_configs",
       },
     ];
 
     if (process.env.REACT_APP_GRAPHQL_API_DOMAIN === "api.arryt.uz") {
       res.push({
         name: "brands",
-        parentName: "settings",
-        options: {
+        meta: {
           label: "Бренды",
+          parent: "settings",
         },
-        list: BrandsList,
-        create: BrandsCreate,
-        edit: BrandsEdit,
+        list: "/brands",
+        create: "/brands/create",
+        edit: "/brands/edit/:id",
       });
     }
     return res;
@@ -361,18 +360,11 @@ function App() {
   }, []);
 
   return (
-    <RefineKbarProvider>
-      <ApolloProvider client={gqlClient}>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: "#00b96b",
-            },
-          }}
-        >
+    <BrowserRouter>
+      <RefineKbarProvider>
+        <ApolloProvider client={gqlClient}>
           <Refine
             notificationProvider={notificationProvider}
-            Layout={Layout}
             options={{
               syncWithLocation: true,
               reactQuery: {
@@ -420,39 +412,143 @@ function App() {
                 });
               },
             }}
-            // ReadyPage={ReadyPage}
-            catchAll={<ErrorComponent />}
-            DashboardPage={MainPage}
-            routerProvider={{
-              ...routerProvider,
-              routes: [
-                {
-                  element: <PrivacyPage />,
-                  path: "/privacy",
-                },
-              ],
-            }}
+            routerProvider={routerProvider}
             dataProvider={gqlDataProvider}
             authProvider={authProvider}
-            LoginPage={Login}
-            OffLayoutArea={OffLayoutArea}
             i18nProvider={i18nProvider}
             // syncWithLocation={true}
-            Header={Header}
-            Title={() => (
-              <Link to="/" style={{ width: "100%" }}>
-                <img
-                  src="/images/logo-white.svg"
-                  alt="Refine"
-                  style={{ width: "80%", margin: "0 auto", display: "block" }}
-                />
-              </Link>
-            )}
             resources={resources}
-          />
-        </ConfigProvider>
-      </ApolloProvider>
-    </RefineKbarProvider>
+          >
+            <Routes>
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route
+                element={
+                  <Authenticated fallback={<CatchAllNavigate to="/login" />}>
+                    <Layout
+                      Header={Header}
+                      Title={Title}
+                      OffLayoutArea={OffLayoutArea}
+                    >
+                      <Outlet />
+                    </Layout>
+                  </Authenticated>
+                }
+              >
+                <Route index element={<MainPage />} />
+                <Route path="/orders">
+                  <Route index element={<OrdersList />} />
+                  <Route path="show/:id" element={<OrdersShow />} />
+                </Route>
+                <Route
+                  path="/orders_garant_report"
+                  element={<OrdersGarantReport />}
+                />
+                <Route path="/users">
+                  <Route index element={<UsersList />} />
+                  <Route path="show/:id" element={<UsersShow />} />
+                  <Route path="create" element={<UsersCreate />} />
+                  <Route path="edit/:id" element={<UsersEdit />} />
+                </Route>
+                <Route path="/roll_call">
+                  <Route index element={<RollCallList />} />
+                </Route>
+                <Route path="/courier_balance">
+                  <Route index element={<CourierBalance />} />
+                </Route>
+                <Route path="/courier_efficiency">
+                  <Route index element={<CourierEfficiency />} />
+                </Route>
+                <Route path="/customers">
+                  <Route index element={<CustomersList />} />
+                  <Route path="show/:id" element={<CustomersShow />} />
+                </Route>
+                <Route path="/order_status">
+                  <Route index element={<OrderStatusList />} />
+                  <Route path="create" element={<OrderStatusCreate />} />
+                  <Route path="edit/:id" element={<OrderStatusEdit />} />
+                </Route>
+                <Route path="/roles">
+                  <Route index element={<RolesList />} />
+                  <Route path="create" element={<RolesCreate />} />
+                  <Route path="edit/:id" element={<RolesEdit />} />
+                  <Route path="show/:id" element={<RolesShow />} />
+                </Route>
+                <Route path="/permissions">
+                  <Route index element={<PermissionsList />} />
+                  <Route path="create" element={<PermissionsCreate />} />
+                  <Route path="edit/:id" element={<PermissionsEdit />} />
+                </Route>
+                <Route path="/where_courier">
+                  <Route index element={<WhereCourierList />} />
+                </Route>
+                <Route path="/terminals_couriers">
+                  <Route index element={<TerminalsCouriersListPage />} />
+                </Route>
+                <Route path="/organization">
+                  <Route index element={<OrganizationList />} />
+                  <Route path="create" element={<OrganizationsCreate />} />
+                  <Route path="edit/:id" element={<OrganizationsEdit />} />
+                </Route>
+                <Route path="/terminals">
+                  <Route index element={<TerminalsList />} />
+                  <Route path="create" element={<TerminalsCreate />} />
+                  <Route path="edit/:id" element={<TerminalsEdit />} />
+                </Route>
+                <Route path="/delivery_pricing">
+                  <Route index element={<DeliveryPricingList />} />
+                  <Route path="create" element={<DeliveryPricingCreate />} />
+                  <Route path="edit/:id" element={<DeliveryPricingEdit />} />
+                </Route>
+                <Route path="/work_schedules">
+                  <Route index element={<WorkSchedulesList />} />
+                  <Route path="create" element={<WorkSchedulesCreate />} />
+                  <Route path="edit/:id" element={<WorkSchedulesEdit />} />
+                </Route>
+                <Route path="/work_schedule_entries_report">
+                  <Route index element={<WorkSchedulesReport />} />
+                </Route>
+                <Route path="/api_tokens">
+                  <Route index element={<ApiTokensList />} />
+                  <Route path="create" element={<ApiTokensCreate />} />
+                </Route>
+                <Route path="/system_configs">
+                  <Route index element={<SystemConfigsList />} />
+                </Route>
+                <Route path="/brands">
+                  <Route index element={<BrandsList />} />
+                  <Route path="create" element={<BrandsCreate />} />
+                  <Route path="edit/:id" element={<BrandsEdit />} />
+                </Route>
+              </Route>
+              <Route
+                element={
+                  <Authenticated fallback={<Outlet />}>
+                    <NavigateToResource resource="dashboard" />
+                  </Authenticated>
+                }
+              >
+                <Route path="/login" element={<Login />} />
+              </Route>
+              <Route
+                element={
+                  <Authenticated>
+                    <Layout
+                      Header={Header}
+                      Title={Title}
+                      OffLayoutArea={OffLayoutArea}
+                    >
+                      <Outlet />
+                    </Layout>
+                  </Authenticated>
+                }
+              >
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
+            </Routes>
+          </Refine>
+        </ApolloProvider>
+      </RefineKbarProvider>
+    </BrowserRouter>
   );
 }
 

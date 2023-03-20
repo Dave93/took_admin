@@ -1,4 +1,4 @@
-import { AuthProvider } from "@pankod/refine-core";
+import type { AuthBindings } from "@refinedev/core";
 import { gql } from "graphql-request";
 import { client } from "./graphConnect";
 import { AES, enc } from "crypto-js";
@@ -8,7 +8,7 @@ import { DateTime } from "luxon";
 
 export const TOKEN_KEY = "refine-auth";
 
-export const authProvider: AuthProvider = {
+export const authProvider: AuthBindings = {
   login: async ({ phone, code, otpSecret, deviceToken }) => {
     try {
       let query = gql`
@@ -58,19 +58,25 @@ export const authProvider: AuthProvider = {
       const encrypted = AES.encrypt(credentials, password).toString();
 
       localStorage.setItem(TOKEN_KEY, encrypted);
-      return Promise.resolve(data.verifyOtp);
+      return { success: true, redirectTo: "/" };
     } catch (e: any) {
-      return Promise.reject(
-        e.response.errors.map((e: any) => e.message).join("\n")
-      );
+      return {
+        success: false,
+        error: e.response.errors.map((e: any) => e.message).join("\n"),
+      };
     }
   },
-  logout: () => {
+  logout: async (params) => {
     localStorage.removeItem(TOKEN_KEY);
-    return Promise.resolve();
+    return {
+      success: true,
+      redirectTo: "/login",
+    };
   },
-  checkError: () => Promise.resolve(),
-  checkAuth: async () => {
+  onError: async (error) => {
+    return { error };
+  },
+  check: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
       let password = process.env.REACT_APP_CRYPTO_KEY!;
@@ -108,16 +114,31 @@ export const authProvider: AuthProvider = {
             const encrypted = AES.encrypt(credentials, password).toString();
 
             localStorage.setItem(TOKEN_KEY, encrypted);
-            return Promise.resolve();
+            return {
+              authenticated: true,
+            };
           } catch (e) {
-            return Promise.reject("Token expired");
+            console.log("auth error", e);
+            return {
+              authenticated: false,
+              error: new Error("Invalid token"),
+              logout: true,
+              redirectTo: "/login",
+            };
           }
         }
       }
-      return Promise.resolve();
+      return {
+        authenticated: true,
+      };
     }
 
-    return Promise.reject();
+    return {
+      authenticated: false,
+      error: new Error("Invalid token"),
+      logout: true,
+      redirectTo: "/login",
+    };
   },
   getPermissions: () => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -125,19 +146,19 @@ export const authProvider: AuthProvider = {
       let password = process.env.REACT_APP_CRYPTO_KEY!;
       var bytes = AES.decrypt(token, password);
       var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
-      return Promise.resolve(decryptedData.access);
+      return decryptedData.access;
     }
-    return Promise.reject();
+    return null;
   },
-  getUserIdentity: async () => {
+  getIdentity: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) {
-      return Promise.reject();
+      return null;
     }
 
     let password = process.env.REACT_APP_CRYPTO_KEY!;
     var bytes = AES.decrypt(token, password);
     var decryptedData = JSON.parse(bytes.toString(enc.Utf8));
-    return Promise.resolve(decryptedData);
+    return decryptedData;
   },
 };

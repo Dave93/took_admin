@@ -1,5 +1,16 @@
 import { List, useTable, ShowButton, ExportButton } from "@refinedev/antd";
-import { Table, Space, Button, Form, Select, Col, Row, DatePicker, Tag, Input } from "antd";
+import {
+  Table,
+  Space,
+  Button,
+  Form,
+  Select,
+  Col,
+  Row,
+  DatePicker,
+  Tag,
+  Input,
+} from "antd";
 import type { TableRowSelection } from "antd/es/table/interface";
 
 import {
@@ -74,7 +85,7 @@ export const OrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>({
-    v3LegacyAuthProviderCompatible: true
+    v3LegacyAuthProviderCompatible: true,
   });
   const tr = useTranslate();
   const [expand, setExpand] = useState(false);
@@ -87,7 +98,13 @@ export const OrdersList: React.FC = () => {
 
   const { show } = useNavigation();
 
-  const { tableProps, searchFormProps, filters, sorters: sorter, setFilters } = useTable<
+  const {
+    tableProps,
+    searchFormProps,
+    filters,
+    sorters: sorter,
+    setFilters,
+  } = useTable<
     IOrders,
     HttpError,
     {
@@ -247,7 +264,7 @@ export const OrdersList: React.FC = () => {
     },
 
     pagination: {
-      pageSize: 200
+      pageSize: 200,
     },
 
     filters: {
@@ -264,7 +281,7 @@ export const OrdersList: React.FC = () => {
         },
       ],
 
-      defaultBehavior: "replace"
+      defaultBehavior: "replace",
     },
 
     sorters: {
@@ -273,8 +290,8 @@ export const OrdersList: React.FC = () => {
           field: "created_at",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
 
   const columns = [
@@ -492,7 +509,7 @@ export const OrdersList: React.FC = () => {
   ];
 
   const { triggerExport, isLoading } = useTableExport<IOrders>({
-    meta: {
+    metaData: {
       fields: [
         "id",
         "delivery_type",

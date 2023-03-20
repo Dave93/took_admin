@@ -24,7 +24,6 @@ import { QRCode } from "react-qrcode-logo";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
 
-const { DownOutlined } = Icons;
 const { Text } = Typography;
 
 let LangStrings = {
@@ -34,21 +33,17 @@ let LangStrings = {
 };
 
 export const Header: React.FC = () => {
-  const { i18n } = useTranslation();
   const locale = useGetLocale();
-  const changeLanguage = useSetLocale();
   const { data: user } = useGetIdentity({
-    v3LegacyAuthProviderCompatible: true
+    v3LegacyAuthProviderCompatible: true,
   });
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [qrCode, setQrCode] = useState("");
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>({
-    v3LegacyAuthProviderCompatible: true
+    v3LegacyAuthProviderCompatible: true,
   });
-
-  const currentLocale = locale();
 
   // const menu = (
   //   <Menu selectedKeys={currentLocale ? [currentLocale] : []}>

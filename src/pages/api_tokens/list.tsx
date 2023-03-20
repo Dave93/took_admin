@@ -1,29 +1,22 @@
-import {
-  List,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  Button,
-  DeleteButton,
-} from "@pankod/refine-antd";
+import { List, useTable, EditButton, DeleteButton } from "@refinedev/antd";
+import { Table, Switch, Space, Button } from "antd";
 import { useCopyToClipboard } from "usehooks-ts";
 
 import Hashids from "hashids";
 
 import { IApiTokens } from "interfaces";
-import { useGetIdentity, useNotification } from "@pankod/refine-core";
+import { useGetIdentity, useNotification } from "@refinedev/core";
 
 export const ApiTokensList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [value, copy] = useCopyToClipboard();
   const { open } = useNotification();
   const { tableProps } = useTable<IApiTokens>({
-    initialSorter: [],
-    metaData: {
+    meta: {
       fields: [
         "id",
         "token",
@@ -38,6 +31,10 @@ export const ApiTokensList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: []
+    }
   });
 
   const copyToken = (token: string) => {

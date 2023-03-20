@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useLogin, useNotification } from "@pankod/refine-core";
+import { useLogin, useNotification } from "@refinedev/core";
 import { gql } from "graphql-request";
+// It is recommended to use explicit import as seen below to reduce bundle size.
+// import { IconName } from "@ant-design/icons";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { client } from "graphConnect";
 
-import {
-  Row,
-  Col,
-  AntdLayout,
-  Card,
-  Form,
-  Input,
-  Button,
-  Icons,
-} from "@pankod/refine-antd";
+// It is recommended to use explicit import as seen below to reduce bundle size.
+// import { IconName } from "@ant-design/icons";
+import * as Icons from "@ant-design/icons";
+
+import { Row, Col, Layout as AntdLayout, Card, Form, Input, Button } from "antd";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { getMessageToken } from "lib/firebase";
@@ -37,7 +34,9 @@ export const Login: React.FC = () => {
 
   const { open } = useNotification();
 
-  const { mutate: login, isLoading } = useLogin<ILoginForm>();
+  const { mutate: login, isLoading } = useLogin<ILoginForm>({
+    v3LegacyAuthProviderCompatible: true
+  });
 
   const onGsmFormSubmit = async (values: Pick<ILoginForm, "phone">) => {
     setLoading(true);

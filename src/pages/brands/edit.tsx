@@ -1,5 +1,6 @@
-import { Col, Edit, Form, Input, Row, useForm } from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Edit, useForm } from "@refinedev/antd";
+import { Col, Form, Input, Row } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IBrands } from "interfaces";
 import FileUploader from "components/file_uploader";
@@ -7,9 +8,11 @@ import FileUploader from "components/file_uploader";
 export const BrandsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps, id } = useForm<IBrands>({
-    metaData: {
+    meta: {
       fields: ["id", "name", "api_url", "logo_path"],
       pluralize: true,
       requestHeaders: {

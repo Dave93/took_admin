@@ -1,18 +1,7 @@
-import {
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Form,
-  PageHeader,
-  Row,
-  Select,
-  Space,
-  Spin,
-  Table,
-} from "@pankod/refine-antd";
+import { PageHeader } from "@refinedev/antd";
+import { Button, Card, Col, DatePicker, Form, Row, Select, Space, Spin, Table } from "antd";
 import { ExportOutlined } from "@ant-design/icons";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { CourierEfficiencyReportItem, ITerminals, IUsers } from "interfaces";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -32,7 +21,9 @@ const { RangePicker } = DatePicker;
 const CourierEfficiency = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);

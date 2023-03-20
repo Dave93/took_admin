@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-  useResourceWithRoute,
-  useRouterContext,
-  useDataProvider,
-} from "@pankod/refine-core";
+import { useResourceWithRoute, useRouterContext, useDataProvider } from "@refinedev/core";
 import {
   ResourceRouterParams,
   BaseRecord,
@@ -11,11 +7,11 @@ import {
   CrudSorting,
   CrudFilters,
   MetaDataQuery,
-} from "@pankod/refine-core";
-import { userFriendlyResourceName } from "@pankod/refine-core";
+} from "@refinedev/core";
+import { userFriendlyResourceName } from "@refinedev/core";
 import { ExportToCsv, Options } from "export-to-csv-fix-source-map";
 import { Excel } from "./src";
-import { TableColumnType } from "@pankod/refine-antd";
+import { TableColumnType } from "antd";
 
 type UseExportOptionsType<
   TData extends BaseRecord = BaseRecord,
@@ -102,7 +98,7 @@ export const useTableExport = <
             current,
             pageSize,
           },
-          metaData,
+          meta: metaData,
         });
 
         current++;

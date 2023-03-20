@@ -1,22 +1,19 @@
-import { List, Table, useTable, Space, ShowButton } from "@pankod/refine-antd";
-import { useGetIdentity, useNavigation } from "@pankod/refine-core";
+import { List, useTable, ShowButton } from "@refinedev/antd";
+import { Table, Space } from "antd";
+import { useGetIdentity, useNavigation } from "@refinedev/core";
 
 import { ICustomers } from "interfaces";
 
 export const CustomersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { show } = useNavigation();
 
   const { tableProps } = useTable<ICustomers>({
-    initialSorter: [
-      {
-        field: "name",
-        order: "asc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: ["id", "name", "phone"],
       whereInputType: "customersWhereInput!",
       orderByInputType: "customersOrderByWithRelationInput!",
@@ -24,6 +21,15 @@ export const CustomersList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: [
+        {
+          field: "name",
+          order: "asc",
+        },
+      ]
+    }
   });
   return (
     <>

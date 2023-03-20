@@ -1,17 +1,6 @@
-import {
-  List,
-  DateField,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  ShowButton,
-  Form,
-  Select,
-  Button,
-} from "@pankod/refine-antd";
-import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
+import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import { Table, Switch, Space, Form, Select, Button } from "antd";
+import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 
@@ -22,7 +11,9 @@ import { useEffect, useState } from "react";
 export const TerminalsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
   const { tableProps, searchFormProps } = useTable<
@@ -30,17 +21,7 @@ export const TerminalsList: React.FC = () => {
     HttpError,
     { organization_id: string }
   >({
-    initialSorter: [
-      {
-        field: "name",
-        order: "asc",
-      },
-      {
-        field: "organization_id",
-        order: "asc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",
@@ -61,6 +42,7 @@ export const TerminalsList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
     onSearch: async (params) => {
       const filters: CrudFilters = [];
       const { organization_id } = params;
@@ -76,6 +58,19 @@ export const TerminalsList: React.FC = () => {
       }
       return filters;
     },
+
+    sorters: {
+      initial: [
+        {
+          field: "name",
+          order: "asc",
+        },
+        {
+          field: "organization_id",
+          order: "asc",
+        },
+      ]
+    }
   });
 
   const loadOrganizations = async () => {

@@ -1,15 +1,6 @@
-import {
-  Col,
-  Create,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, InputNumber, Row, Select, Switch } from "antd";
+import { useTranslate } from "@refinedev/core";
 
 import { IOrderStatus, IOrganization } from "interfaces";
 import { Colorpicker } from "antd-colorpicker";
@@ -19,7 +10,7 @@ import { client } from "graphConnect";
 
 export const OrderStatusCreate = () => {
   const { formProps, saveButtonProps } = useForm<IOrderStatus>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

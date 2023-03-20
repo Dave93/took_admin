@@ -1,14 +1,6 @@
-import {
-  Col,
-  Form,
-  Row,
-  DatePicker,
-  Button,
-  Table,
-  Checkbox,
-} from "@pankod/refine-antd";
+import { Col, Form, Row, DatePicker, Button, Table, Checkbox } from "antd";
 import { rangePresets } from "components/dates/RangePresets";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 import { Excel } from "components/export/src";
 import dayjs from "dayjs";
 import { ICourierEfficiencyReportPerDayItem, IUsers } from "interfaces";
@@ -23,7 +15,9 @@ const { RangePicker } = DatePicker;
 const CourierEffectiveness = ({ user }: { user: IUsers }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<ICourierEfficiencyReportPerDayItem[]>([]);
   const { handleSubmit, control, getValues, watch } = useForm<{

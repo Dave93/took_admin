@@ -1,21 +1,24 @@
+import { useGetLocale, useSetLocale, useGetIdentity } from "@refinedev/core";
+
+// It is recommended to use explicit import as seen below to reduce bundle size.
+// import { IconName } from "@ant-design/icons";
+import * as Icons from "@ant-design/icons";
+
 import {
-  useGetLocale,
-  useSetLocale,
-  useGetIdentity,
-} from "@pankod/refine-core";
-import {
-  AntdLayout,
+  Layout as AntdLayout,
   Space,
   Menu,
   Button,
-  Icons,
   Dropdown,
   Avatar,
   Typography,
   Modal,
-} from "@pankod/refine-antd";
+} from "antd";
+
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
+// It is recommended to use explicit import as seen below to reduce bundle size.
+// import { IconName } from "@ant-design/icons";
 import { QrcodeOutlined } from "@ant-design/icons";
 import { QRCode } from "react-qrcode-logo";
 import { gql } from "graphql-request";
@@ -34,12 +37,16 @@ export const Header: React.FC = () => {
   const { i18n } = useTranslation();
   const locale = useGetLocale();
   const changeLanguage = useSetLocale();
-  const { data: user } = useGetIdentity();
+  const { data: user } = useGetIdentity({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [qrCode, setQrCode] = useState("");
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
 
   const currentLocale = locale();
 

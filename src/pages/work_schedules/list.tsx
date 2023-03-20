@@ -1,15 +1,6 @@
-import {
-  List,
-  DateField,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  ShowButton,
-  Tag,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import { Table, Switch, Space, Tag } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IWorkSchedules } from "interfaces";
 import { defaultDateTimeFormat, defaultTimeFormat } from "localConstants";
@@ -27,19 +18,11 @@ const daysOfWeekRu = {
 export const WorkSchedulesList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { tableProps } = useTable<IWorkSchedules>({
-    initialSorter: [
-      {
-        field: "name",
-        order: "asc",
-      },
-      {
-        field: "organization_id",
-        order: "asc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",
@@ -60,6 +43,19 @@ export const WorkSchedulesList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: [
+        {
+          field: "name",
+          order: "asc",
+        },
+        {
+          field: "organization_id",
+          order: "asc",
+        },
+      ]
+    }
   });
   return (
     <>

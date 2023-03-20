@@ -1,15 +1,6 @@
-import {
-  useForm,
-  Form,
-  Input,
-  Edit,
-  Switch,
-  Select,
-  Row,
-  Col,
-  InputNumber
-} from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useForm, Edit } from "@refinedev/antd";
+import { Form, Input, Switch, Select, Row, Col, InputNumber } from "antd";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import FileUploader from "components/file_uploader";
 import { IOrganization } from "interfaces";
 import {
@@ -21,9 +12,11 @@ const { TextArea } = Input;
 export const OrganizationsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps, id } = useForm<IOrganization>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

@@ -1,14 +1,6 @@
-import {
-  Col,
-  Create,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, InputNumber, Row, Select } from "antd";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import * as gqlb from "gql-query-builder";
@@ -20,11 +12,13 @@ import { chain, sortBy } from "lodash";
 export const UsersCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const tr = useTranslate();
   const { formProps, saveButtonProps, redirect } = useForm<IUsers>({
     redirect: false,
-    metaData: {
+    meta: {
       fields: [
         "id",
         "first_name",

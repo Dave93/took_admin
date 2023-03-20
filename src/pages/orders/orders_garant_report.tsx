@@ -1,23 +1,23 @@
+import { Edit, PageHeader, useDrawerForm } from "@refinedev/antd";
+
 import {
   Button,
   Card,
   Col,
   DatePicker,
   Drawer,
-  Edit,
   Form,
   Input,
   InputNumber,
-  PageHeader,
   Row,
   Select,
   Space,
   Spin,
   Table,
-  useDrawerForm,
-} from "@pankod/refine-antd";
+} from "antd";
+
 import { SortOrder } from "antd/lib/table/interface";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { DateTime } from "luxon";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -47,7 +47,9 @@ const OrdersGarantReport = () => {
   const tableRef = useRef(null);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [garantData, setGarantData] = useState<GarantReportItem[]>([]);
   const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);
@@ -168,7 +170,7 @@ const OrdersGarantReport = () => {
     action: "edit",
     resource: "users",
     redirect: false,
-    metaData: {
+    meta: {
       fields: [
         "id",
         "first_name",

@@ -1,14 +1,17 @@
-import { useGetIdentity, useShow } from "@pankod/refine-core";
-import { Show, Typography, Row, Col, Tabs } from "@pankod/refine-antd";
+import { useGetIdentity, useShow } from "@refinedev/core";
+import { Show } from "@refinedev/antd";
+import { Typography, Row, Col, Tabs } from "antd";
 
 const { Title, Text } = Typography;
 
 export const CustomersShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { queryResult } = useShow({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

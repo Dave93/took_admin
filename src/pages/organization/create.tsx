@@ -1,15 +1,6 @@
-import {
-  Col,
-  Create,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, InputNumber, Row, Select, Switch } from "antd";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { IOrganization } from "interfaces";
 import {
   organization_payment_types,
@@ -21,9 +12,11 @@ const { TextArea } = Input;
 export const OrganizationsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IOrganization>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

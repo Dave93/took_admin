@@ -1,14 +1,6 @@
-import {
-  Col,
-  Edit,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Edit, useForm } from "@refinedev/antd";
+import { Col, Form, Input, InputNumber, Row, Switch } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IOrderStatus } from "interfaces";
 import { Colorpicker } from "antd-colorpicker";
@@ -16,9 +8,11 @@ import { Colorpicker } from "antd-colorpicker";
 export const OrderStatusEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps, id } = useForm<IOrderStatus>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

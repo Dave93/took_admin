@@ -1,5 +1,5 @@
-import { Alert, Button, Col, Row, Select, Space } from "@pankod/refine-antd";
-import { useCan, useGetIdentity } from "@pankod/refine-core";
+import { Alert, Button, Col, Row, Select, Space } from "antd";
+import { useCan, useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { IOrders, IOrderStatus } from "interfaces";
 import * as gqlb from "gql-query-builder";
@@ -17,7 +17,9 @@ export const OrdersTableActions: FC<IOrdersTableActionsProps> = ({
 }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [currentAction, setCurrentAction] = useState<string | null>(null);
   const [orderStatuses, setOrderStatuses] = useState<IOrderStatus[]>([]);
   const [chosenStatusId, setChosenStatusId] = useState<string | null>(null);

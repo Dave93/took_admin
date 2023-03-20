@@ -1,7 +1,7 @@
-import { Descriptions, Button, Input, Space, Form } from "@pankod/refine-antd";
+import { Descriptions, Button, Input, Space, Form } from "antd";
 import { FC, useState } from "react";
 import { SaveOutlined, EditOutlined } from "@ant-design/icons";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 
@@ -18,7 +18,9 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
   const [isSaving, setIsSaving] = useState(false);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const saveNotes = async () => {
     setIsSaving(true);
     let createQuery = gql`

@@ -1,12 +1,7 @@
+import { CanAccess, useCan, useGetIdentity, useNavigation, useShow } from "@refinedev/core";
+import { Show } from "@refinedev/antd";
+
 import {
-  CanAccess,
-  useCan,
-  useGetIdentity,
-  useNavigation,
-  useShow,
-} from "@pankod/refine-core";
-import {
-  Show,
   Descriptions,
   Col,
   Row,
@@ -18,8 +13,9 @@ import {
   Space,
   Popconfirm,
   Popover,
-  AntdList,
-} from "@pankod/refine-antd";
+  List as AntdList,
+} from "antd";
+
 import dayjs from "dayjs";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "graphql-request";
@@ -76,7 +72,9 @@ export const OrdersShow = () => {
   const map = useRef<any>(null);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [orderActions, setOrderActions] = useState<IOrderActions[]>([]);
   const [orderLocations, setOrderLocations] = useState<IGroupedLocations[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<IOrderStatus[]>([]);
@@ -89,7 +87,7 @@ export const OrdersShow = () => {
   });
 
   const { queryResult, showId } = useShow({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "delivery_type",

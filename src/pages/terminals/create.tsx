@@ -1,14 +1,6 @@
-import {
-  Col,
-  Create,
-  Form,
-  Input,
-  Row,
-  Select,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, Row, Select, Switch } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, ITerminals } from "interfaces";
@@ -17,9 +9,11 @@ import { useEffect, useState } from "react";
 export const TerminalsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<ITerminals>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

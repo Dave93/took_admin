@@ -1,7 +1,8 @@
+import { Edit, useForm } from "@refinedev/antd";
+
 import {
   Button,
   Col,
-  Edit,
   Form,
   Input,
   InputNumber,
@@ -10,10 +11,10 @@ import {
   Space,
   Switch,
   TimePicker,
-  useForm,
-} from "@pankod/refine-antd";
+} from "antd";
+
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useCan, useTranslate } from "@pankod/refine-core";
+import { useCan, useTranslate } from "@refinedev/core";
 
 import { IOrderStatus, IOrganization } from "interfaces";
 import { drive_type } from "interfaces/enums";
@@ -24,7 +25,7 @@ import { Colorpicker } from "antd-colorpicker";
 
 export const OrderStatusEdit: React.FC = () => {
   const { formProps, saveButtonProps, id } = useForm<IOrderStatus>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

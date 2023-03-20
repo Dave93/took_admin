@@ -1,14 +1,17 @@
-import { Create, Form, Input, Switch, useForm } from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Form, Input, Switch } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IRoles } from "interfaces";
 
 export const RolesCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IRoles>({
-    metaData: {
+    meta: {
       fields: ["id", "name", "active", "code", "created_at"],
       pluralize: true,
       requestHeaders: {

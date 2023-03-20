@@ -1,16 +1,18 @@
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { FC, useMemo, useState } from "react";
 import { Map, Placemark, YMaps } from "@pbe/react-yandex-maps";
 
 import useSWR from "swr";
-import { Button, Card, Select, Space } from "@pankod/refine-antd";
+import { Button, Card, Select, Space } from "antd";
 
 const WhereCourierList = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
 
   return (
     <>

@@ -1,12 +1,6 @@
-import {
-  useForm,
-  Form,
-  Input,
-  Edit,
-  Switch,
-  Select,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useForm, Edit } from "@refinedev/antd";
+import { Form, Input, Switch, Select } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IPermissions, IRoles } from "interfaces";
@@ -17,12 +11,14 @@ const { Option } = Select;
 export const RolesEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [permissions, setPermissions] = useState<IPermissions[]>([]);
   const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
 
   const { formProps, saveButtonProps, id } = useForm<IRoles>({
-    metaData: {
+    meta: {
       fields: ["id", "name", "code", "active"],
       pluralize: true,
       requestHeaders: {

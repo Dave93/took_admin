@@ -1,12 +1,5 @@
-import {
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  Input,
-  Space,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Button, Card, DatePicker, Form, Input, Space } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 import { PhoneOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -37,7 +30,9 @@ const { Search } = Input;
 export const RollCallList = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RollCallItem[]>([]);
   const [filteredData, setFilteredData] = useState<RollCallItem[]>([]);

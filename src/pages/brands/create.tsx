@@ -1,14 +1,17 @@
-import { Col, Create, Form, Input, Row, useForm } from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, Row } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IBrands } from "interfaces";
 
 export const BrandsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IBrands>({
-    metaData: {
+    meta: {
       fields: ["id", "name", "api_url", "logo_path"],
       pluralize: true,
       requestHeaders: {

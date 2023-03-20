@@ -1,5 +1,5 @@
 import { gql, useSubscription } from "@apollo/client";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 import { FC } from "react";
 
 const COMMENTS_SUBSCRIPTION = gql`

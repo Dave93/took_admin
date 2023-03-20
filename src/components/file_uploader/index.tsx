@@ -1,9 +1,9 @@
-import { Button, Col, Row } from "@pankod/refine-antd";
+import { Button, Col, Row } from "antd";
 import { useState } from "react";
 import * as gqlb from "gql-query-builder";
 import { client } from "graphConnect";
 import { CloseCircleFilled } from "@ant-design/icons";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 
 interface OnChangeHandler {
   (e: any): void;
@@ -17,7 +17,9 @@ interface MyInputProps {
 const FileUploader = ({ value, onChange, modelId }: MyInputProps) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 

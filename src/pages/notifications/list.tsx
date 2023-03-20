@@ -1,28 +1,7 @@
-import {
-  Button,
-  Col,
-  Create,
-  DatePicker,
-  Drawer,
-  Form,
-  Input,
-  List,
-  Row,
-  Select,
-  ShowButton,
-  Space,
-  Table,
-  useDrawerForm,
-  useTable,
-} from "@pankod/refine-antd";
-import {
-  CrudFilters,
-  HttpError,
-  useGetIdentity,
-  useNavigation,
-  useQueryClient,
-  useTranslate,
-} from "@pankod/refine-core";
+import { Create, List, ShowButton, useDrawerForm, useTable } from "@refinedev/antd";
+import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Table } from "antd";
+import { CrudFilters, HttpError, useGetIdentity, useNavigation, useTranslate } from "@refinedev/core";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { INotifications } from "interfaces";
 import { rangePresets } from "components/dates/RangePresets";
@@ -33,12 +12,14 @@ const { RangePicker } = DatePicker;
 const NotificationsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const tr = useTranslate();
 
   const queryClient = useQueryClient();
 
-  const { tableProps, searchFormProps, filters, sorter, setFilters } = useTable<
+  const { tableProps, searchFormProps, filters, sorters: sorter, setFilters } = useTable<
     INotifications,
     HttpError,
     {
@@ -47,18 +28,11 @@ const NotificationsList: React.FC = () => {
       role: string;
     }
   >({
-    initialPageSize: 200,
-    initialSorter: [
-      {
-        field: "created_at",
-        order: "desc",
-      },
-    ],
-    defaultSetFilterBehavior: "replace",
     queryOptions: {
       queryKey: ["notifications"],
     },
-    metaData: {
+
+    meta: {
       fields: [
         "id",
         "title",
@@ -74,18 +48,7 @@ const NotificationsList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
-    initialFilter: [
-      {
-        field: "created_at",
-        operator: "gte",
-        value: dayjs().startOf("d").toDate(),
-      },
-      {
-        field: "created_at",
-        operator: "lte",
-        value: dayjs().endOf("d").toDate(),
-      },
-    ],
+
     onSearch: async (params) => {
       const localFilters: CrudFilters = [];
       queryClient.invalidateQueries(["default", "notifications", "list"]);
@@ -106,6 +69,36 @@ const NotificationsList: React.FC = () => {
       );
       return localFilters;
     },
+
+    pagination: {
+      pageSize: 200
+    },
+
+    filters: {
+      initial: [
+        {
+          field: "created_at",
+          operator: "gte",
+          value: dayjs().startOf("d").toDate(),
+        },
+        {
+          field: "created_at",
+          operator: "lte",
+          value: dayjs().endOf("d").toDate(),
+        },
+      ],
+
+      defaultBehavior: "replace"
+    },
+
+    sorters: {
+      initial: [
+        {
+          field: "created_at",
+          order: "desc",
+        },
+      ]
+    }
   });
 
   const {
@@ -120,7 +113,7 @@ const NotificationsList: React.FC = () => {
     action: "create",
     resource: "notifications",
     redirect: false,
-    metaData: {
+    meta: {
       fields: [
         "id",
         "title",

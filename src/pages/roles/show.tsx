@@ -1,5 +1,6 @@
-import { useGetIdentity, useShow } from "@pankod/refine-core";
-import { Show, Typography, Tag, Switch } from "@pankod/refine-antd";
+import { useGetIdentity, useShow } from "@refinedev/core";
+import { Show } from "@refinedev/antd";
+import { Typography, Tag, Switch } from "antd";
 
 import { useEffect, useState } from "react";
 import { gql } from "graphql-request";
@@ -10,10 +11,12 @@ const { Title, Text } = Typography;
 export const RolesShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
   const { queryResult, showId } = useShow({
-    metaData: {
+    meta: {
       fields: ["id", "name", "active", "created_at"],
       pluralize: true,
       requestHeaders: {

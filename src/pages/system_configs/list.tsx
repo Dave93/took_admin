@@ -1,8 +1,8 @@
+import { PageHeader } from "@refinedev/antd";
 import {
   Card,
   Form,
   Input,
-  PageHeader,
   Space,
   Spin,
   TimePicker,
@@ -14,9 +14,9 @@ import {
   Divider,
   Select,
   Tabs,
-} from "@pankod/refine-antd";
-import type { TabsProps } from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+  TabsProps,
+} from "antd";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import dayjs from "dayjs";
 import * as gql from "gql-query-builder";
 import { client } from "graphConnect";
@@ -33,7 +33,9 @@ const { TabPane } = Tabs;
 export const SystemConfigsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [terminals, setTerminals] = useState<any[]>([]);
   const tr = useTranslate();

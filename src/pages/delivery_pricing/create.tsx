@@ -1,7 +1,8 @@
+import { Create, useForm } from "@refinedev/antd";
+
 import {
   Button,
   Col,
-  Create,
   Form,
   Input,
   InputNumber,
@@ -10,10 +11,10 @@ import {
   Space,
   Switch,
   TimePicker,
-  useForm,
-} from "@pankod/refine-antd";
+} from "antd";
+
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 
 import { IDeliveryPricing, IOrganization, ITerminals } from "interfaces";
 import { drive_type } from "interfaces/enums";
@@ -48,9 +49,11 @@ dayjs.extend(isBetween);
 export const DeliveryPricingCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IDeliveryPricing>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

@@ -1,14 +1,6 @@
-import {
-  useForm,
-  Form,
-  Input,
-  Edit,
-  Select,
-  Row,
-  Col,
-  InputNumber,
-} from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useForm, Edit } from "@refinedev/antd";
+import { Form, Input, Select, Row, Col, InputNumber } from "antd";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
@@ -21,10 +13,12 @@ import FileUploaderMultiple from "components/file_uploader/multiple";
 export const UsersEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const tr = useTranslate();
   const { formProps, saveButtonProps, redirect, id } = useForm<IUsers>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "first_name",

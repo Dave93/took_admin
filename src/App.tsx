@@ -1,4 +1,4 @@
-import { Refine } from "@pankod/refine-core";
+import { Refine } from "@refinedev/core";
 import {
   notificationProvider,
   Layout,
@@ -9,7 +9,7 @@ import {
 import "@pankod/refine-antd/dist/reset.css";
 import "./styles/main.css";
 
-import routerProvider from "@pankod/refine-react-router-v6";
+import routerProvider from "@refinedev/react-router-v6/legacy";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";

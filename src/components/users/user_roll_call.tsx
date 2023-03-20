@@ -1,4 +1,4 @@
-import { Col, Form, Row, DatePicker, Button, Table } from "@pankod/refine-antd";
+import { Col, Form, Row, DatePicker, Button, Table } from "antd";
 import { rangePresets } from "components/dates/RangePresets";
 import { Excel } from "components/export/src";
 import dayjs from "dayjs";
@@ -7,7 +7,7 @@ import { gql } from "graphql-request";
 import { client } from "graphConnect";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 import { ExportOutlined } from "@ant-design/icons";
 
 const { RangePicker } = DatePicker;
@@ -15,7 +15,9 @@ const { RangePicker } = DatePicker;
 const UserRollCallList = ({ user }: { user: IUsers }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<ITimesheet[]>([]);
   const { handleSubmit, control, getValues } = useForm<{

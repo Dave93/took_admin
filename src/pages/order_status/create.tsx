@@ -1,15 +1,6 @@
-import {
-  Col,
-  Create,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, InputNumber, Row, Select, Switch } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IOrderStatus, IOrganization } from "interfaces";
 import { Colorpicker } from "antd-colorpicker";
@@ -20,9 +11,11 @@ import { client } from "graphConnect";
 export const OrderStatusCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IOrderStatus>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

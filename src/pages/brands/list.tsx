@@ -1,15 +1,17 @@
-import { List, Table, useTable, Space, EditButton } from "@pankod/refine-antd";
+import { List, useTable, EditButton } from "@refinedev/antd";
+import { Table, Space } from "antd";
 
 import { IApiTokens, IBrands } from "interfaces";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 
 export const BrandsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { tableProps } = useTable<IBrands>({
-    initialSorter: [],
-    metaData: {
+    meta: {
       fields: ["id", "name", "sign"],
       whereInputType: "brandsWhereInput!",
       orderByInputType: "brandsOrderByWithRelationInput!",
@@ -17,6 +19,10 @@ export const BrandsList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: []
+    }
   });
 
   return (

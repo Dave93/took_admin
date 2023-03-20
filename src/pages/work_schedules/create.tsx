@@ -1,20 +1,11 @@
-import {
-  Col,
-  Create,
-  Form,
-  Input,
-  Row,
-  Select,
-  Switch,
-  TimePicker,
-  useForm,
-} from "@pankod/refine-antd";
+import { Create, useForm } from "@refinedev/antd";
+import { Col, Form, Input, Row, Select, Switch, TimePicker } from "antd";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, IWorkSchedules } from "interfaces";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 let daysOfWeekRu = {
   "1": "Понедельник",
   "2": "Вторник",
@@ -30,9 +21,11 @@ const format = "HH:mm";
 export const WorkSchedulesCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IWorkSchedules>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

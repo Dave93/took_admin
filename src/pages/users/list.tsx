@@ -1,10 +1,8 @@
+import { List, DateField, useTable, ShowButton, useDrawerForm, Edit } from "@refinedev/antd";
+
 import {
-  List,
-  DateField,
   Table,
-  useTable,
   Space,
-  ShowButton,
   Form,
   Select,
   DatePicker,
@@ -12,18 +10,12 @@ import {
   Button,
   Row,
   Col,
-  useDrawerForm,
   InputNumber,
-  Edit,
   Drawer,
-} from "@pankod/refine-antd";
-import {
-  CrudFilters,
-  HttpError,
-  useGetIdentity,
-  useQueryClient,
-  useTranslate,
-} from "@pankod/refine-core";
+} from "antd";
+
+import { CrudFilters, HttpError, useGetIdentity, useTranslate } from "@refinedev/core";
+import { useQueryClient } from "@tanstack/react-query";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { chain, sortBy } from "lodash";
@@ -55,7 +47,9 @@ const OnlineStatus = ({ value }: { value: boolean }) => {
 export const UsersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
 
   const queryClient = useQueryClient();
   const [terminals, setTerminals] = useState<any[]>([]);
@@ -75,15 +69,7 @@ export const UsersList: React.FC = () => {
       id?: IUsers;
     }
   >({
-    initialPageSize: 200,
-    defaultSetFilterBehavior: "replace",
-    initialSorter: [
-      {
-        field: "first_name",
-        order: "asc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: [
         "id",
         "first_name",
@@ -226,6 +212,23 @@ export const UsersList: React.FC = () => {
 
       return filters;
     },
+
+    pagination: {
+      pageSize: 200
+    },
+
+    filters: {
+      defaultBehavior: "replace"
+    },
+
+    sorters: {
+      initial: [
+        {
+          field: "first_name",
+          order: "asc",
+        },
+      ]
+    }
   });
 
   const {
@@ -240,7 +243,7 @@ export const UsersList: React.FC = () => {
     action: "edit",
     resource: "users",
     redirect: false,
-    metaData: {
+    meta: {
       fields: [
         "id",
         "first_name",

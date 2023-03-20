@@ -1,27 +1,17 @@
-import {
-  List,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { List, useTable, EditButton } from "@refinedev/antd";
+import { Table, Switch, Space } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IOrderStatus } from "interfaces";
 
 export const OrderStatusList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { tableProps } = useTable<IOrderStatus>({
-    initialSorter: [
-      {
-        field: "sort",
-        order: "asc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",
@@ -45,6 +35,15 @@ export const OrderStatusList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: [
+        {
+          field: "sort",
+          order: "asc",
+        },
+      ]
+    }
   });
   return (
     <>

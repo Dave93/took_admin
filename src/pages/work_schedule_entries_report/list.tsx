@@ -1,16 +1,6 @@
-import {
-  List,
-  Table,
-  useTable,
-  Space,
-  Tag,
-  DatePicker,
-  Form,
-  Button,
-  Col,
-  Row,
-} from "@pankod/refine-antd";
-import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
+import { List, useTable } from "@refinedev/antd";
+import { Table, Space, Tag, DatePicker, Form, Button, Col, Row } from "antd";
+import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 
 import { WorkScheduleEntriesReportForPeriod } from "interfaces";
 import dayjs from "dayjs";
@@ -28,13 +18,15 @@ const dateFormat = "DD.MM.YYYY";
 export const WorkSchedulesReport: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { searchFormProps, tableProps, filters } = useTable<
     WorkScheduleEntriesReportForPeriod,
     HttpError,
     { report_start: any; report_end: any }
   >({
-    metaData: {
+    meta: {
       fields: [
         { users: ["first_name", "id", "last_name"] },
         {
@@ -54,18 +46,7 @@ export const WorkSchedulesReport: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
-    initialFilter: [
-      {
-        field: "report_start",
-        operator: "eq",
-        value: dayjs().startOf("w").toDate(),
-      },
-      {
-        field: "report_end",
-        operator: "eq",
-        value: dayjs().endOf("w").toDate(),
-      },
-    ],
+
     onSearch: async (params) => {
       const filters: CrudFilters = [];
       filters.push({
@@ -84,6 +65,21 @@ export const WorkSchedulesReport: React.FC = () => {
       });
       return filters;
     },
+
+    filters: {
+      initial: [
+        {
+          field: "report_start",
+          operator: "eq",
+          value: dayjs().startOf("w").toDate(),
+        },
+        {
+          field: "report_end",
+          operator: "eq",
+          value: dayjs().endOf("w").toDate(),
+        },
+      ]
+    }
   });
 
   const tableColumns = useMemo(() => {

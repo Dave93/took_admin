@@ -1,14 +1,6 @@
-import {
-  List,
-  DateField,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  ShowButton,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import { Table, Switch, Space } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IRoles } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
@@ -16,15 +8,11 @@ import { defaultDateTimeFormat } from "localConstants";
 export const RolesList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { tableProps } = useTable<IRoles>({
-    initialSorter: [
-      {
-        field: "name",
-        order: "desc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: ["id", "name", "active"],
       whereInputType: "rolesWhereInput!",
       orderByInputType: "rolesOrderByWithRelationInput!",
@@ -32,6 +20,15 @@ export const RolesList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: [
+        {
+          field: "name",
+          order: "desc",
+        },
+      ]
+    }
   });
   return (
     <>

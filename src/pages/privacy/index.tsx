@@ -1,4 +1,4 @@
-import { Layout, PageHeader } from "@pankod/refine-antd";
+import { Layout, PageHeader } from "@refinedev/antd";
 
 const EmptySider = () => <></>;
 

@@ -1,9 +1,9 @@
-import { Button, Col, Row } from "@pankod/refine-antd";
+import { Button, Col, Row } from "antd";
 import { useMemo, useState } from "react";
 import * as gqlb from "gql-query-builder";
 import { client } from "graphConnect";
 import { CloseCircleFilled, FullscreenOutlined } from "@ant-design/icons";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface OnChangeHandler {
@@ -18,7 +18,9 @@ interface MyInputProps {
 const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [parent, enableAnimations] = useAutoAnimate(/* optional config */);
   const [additionalFiles, setAdditionalFiles] = useState<string[]>(
     value ? value.filter((v) => v) : []

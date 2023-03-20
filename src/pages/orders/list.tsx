@@ -1,29 +1,17 @@
-import {
-  List,
-  Table,
-  useTable,
-  Space,
-  ShowButton,
-  Button,
-  Form,
-  Select,
-  Col,
-  Row,
-  DatePicker,
-  Tag,
-  Input,
-  ExportButton,
-} from "@pankod/refine-antd";
+import { List, useTable, ShowButton, ExportButton } from "@refinedev/antd";
+import { Table, Space, Button, Form, Select, Col, Row, DatePicker, Tag, Input } from "antd";
 import type { TableRowSelection } from "antd/es/table/interface";
+
 import {
   CrudFilters,
   HttpError,
   useExport,
   useGetIdentity,
   useNavigation,
-  useQueryClient,
   useTranslate,
-} from "@pankod/refine-core";
+} from "@refinedev/core";
+
+import { useQueryClient } from "@tanstack/react-query";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 
@@ -85,7 +73,9 @@ const IOrdersListPropsDuration: FC<IOrdersListProps> = ({
 export const OrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const tr = useTranslate();
   const [expand, setExpand] = useState(false);
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
@@ -97,7 +87,7 @@ export const OrdersList: React.FC = () => {
 
   const { show } = useNavigation();
 
-  const { tableProps, searchFormProps, filters, sorter, setFilters } = useTable<
+  const { tableProps, searchFormProps, filters, sorters: sorter, setFilters } = useTable<
     IOrders,
     HttpError,
     {
@@ -111,18 +101,11 @@ export const OrdersList: React.FC = () => {
       orders_couriers: string;
     }
   >({
-    initialPageSize: 200,
-    initialSorter: [
-      {
-        field: "created_at",
-        order: "desc",
-      },
-    ],
-    defaultSetFilterBehavior: "replace",
     queryOptions: {
       queryKey: ["orders"],
     },
-    metaData: {
+
+    meta: {
       fields: [
         "id",
         "delivery_type",
@@ -156,18 +139,7 @@ export const OrdersList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
-    initialFilter: [
-      {
-        field: "created_at",
-        operator: "gte",
-        value: dayjs().startOf("d").toDate(),
-      },
-      {
-        field: "created_at",
-        operator: "lte",
-        value: dayjs().endOf("d").toDate(),
-      },
-    ],
+
     onSearch: async (params) => {
       const localFilters: CrudFilters = [];
       queryClient.invalidateQueries(["default", "orders", "list"]);
@@ -273,6 +245,36 @@ export const OrdersList: React.FC = () => {
       }
       return localFilters;
     },
+
+    pagination: {
+      pageSize: 200
+    },
+
+    filters: {
+      initial: [
+        {
+          field: "created_at",
+          operator: "gte",
+          value: dayjs().startOf("d").toDate(),
+        },
+        {
+          field: "created_at",
+          operator: "lte",
+          value: dayjs().endOf("d").toDate(),
+        },
+      ],
+
+      defaultBehavior: "replace"
+    },
+
+    sorters: {
+      initial: [
+        {
+          field: "created_at",
+          order: "desc",
+        },
+      ]
+    }
   });
 
   const columns = [
@@ -490,7 +492,7 @@ export const OrdersList: React.FC = () => {
   ];
 
   const { triggerExport, isLoading } = useTableExport<IOrders>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "delivery_type",

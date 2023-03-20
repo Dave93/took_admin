@@ -1,12 +1,15 @@
-import { Card, PageHeader, useTable } from "@pankod/refine-antd";
-import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
+import { PageHeader, useTable } from "@refinedev/antd";
+import { Card } from "antd";
+import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { ICouriersByTerminal } from "interfaces";
 import { user_status } from "interfaces/enums";
 
 export const TerminalsCouriersListPage = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
 
   const { tableProps, searchFormProps } = useTable<
     ICouriersByTerminal,
@@ -16,13 +19,7 @@ export const TerminalsCouriersListPage = () => {
       status: keyof typeof user_status;
     }
   >({
-    initialSorter: [
-      {
-        field: "created_at",
-        order: "desc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: ["name", "couriers"],
       whereInputType: "ordersWhereInput!",
       orderByInputType: "ordersOrderByWithRelationInput!",
@@ -30,7 +27,7 @@ export const TerminalsCouriersListPage = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
-    initialFilter: [],
+
     onSearch: async (params) => {
       const filters: CrudFilters = [];
       const { terminal_id } = params;
@@ -47,6 +44,19 @@ export const TerminalsCouriersListPage = () => {
 
       return filters;
     },
+
+    filters: {
+      initial: []
+    },
+
+    sorters: {
+      initial: [
+        {
+          field: "created_at",
+          order: "desc",
+        },
+      ]
+    }
   });
 
   return (

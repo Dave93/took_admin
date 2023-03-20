@@ -1,9 +1,9 @@
-import { CrudFilters, HttpError, useGetIdentity } from "@pankod/refine-core";
+import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { FC } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
-import { useTable } from "@pankod/refine-antd";
+import { useTable } from "@refinedev/antd";
 import { IOrders } from "interfaces";
 
 interface CustomerOrdersProps {
@@ -18,9 +18,11 @@ dayjs.extend(duration);
 const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
 
-  const { tableProps, searchFormProps, filters, sorter, setFilters } = useTable<
+  const { tableProps, searchFormProps, filters, sorters: sorter, setFilters } = useTable<
     IOrders,
     HttpError,
     {
@@ -29,13 +31,7 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
       customer_id: string;
     }
   >({
-    initialSorter: [
-      {
-        field: "created_at",
-        order: "desc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: [
         "id",
         "delivery_type",
@@ -67,23 +63,7 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
-    initialFilter: [
-      {
-        field: "created_at",
-        operator: "gte",
-        value: dayjs().startOf("d").toDate(),
-      },
-      {
-        field: "created_at",
-        operator: "lte",
-        value: dayjs().endOf("d").toDate(),
-      },
-      {
-        field: "customer_id",
-        operator: "eq",
-        value: customerId,
-      },
-    ],
+
     onSearch: async (params) => {
       const filters: CrudFilters = [];
       const { organization_id, created_at, customer_id } = params;
@@ -120,6 +100,35 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
       }
       return filters;
     },
+
+    filters: {
+      initial: [
+        {
+          field: "created_at",
+          operator: "gte",
+          value: dayjs().startOf("d").toDate(),
+        },
+        {
+          field: "created_at",
+          operator: "lte",
+          value: dayjs().endOf("d").toDate(),
+        },
+        {
+          field: "customer_id",
+          operator: "eq",
+          value: customerId,
+        },
+      ]
+    },
+
+    sorters: {
+      initial: [
+        {
+          field: "created_at",
+          order: "desc",
+        },
+      ]
+    }
   });
   return (
     <div>

@@ -1,8 +1,9 @@
+import { Edit, useForm } from "@refinedev/antd";
+
 import {
   Button,
   Col,
   Divider,
-  Edit,
   Form,
   Input,
   InputNumber,
@@ -11,10 +12,10 @@ import {
   Space,
   Switch,
   TimePicker,
-  useForm,
-} from "@pankod/refine-antd";
+} from "antd";
+
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 
 import { IDeliveryPricing, IOrganization, ITerminals } from "interfaces";
 import { drive_type } from "interfaces/enums";
@@ -39,9 +40,11 @@ const format = "HH:mm";
 export const DeliveryPricingEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps, id } = useForm<IDeliveryPricing>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

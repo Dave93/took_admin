@@ -8,7 +8,7 @@ import { drive_type } from "interfaces/enums";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import dayjs from "dayjs";
 import { organization_payment_types } from "interfaces/enums";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -25,7 +25,7 @@ import {
   Spin,
   Switch,
   TimePicker,
-} from "@pankod/refine-antd";
+} from "antd";
 
 interface OrderDeliveryPricingProps {
   order: any;
@@ -45,7 +45,9 @@ const format = "HH:mm";
 const OrderDeliveryPricing: FC<OrderDeliveryPricingProps> = ({ order }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [deliveryPricing, setDeliveryPricing] =
     useState<IDeliveryPricing | null>(null);
   const [isLoading, setIsLoading] = useState(false);

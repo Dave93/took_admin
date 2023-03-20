@@ -1,19 +1,10 @@
-import {
-  useForm,
-  Form,
-  Input,
-  Edit,
-  Switch,
-  Select,
-  Row,
-  Col,
-  TimePicker,
-} from "@pankod/refine-antd";
+import { useForm, Edit } from "@refinedev/antd";
+import { Form, Input, Switch, Select, Row, Col, TimePicker } from "antd";
 import { IWorkSchedules } from "interfaces";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity } from "@refinedev/core";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -34,9 +25,11 @@ const format = "HH:mm";
 export const WorkSchedulesEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IWorkSchedules>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "name",

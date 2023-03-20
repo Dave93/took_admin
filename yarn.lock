@@ -47,7 +47,7 @@
   resolved "https://registry.yarnpkg.com/@ant-design/icons-svg/-/icons-svg-4.2.1.tgz#8630da8eb4471a4aabdaed7d1ff6a97dcb2cf05a"
   integrity sha512-EB0iwlKDGpG93hW8f85CTJTs4SvMX7tt5ceupvhALp1IF44SeUFOMhKUOYqpsoYWQKAOuTRDMqn75rEaKDp0Xw==
 
-"@ant-design/icons@^4.3.0", "@ant-design/icons@^4.5.0", "@ant-design/icons@^4.7.0":
+"@ant-design/icons@^4.3.0", "@ant-design/icons@^4.7.0":
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/@ant-design/icons/-/icons-4.8.0.tgz#3084e2bb494cac3dad6c0392f77c1efc90ee1fa4"
   integrity sha512-T89P2jG2vM7OJ0IfGx2+9FC5sQjtTzRSz+mCHTXkFn/ELZc2YpfStmYHmqzq2Jx55J0F7+O6i5/ZKFSVNWCKNg==
@@ -58,7 +58,7 @@
     classnames "^2.2.6"
     rc-util "^5.9.4"
 
-"@ant-design/icons@^5.0.0":
+"@ant-design/icons@^5.0.0", "@ant-design/icons@^5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@ant-design/icons/-/icons-5.0.1.tgz#febb1fdc5776f58187b2c953ac9a4496069d045b"
   integrity sha512-ZyF4ksXCcdtwA/1PLlnFLcF/q8/MhwxXhKHh4oCHDA4Ip+ZzAHoICtyp4wZWfiCVDP0yuz3HsjyvuldHFb3wjA==
@@ -69,14 +69,14 @@
     classnames "^2.2.6"
     rc-util "^5.9.4"
 
-"@ant-design/pro-layout@^7.3.4":
-  version "7.10.2"
-  resolved "https://registry.yarnpkg.com/@ant-design/pro-layout/-/pro-layout-7.10.2.tgz#a4c943e84b870be133f53a573c84fab978dc6d42"
-  integrity sha512-oXoxrXFk9t7qUhcG0OA44czJk5ewIyCK/FeexIs2jScVz8m+lIAQYaWDKKYxD+Bb16N8VAY1T6xPk7z6spilMA==
+"@ant-design/pro-layout@7.8.3":
+  version "7.8.3"
+  resolved "https://registry.yarnpkg.com/@ant-design/pro-layout/-/pro-layout-7.8.3.tgz#3aee6aa2b37e6572da2a8981c83fd460bd10b22e"
+  integrity sha512-ZW4FyQpp0rAyQBq5LuzPhMfBR5pcY5Whswp79JeRQCVO0G7/UNw+B6PcUPXf6fR3lEA/y4jjukOK6puxn86ndg==
   dependencies:
     "@ant-design/icons" "^5.0.0"
-    "@ant-design/pro-provider" "^2.6.1"
-    "@ant-design/pro-utils" "^2.7.1"
+    "@ant-design/pro-provider" "2.4.3"
+    "@ant-design/pro-utils" "2.5.9"
     "@babel/runtime" "^7.18.0"
     "@umijs/route-utils" "^4.0.0"
     "@umijs/use-params" "^1.0.9"
@@ -91,10 +91,10 @@
     use-media-antd-query "^1.1.0"
     warning "^4.0.3"
 
-"@ant-design/pro-provider@^2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@ant-design/pro-provider/-/pro-provider-2.6.1.tgz#fc25397019bc57b7522c4530f922504f350926ed"
-  integrity sha512-MVLKgteo8gX+ryuUzTuwEbIHiTu9veKdZgJf2oSUFaTUfk/d3oOErPKGmjwupDNCY1LubTgUQWGuz46eTtBRzA==
+"@ant-design/pro-provider@2.4.3":
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/@ant-design/pro-provider/-/pro-provider-2.4.3.tgz#db073af428e313adf588f9cb7f34a06626620e14"
+  integrity sha512-BefEAY9XUE1U5SxLAzA9se4e2VOykMRDyev+cGzz4bewdon/sbX82dcw300rl1n5IB9r+K3wYCzFXX+KaneFSA==
   dependencies:
     "@ant-design/cssinjs" "^1.5.6"
     "@babel/runtime" "^7.18.0"
@@ -102,13 +102,13 @@
     rc-util "^5.0.1"
     swr "^2.0.0"
 
-"@ant-design/pro-utils@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@ant-design/pro-utils/-/pro-utils-2.7.1.tgz#0d024a69931a1a5e191b763c52b5f65ee435e53c"
-  integrity sha512-PK3pPhfPUrE11Ag44Rkz7Hebv9Qewqzlgo03zJIG1sn3jPXnH9g5Sh65pP2Y8clU8GZmNaBDwDRr+0NL+VmukA==
+"@ant-design/pro-utils@2.5.9":
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/@ant-design/pro-utils/-/pro-utils-2.5.9.tgz#a4d277193cc10b38d4cd03e366a5c791f85362c4"
+  integrity sha512-hRADZ66benHc+kFyKQ04+/X6hiDyri2UgVDyqVfchAKHoUIusMF1e3sbuP/tzClaWndieUSWt8gJz7067eVHvg==
   dependencies:
     "@ant-design/icons" "^4.3.0"
-    "@ant-design/pro-provider" "^2.6.1"
+    "@ant-design/pro-provider" "2.4.3"
     "@babel/runtime" "^7.18.0"
     classnames "^2.2.6"
     dayjs "^1.11.4"
@@ -2276,107 +2276,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@pankod/refine-antd@4.7.1":
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-antd/-/refine-antd-4.7.1.tgz#ed1361e093e6ed37ea75f3aea2d46af76081b1b2"
-  integrity sha512-SDJNdrZaUmKCtGOFHH1JH2c4NPSvbI+OlYGGMSgx6g5DeWq0FBf9cIjH6B16tvRq+qhJlBDjJIBZoSrmEVSj6w==
-  dependencies:
-    "@ant-design/icons" "^4.5.0"
-    "@ant-design/pro-layout" "^7.3.4"
-    "@pankod/refine-ui-types" "^0.14.2"
-    "@tanstack/react-query" "^4.10.1"
-    antd "^5.0.5"
-    dayjs "^1.10.7"
-    react-markdown "^6.0.1"
-    remark-gfm "^1.0.0"
-    sunflower-antd "1.0.0-beta.3"
-    tslib "^2.3.1"
-
-"@pankod/refine-cli@^1.17.0":
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-cli/-/refine-cli-1.19.0.tgz#3fefab9c1a186b37720d022ea052d84930df6a33"
-  integrity sha512-OPl+1t6qUWvqnkAyBYQGoZN5n3T3yjxVfhk7DDsfQVjsZHZ+BJe84dtyBB9HanL1OE4yk9JAPkHb8+Nx4wYesg==
-  dependencies:
-    boxen "^5.1.2"
-    cardinal "^2.1.1"
-    chalk "^4.1.2"
-    commander "9.4.1"
-    conf "^10.2.0"
-    dedent "^0.7.0"
-    dotenv "^16.0.3"
-    envinfo "^7.8.1"
-    execa "^5.1.1"
-    figlet "^1.5.2"
-    fs-extra "^10.1.0"
-    globby "^11.1.0"
-    handlebars "^4.7.7"
-    ink "^3.2.0"
-    ink-markdown "^1.0.1"
-    ink-table "^3.0.0"
-    inquirer "^8.2.5"
-    inquirer-autocomplete-prompt "^2.0.0"
-    jscodeshift "0.13.1"
-    node-env-type "^0.0.8"
-    node-fetch "^2.6.7"
-    ora "^5.4.1"
-    pluralize "^8.0.0"
-    preferred-pm "^3.0.3"
-    prettier "^2.7.1"
-    semver-diff "^3.1.1"
-    temp "^0.9.4"
-    tslib "^2.3.1"
-
-"@pankod/refine-core@3.99.4":
-  version "3.99.4"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-core/-/refine-core-3.99.4.tgz#63189bfe53cd5947d97b54ea20b7bf0501bd1aa4"
-  integrity sha512-XgSEQcrz4CTsUI8wxGH60JfMZWHR2C8KGhcCU10OheIz/VyuU5kbzpwwl778dRR/YxvY/fOsYdqxXbiXyu7U3Q==
-  dependencies:
-    "@tanstack/react-query" "^4.10.1"
-    "@tanstack/react-query-devtools" "^4.10.1"
-    export-to-csv-fix-source-map "^0.2.1"
-    lodash "^4.17.21"
-    lodash-es "^4.17.21"
-    papaparse "^5.3.0"
-    pluralize "^8.0.0"
-    qs "^6.10.1"
-    tslib "^2.3.1"
-    warn-once "^0.1.0"
-
-"@pankod/refine-core@^3.36.0", "@pankod/refine-core@^3.90.6":
-  version "3.103.0"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-core/-/refine-core-3.103.0.tgz#c996dc4c15084c011c4308de88836444c04112f1"
-  integrity sha512-c6FLiV83m4HDdEohvS+6R5IYWkqrl9GvpR32heq6k9DUNR3OlwO76RUwECn4ngQFKxzNfiu2NxdeRH7mB6XHvw==
-  dependencies:
-    "@tanstack/react-query" "^4.10.1"
-    "@tanstack/react-query-devtools" "^4.10.1"
-    export-to-csv-fix-source-map "^0.2.1"
-    lodash "^4.17.21"
-    lodash-es "^4.17.21"
-    papaparse "^5.3.0"
-    pluralize "^8.0.0"
-    qs "^6.10.1"
-    tslib "^2.3.1"
-    warn-once "^0.1.0"
-
-"@pankod/refine-graphql@^3.18.0":
-  version "3.25.4"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-graphql/-/refine-graphql-3.25.4.tgz#f7b1c32e8c1547e55e14b89b25dbc7a9891e9f05"
-  integrity sha512-869QM/pZeg5KJPO+ApRRqddoPeWWP0MEAOpphfvHlk3TP1PytQrGu82qPHGiM3AB1zK9HQTPcuAty+5Ss47KlQ==
-  dependencies:
-    "@pankod/refine-core" "^3.36.0"
-    camelcase "^6.2.0"
-    gql-query-builder "^3.5.5"
-    graphql "^15.6.1"
-    graphql-request "^3.5.0"
-    pluralize "^8.0.0"
-
-"@pankod/refine-kbar@0.10.2":
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-kbar/-/refine-kbar-0.10.2.tgz#20478e2bb2b6c53f0fb176303c400b8a7e285522"
-  integrity sha512-P2KsVlN3AAcC2CwAe8GCt+THpogJo4iyMU5uMxU7YRqJYcW6zyXL46yD4Ui4BfnTERHTSfs4mBNoANQBQx6LqA==
-  dependencies:
-    kbar "^0.1.0-beta.36"
-
 "@pankod/refine-react-location@3.36.2":
   version "3.36.2"
   resolved "https://registry.yarnpkg.com/@pankod/refine-react-location/-/refine-react-location-3.36.2.tgz#201914ebbbab89e65195fcdf79a2b0c23779216b"
@@ -2384,34 +2283,6 @@
   dependencies:
     "@tanstack/react-location" "^3.7.4"
     "@tanstack/react-location-rank-routes" "^3.4.4"
-
-"@pankod/refine-react-router-v6@3.38.0":
-  version "3.38.0"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-react-router-v6/-/refine-react-router-v6-3.38.0.tgz#f988f6e63bd3e4f5489feccb2fd26337c1b1ac75"
-  integrity sha512-xYx1zVBW6UnGYiMO18ak0qnsSFEJvcJXMrxxwCZsu6Oum9sAM66HcI4KAsrEN8bIg29jiXIKKDx85nwSKsMc9Q==
-  dependencies:
-    react-router-dom "6.3.0"
-
-"@pankod/refine-strapi-graphql@4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-strapi-graphql/-/refine-strapi-graphql-4.9.0.tgz#b9d2c6541b65b7eec89a6f7bec6e66133e928649"
-  integrity sha512-qO/ych2VBiNM0qTQygi1zME8U1LStOh/jnfHha4r1cofbVmB63hvZeMnDCGPk9MWZaJwD4ICPCv/GXbKkQVDWA==
-  dependencies:
-    camelcase "^6.2.0"
-    gql-query-builder "^3.5.5"
-    graphql "^15.6.1"
-    graphql-request "^4.3.0"
-    pluralize "^8.0.0"
-    query-string "^7.1.1"
-
-"@pankod/refine-ui-types@^0.14.2":
-  version "0.14.2"
-  resolved "https://registry.yarnpkg.com/@pankod/refine-ui-types/-/refine-ui-types-0.14.2.tgz#42432592925e8d1f1e93ef01ca33aa28ddc6cc36"
-  integrity sha512-e8Hr629rejp2x4eB++02aINCHNyGUptJidcHzHtYTT2n5TOfcmtRUs/apmsROmBGfGoc9r6rgCr5A7gEDUs3uQ==
-  dependencies:
-    "@pankod/refine-core" "^3.90.6"
-    dayjs "^1.10.7"
-    tslib "^2.3.1"
 
 "@pbe/react-yandex-maps@^1.2.2":
   version "1.2.2"
@@ -2585,6 +2456,125 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@reach/observe-rect/-/observe-rect-1.2.0.tgz#d7a6013b8aafcc64c778a0ccb83355a11204d3b2"
   integrity sha512-Ba7HmkFgfQxZqqaeIWWkNK0rEhpxVQHIoVyW1YDSkGsGIXzcaW4deC8B0pZrNSSyLTdIk7y+5olKt5+g0GmFIQ==
+
+"@refinedev/antd@latest":
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/@refinedev/antd/-/antd-5.1.2.tgz#f2b4f254e0745577351b33de06bb8be3f1238df6"
+  integrity sha512-NJkdRy3PfMGzW1splGXqBAVCCd4MX0CEGAWU+yD9G1PtyGghCuyucUK6SEs9k1jthZMVA6FRqChpYJnYzhhLIA==
+  dependencies:
+    "@ant-design/icons" "^5.0.1"
+    "@ant-design/pro-layout" "7.8.3"
+    "@refinedev/ui-types" "^1.1.0"
+    "@tanstack/react-query" "^4.10.1"
+    antd "^5.0.5"
+    dayjs "^1.10.7"
+    react-markdown "^6.0.1"
+    remark-gfm "^1.0.0"
+    sunflower-antd "1.0.0-beta.3"
+    tslib "^2.3.1"
+
+"@refinedev/cli@latest":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/cli/-/cli-2.1.0.tgz#27715da4cf299168ece748feb6298e9fca8c72cb"
+  integrity sha512-MzPa9IXpnbZNAa/eIi0QMHXN0UJYyqn/G7o43gAuOWpLMDIvHBCkYIeH3VXUorl2Y5UXxhHQ/j1U7ImoIAFCTw==
+  dependencies:
+    boxen "^5.1.2"
+    cardinal "^2.1.1"
+    chalk "^4.1.2"
+    commander "9.4.1"
+    conf "^10.2.0"
+    dedent "^0.7.0"
+    dotenv "^16.0.3"
+    envinfo "^7.8.1"
+    execa "^5.1.1"
+    figlet "^1.5.2"
+    fs-extra "^10.1.0"
+    globby "^11.1.0"
+    handlebars "^4.7.7"
+    ink "^3.2.0"
+    ink-markdown "^1.0.1"
+    ink-table "^3.0.0"
+    inquirer "^8.2.5"
+    inquirer-autocomplete-prompt "^2.0.0"
+    jscodeshift "0.13.1"
+    node-env-type "^0.0.8"
+    node-fetch "^2.6.7"
+    ora "^5.4.1"
+    pluralize "^8.0.0"
+    preferred-pm "^3.0.3"
+    prettier "^2.7.1"
+    semver-diff "^3.1.1"
+    temp "^0.9.4"
+    tslib "^2.3.1"
+
+"@refinedev/core@^4.1.0", "@refinedev/core@latest":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/core/-/core-4.3.0.tgz#7bda684317a8b5e6e34f444e0548d7023e7f11dc"
+  integrity sha512-nqWPafGTmCGLjILxwRpN/aUuKQEMOolLKeCxrCSPdTlmNWmWoVYQBhP+5In23VV4CBT9nLgtASFsZLSgyh9pgw==
+  dependencies:
+    "@tanstack/react-query" "^4.10.1"
+    "@tanstack/react-query-devtools" "^4.10.1"
+    export-to-csv-fix-source-map "^0.2.1"
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
+    papaparse "^5.3.0"
+    pluralize "^8.0.0"
+    qs "^6.10.1"
+    tslib "^2.3.1"
+    warn-once "^0.1.0"
+
+"@refinedev/graphql@latest":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/graphql/-/graphql-5.1.0.tgz#45ebbde4b4b2769b3d5259d57074f65dcaa0f226"
+  integrity sha512-ETT7EAcQqI/aBzFAW97fQhYm/VwE9tlbxTCooY8wEz9njYME64PQbPxksGzBH9jLdfGLhXnSI9RKmmaJv9/Emg==
+  dependencies:
+    camelcase "^6.2.0"
+    gql-query-builder "^3.5.5"
+    graphql "^15.6.1"
+    graphql-request "^4.3.0"
+    graphql-ws "^5.9.1"
+    pluralize "^8.0.0"
+
+"@refinedev/kbar@latest":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/kbar/-/kbar-1.1.0.tgz#6e55c636323e5f775538fdebbc64b2573ff63e3e"
+  integrity sha512-BnGhoyiRR1clHRKs9XnLEJkS6WoNJpZHg2r+Ez6iJpdtiaGnrz4+S9HN5XJukd57NCL/yt+CXD01SHlc3KrnPA==
+  dependencies:
+    kbar "^0.1.0-beta.36"
+
+"@refinedev/react-router-v6@latest":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/react-router-v6/-/react-router-v6-4.1.0.tgz#41c44b992ecb3a37342223af577de18cbd660868"
+  integrity sha512-I6cjLX7vSrpI9i598aQV4eusD7uAeShuzhULKXXb9Ou/kcs+aLDjpICUJQqpEfhQg2mQTNt5i3xg6BpXDDHK6w==
+  dependencies:
+    qs "^6.10.1"
+    react-router-dom "^6.8.1"
+
+"@refinedev/strapi-graphql@latest":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/strapi-graphql/-/strapi-graphql-5.1.0.tgz#7f9ba89178536daa1fce47230d8a0d1fc878d367"
+  integrity sha512-8ya63vG4MvlieXvDX4PLvfTwpdG9d4koNbT7TFiD0BtIParR9H+dUMG9TJb4g/8sO7gG5HdArsw9UWi5RrJXTQ==
+  dependencies:
+    camelcase "^6.2.0"
+    gql-query-builder "^3.5.5"
+    graphql "^15.6.1"
+    graphql-request "^4.3.0"
+    pluralize "^8.0.0"
+    query-string "^7.1.1"
+
+"@refinedev/ui-types@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@refinedev/ui-types/-/ui-types-1.1.0.tgz#b12b74377b65d084d61735eb99e4c1e7ab42ef26"
+  integrity sha512-aAsr2QxvvyqnpOxR63FCDzs9qJOX6E9IYHuSii8/tow+sUdQhMO2PypB8gYVgUwL6EiBNUwZ/WhBK/QM3+TXiQ==
+  dependencies:
+    "@refinedev/core" "^4.1.0"
+    dayjs "^1.10.7"
+    tslib "^2.3.1"
+
+"@remix-run/router@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.4.0.tgz#74935d538e4df8893e47831a7aea362f295bcd39"
+  integrity sha512-BJ9SxXux8zAg991UmT8slpwpsd31K1dHHbD3Ba4VzD+liLQ4WAMSxQp2d2ZPRPfN0jN2NPRowcSSoM7lCaF08Q==
 
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
@@ -5095,7 +5085,7 @@ create-react-context@^0.3.0:
     gud "^1.0.0"
     warning "^4.0.3"
 
-cross-fetch@^3.0.6, cross-fetch@^3.1.5:
+cross-fetch@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
@@ -6988,15 +6978,6 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-graphql-request@^3.5.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-3.7.0.tgz#c7406e537084f8b9788541e3e6704340ca13055b"
-  integrity sha512-dw5PxHCgBneN2DDNqpWu8QkbbJ07oOziy8z+bK/TAXufsOLaETuVO4GkXrbs0WjhdKhBMN3BkpN/RIvUHkmNUQ==
-  dependencies:
-    cross-fetch "^3.0.6"
-    extract-files "^9.0.0"
-    form-data "^3.0.0"
-
 graphql-request@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-4.3.0.tgz#b934e08fcae764aa2cdc697d3c821f046cb5dbf2"
@@ -7013,7 +6994,7 @@ graphql-tag@^2.12.6:
   dependencies:
     tslib "^2.1.0"
 
-graphql-ws@^5.11.1:
+graphql-ws@^5.11.1, graphql-ws@^5.9.1:
   version "5.12.0"
   resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-5.12.0.tgz#d06fe38916334b4a4c827f73268cbf4359a32ed7"
   integrity sha512-PA3ImUp8utrpEjoxBMhvxsjkStvFEdU0E1gEBREt8HZIWkxOUymwJBhFnBL7t/iHhUq1GVPeZevPinkZFENxTw==
@@ -11610,7 +11591,7 @@ react-export-table-to-excel@^1.0.6:
   resolved "https://registry.yarnpkg.com/react-export-table-to-excel/-/react-export-table-to-excel-1.0.6.tgz#753a9b4e1863c6abd1ffcbb48e8fd17fc7776d2a"
   integrity sha512-2NKyor1rFFEqYDXQq5tPoVNwwdv5kT8DWc65wAmDa9Hi0441qHj0tOxegWhpW0vlCM2TypIsw+ghzIr900U4RA==
 
-react-hook-form@^7.40.0:
+react-hook-form@^7.30.0:
   version "7.43.7"
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.43.7.tgz#88b8bc257635d706955e19c05254fb492fa77ad1"
   integrity sha512-38yehQkQQ5uufaPKFScs7jhLE8n3+LG9H/BZfFAiBL2+7piDmw/BrdNJV4irzMaPnWZGhmGLHVICHXNVGIuXZg==
@@ -11719,20 +11700,20 @@ react-resize-detector@^8.0.4:
   dependencies:
     lodash "^4.17.21"
 
-react-router-dom@6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.3.0.tgz#a0216da813454e521905b5fa55e0e5176123f43d"
-  integrity sha512-uaJj7LKytRxZNQV8+RbzJWnJ8K2nPsOOEuX7aQstlMZKQT0164C+X2w6bnkqU3sjtLvpd5ojrezAyfZ1+0sStw==
+react-router-dom@^6.8.1:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.9.0.tgz#dd8b4e461453bd4cad2e6404493d1a5b4bfea758"
+  integrity sha512-/seUAPY01VAuwkGyVBPCn1OXfVbaWGGu4QN9uj0kCPcTyNYgL1ldZpxZUpRU7BLheKQI4Twtl/OW2nHRF1u26Q==
   dependencies:
-    history "^5.2.0"
-    react-router "6.3.0"
+    "@remix-run/router" "1.4.0"
+    react-router "6.9.0"
 
-react-router@6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.3.0.tgz#3970cc64b4cb4eae0c1ea5203a80334fdd175557"
-  integrity sha512-7Wh1DzVQ+tlFjkeo+ujvjSqSJmkt1+8JO+T5xklPlgrh70y7ogx75ODRW0ThWhY7S+6yEDks8TYrtQe/aoboBQ==
+react-router@6.9.0:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.9.0.tgz#0f503d9becbc62d9e4ddc0f9bd4026e0fd29fbf5"
+  integrity sha512-51lKevGNUHrt6kLuX3e/ihrXoXCa9ixY/nVWRLlob4r/l0f45x3SzBvYJe3ctleLUQQ5fVa4RGgJOTH7D9Umhw==
   dependencies:
-    history "^5.2.0"
+    "@remix-run/router" "1.4.0"
 
 react-scripts@^5.0.0:
   version "5.0.1"

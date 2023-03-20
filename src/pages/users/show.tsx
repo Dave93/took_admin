@@ -1,5 +1,6 @@
-import { useGetIdentity, useShow, useTranslate } from "@pankod/refine-core";
-import { Show, Descriptions, Col, Row, Tag, Tabs } from "@pankod/refine-antd";
+import { useGetIdentity, useShow, useTranslate } from "@refinedev/core";
+import { Show } from "@refinedev/antd";
+import { Descriptions, Col, Row, Tag, Tabs } from "antd";
 import dayjs from "dayjs";
 import { IUsers } from "interfaces";
 import "dayjs/locale/ru";
@@ -15,11 +16,13 @@ dayjs.extend(duration);
 const UsersShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const tr = useTranslate();
 
   const { queryResult } = useShow<IUsers>({
-    metaData: {
+    meta: {
       fields: [
         "id",
         "first_name",

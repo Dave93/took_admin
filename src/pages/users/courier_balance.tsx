@@ -1,16 +1,6 @@
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  PageHeader,
-  Row,
-  Select,
-  Space,
-  Spin,
-  Table,
-} from "@pankod/refine-antd";
-import { useGetIdentity, useTranslate } from "@pankod/refine-core";
+import { PageHeader } from "@refinedev/antd";
+import { Button, Card, Col, Form, Row, Select, Space, Spin, Table } from "antd";
+import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { gql } from "graphql-request";
@@ -40,7 +30,9 @@ dayjs.extend(timezone);
 const CourierBalance = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);

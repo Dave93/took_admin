@@ -1,13 +1,16 @@
-import { useForm, Form, Input, Edit, Switch } from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useForm, Edit } from "@refinedev/antd";
+import { Form, Input, Switch } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 import { IPermissions } from "interfaces";
 
 export const PermissionsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IPermissions>({
-    metaData: {
+    meta: {
       fields: ["id", "slug", "active", "created_at", "description"],
       pluralize: true,
       requestHeaders: {

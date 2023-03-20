@@ -1,18 +1,6 @@
-import {
-  List,
-  DateField,
-  Table,
-  useTable,
-  Switch,
-  Space,
-  EditButton,
-  useDrawerForm,
-  Drawer,
-  Edit,
-  Form,
-  Input,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { List, DateField, useTable, EditButton, useDrawerForm, Edit } from "@refinedev/antd";
+import { Table, Switch, Space, Drawer, Form, Input } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IPermissions } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
@@ -20,7 +8,9 @@ import { defaultDateTimeFormat } from "localConstants";
 export const PermissionsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const {
     drawerProps,
     formProps,
@@ -30,7 +20,7 @@ export const PermissionsList: React.FC = () => {
     id,
   } = useDrawerForm<IPermissions>({
     action: "edit",
-    metaData: {
+    meta: {
       fields: ["id", "slug", "active", "created_at", "description"],
       pluralize: true,
       requestHeaders: {
@@ -40,13 +30,7 @@ export const PermissionsList: React.FC = () => {
   });
 
   const { tableProps } = useTable<IPermissions>({
-    initialSorter: [
-      {
-        field: "created_at",
-        order: "desc",
-      },
-    ],
-    metaData: {
+    meta: {
       fields: ["id", "slug", "active", "created_at"],
       whereInputType: "permissionsWhereInput!",
       orderByInputType: "permissionsOrderByWithRelationInput!",
@@ -54,6 +38,15 @@ export const PermissionsList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
+
+    sorters: {
+      initial: [
+        {
+          field: "created_at",
+          order: "desc",
+        },
+      ]
+    }
   });
   return (
     <>

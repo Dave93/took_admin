@@ -1,15 +1,6 @@
-import {
-  Button,
-  Col,
-  Create,
-  Form,
-  Input,
-  Row,
-  Select,
-  Switch,
-  useForm,
-} from "@pankod/refine-antd";
-import { useGetIdentity } from "@pankod/refine-core";
+import { Create, useForm } from "@refinedev/antd";
+import { Button, Col, Form, Input, Row, Select, Switch } from "antd";
+import { useGetIdentity } from "@refinedev/core";
 
 import { IApiTokens, IOrganization } from "interfaces";
 import { useEffect, useState } from "react";
@@ -19,9 +10,11 @@ import { client } from "graphConnect";
 export const ApiTokensCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const { formProps, saveButtonProps } = useForm<IApiTokens>({
-    metaData: {
+    meta: {
       fields: ["id", "active", "token", "organization_id"],
       pluralize: true,
       requestHeaders: {

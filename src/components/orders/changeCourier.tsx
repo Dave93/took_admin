@@ -1,10 +1,10 @@
-import { Button, Modal, Select, Tooltip } from "@pankod/refine-antd";
+import { Button, Modal, Select, Tooltip } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { FC, useState } from "react";
 import { IUsers } from "interfaces";
 import { gql } from "graphql-request";
 import { client } from "graphConnect";
-import { useGetIdentity, useNavigation } from "@pankod/refine-core";
+import { useGetIdentity, useNavigation } from "@refinedev/core";
 
 interface ChangeOrderProps {
   id?: string;
@@ -19,7 +19,9 @@ export const ChangeOrdersCouirer: FC<ChangeOrderProps> = ({
 }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>();
+  }>({
+    v3LegacyAuthProviderCompatible: true
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [couriers, setCouriers] = useState<IUsers[]>([]);

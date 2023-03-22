@@ -120,7 +120,7 @@ const CourierWithdraws = ({ user }: { user: IUsers }) => {
       .addDataSource(data, {
         str2Percent: true,
       })
-      .saveAs(`Перекличка ${user.first_name} ${user.last_name}.xlsx`);
+      .saveAs(`Выплаты ${user.first_name} ${user.last_name}.xlsx`);
 
     setIsLoading(false);
   };
@@ -138,7 +138,7 @@ const CourierWithdraws = ({ user }: { user: IUsers }) => {
           justifyContent: "space-between",
         }}
       >
-        <h1>Перекличка</h1>
+        <h1>Выплаты</h1>
         <Button type="default" icon={<ExportOutlined />} onClick={exportData}>
           Экспорт
         </Button>

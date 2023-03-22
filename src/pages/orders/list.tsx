@@ -84,9 +84,7 @@ const IOrdersListPropsDuration: FC<IOrdersListProps> = ({
 export const OrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true,
-  });
+  }>();
   const tr = useTranslate();
   const [expand, setExpand] = useState(false);
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);

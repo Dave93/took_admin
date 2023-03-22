@@ -2,7 +2,7 @@ import { useGetIdentity, useShow, useTranslate } from "@refinedev/core";
 import { Show } from "@refinedev/antd";
 import { Descriptions, Col, Row, Tag, Tabs } from "antd";
 import dayjs from "dayjs";
-import { IUsers } from "interfaces";
+import { IOrganization, ITerminals, IUsers } from "interfaces";
 import "dayjs/locale/ru";
 import duration from "dayjs/plugin/duration";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
@@ -10,6 +10,10 @@ import UserRollCallList from "components/users/user_roll_call";
 import CourierWithdraws from "components/users/courier_withdraws";
 import CourierEffectiveness from "components/users/courier_effectiveness";
 import CourierTransactions from "components/users/courier_transactions";
+import { gql } from "graphql-request";
+import { client } from "graphConnect";
+import { useEffect, useState } from "react";
+import { sortBy } from "lodash";
 dayjs.locale("ru");
 dayjs.extend(duration);
 
@@ -17,7 +21,30 @@ const UsersShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+  const [terminals, setTerminals] = useState<ITerminals[]>([]);
+  const [organizations, setOrganizations] = useState<IOrganization[]>([]);
   const tr = useTranslate();
+
+  const getAllFilterData = async () => {
+    const query = gql`
+      query {
+        cachedOrganizations {
+          id
+          name
+        }
+        cachedTerminals {
+          id
+          name
+        }
+      }
+    `;
+    const { cachedTerminals, cachedOrganizations } = await client.request<{
+      cachedTerminals: ITerminals[];
+      cachedOrganizations: IOrganization[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    setOrganizations(cachedOrganizations);
+    setTerminals(sortBy(cachedTerminals, (item) => item.name));
+  };
 
   const { queryResult } = useShow<IUsers>({
     meta: {
@@ -65,6 +92,11 @@ const UsersShow = () => {
       },
     },
   });
+
+  useEffect(() => {
+    getAllFilterData();
+    return () => {};
+  }, []);
   const { data, isLoading } = queryResult;
 
   const record = data?.data;
@@ -163,7 +195,13 @@ const UsersShow = () => {
           {record && <CourierWithdraws user={record} />}
         </Tabs.TabPane>
         <Tabs.TabPane tab="Начисления" key="transactions">
-          {record && <CourierTransactions user={record} />}
+          {record && (
+            <CourierTransactions
+              user={record}
+              terminals={terminals}
+              organizations={organizations}
+            />
+          )}
         </Tabs.TabPane>
         <Tabs.TabPane tab="Эффективность" key="efficiency">
           {record && <CourierEffectiveness user={record} />}

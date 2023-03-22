@@ -9,7 +9,7 @@ import routerProvider, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router-v6";
-import { RefineKbarProvider } from "@refinedev/kbar";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
 import { OffLayoutArea } from "components/offLayoutArea";
 import { Header, Title } from "components/layout";
@@ -428,6 +428,7 @@ function App() {
             // syncWithLocation={true}
             resources={resources}
           >
+            <RefineKbar />
             <Routes>
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route

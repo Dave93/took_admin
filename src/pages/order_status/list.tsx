@@ -7,9 +7,7 @@ import { IOrderStatus } from "interfaces";
 export const OrderStatusList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { tableProps } = useTable<IOrderStatus>({
     meta: {
       fields: [
@@ -42,8 +40,8 @@ export const OrderStatusList: React.FC = () => {
           field: "sort",
           order: "asc",
         },
-      ]
-    }
+      ],
+    },
   });
   return (
     <>

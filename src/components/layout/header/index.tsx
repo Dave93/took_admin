@@ -41,9 +41,7 @@ export const Header: React.FC = () => {
   const [qrCode, setQrCode] = useState("");
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true,
-  });
+  }>();
 
   // const menu = (
   //   <Menu selectedKeys={currentLocale ? [currentLocale] : []}>

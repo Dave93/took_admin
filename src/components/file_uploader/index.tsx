@@ -17,9 +17,7 @@ interface MyInputProps {
 const FileUploader = ({ value, onChange, modelId }: MyInputProps) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 

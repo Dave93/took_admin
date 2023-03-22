@@ -12,9 +12,7 @@ const { RangePicker } = DatePicker;
 const NotificationsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const tr = useTranslate();
 
   const queryClient = useQueryClient();

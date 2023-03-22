@@ -40,9 +40,7 @@ const format = "HH:mm";
 export const DeliveryPricingEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps, id } = useForm<IDeliveryPricing>({
     meta: {
       fields: [

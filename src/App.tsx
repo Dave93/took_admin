@@ -1,4 +1,4 @@
-import { Authenticated, Refine } from "@refinedev/core";
+import { Authenticated, CanParams, Refine } from "@refinedev/core";
 import { notificationProvider, Layout, ErrorComponent } from "@refinedev/antd";
 
 import "@refinedev/antd/dist/reset.css";
@@ -176,6 +176,7 @@ function App() {
       },
       {
         name: "orders-group",
+        list: "/orders-group",
         meta: {
           label: "Заказы",
         },
@@ -345,7 +346,6 @@ function App() {
   useEffect(() => {
     if (navigator !== undefined) {
       navigator.serviceWorker.addEventListener("message", (event) => {
-        console.log("before data", event.data);
         if (event.data.type === "openWindow") {
           window.open(event.data.url);
         }
@@ -372,7 +372,16 @@ function App() {
               },
             }}
             accessControlProvider={{
-              can: async ({ action, params, resource }) => {
+              can: async ({ action, params, resource }: CanParams) => {
+                if (
+                  action == "list" &&
+                  Object.values({ ...params }).length == 0
+                ) {
+                  return Promise.resolve({
+                    can: true,
+                  });
+                }
+
                 if (
                   params?.resource?.children &&
                   params?.resource?.children.length > 0 &&

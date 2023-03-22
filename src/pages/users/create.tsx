@@ -12,9 +12,7 @@ import { chain, sortBy } from "lodash";
 export const UsersCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const tr = useTranslate();
   const { formProps, saveButtonProps, redirect } = useForm<IUsers>({
     redirect: false,

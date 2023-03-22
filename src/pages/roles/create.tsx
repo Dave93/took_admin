@@ -7,9 +7,7 @@ import { IRoles } from "interfaces";
 export const RolesCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IRoles>({
     meta: {
       fields: ["id", "name", "active", "code", "created_at"],

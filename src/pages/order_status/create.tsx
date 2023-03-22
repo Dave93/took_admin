@@ -11,9 +11,7 @@ import { client } from "graphConnect";
 export const OrderStatusCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IOrderStatus>({
     meta: {
       fields: [

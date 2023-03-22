@@ -49,9 +49,7 @@ dayjs.extend(isBetween);
 export const DeliveryPricingCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IDeliveryPricing>({
     meta: {
       fields: [

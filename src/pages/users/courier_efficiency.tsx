@@ -1,5 +1,16 @@
 import { PageHeader } from "@refinedev/antd";
-import { Button, Card, Col, DatePicker, Form, Row, Select, Space, Spin, Table } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Form,
+  Row,
+  Select,
+  Space,
+  Spin,
+  Table,
+} from "antd";
 import { ExportOutlined } from "@ant-design/icons";
 import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { CourierEfficiencyReportItem, ITerminals, IUsers } from "interfaces";
@@ -21,9 +32,7 @@ const { RangePicker } = DatePicker;
 const CourierEfficiency = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [couriersList, setCouriersList] = useState<IUsers[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);

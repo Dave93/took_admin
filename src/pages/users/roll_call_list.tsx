@@ -30,9 +30,7 @@ const { Search } = Input;
 export const RollCallList = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RollCallItem[]>([]);
   const [filteredData, setFilteredData] = useState<RollCallItem[]>([]);

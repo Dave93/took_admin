@@ -7,9 +7,7 @@ import { IPermissions } from "interfaces";
 export const PermissionsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IPermissions>({
     meta: {
       fields: ["id", "slug", "active", "created_at", "description"],

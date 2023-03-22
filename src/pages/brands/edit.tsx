@@ -8,9 +8,7 @@ import FileUploader from "components/file_uploader";
 export const BrandsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps, id } = useForm<IBrands>({
     meta: {
       fields: ["id", "name", "api_url", "logo_path"],

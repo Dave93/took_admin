@@ -1,4 +1,10 @@
-import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import {
+  List,
+  DateField,
+  useTable,
+  EditButton,
+  ShowButton,
+} from "@refinedev/antd";
 import { Table, Switch, Space, Form, Select, Button } from "antd";
 import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
@@ -11,9 +17,7 @@ import { useEffect, useState } from "react";
 export const TerminalsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
 
   const { tableProps, searchFormProps } = useTable<
@@ -69,8 +73,8 @@ export const TerminalsList: React.FC = () => {
           field: "organization_id",
           order: "asc",
         },
-      ]
-    }
+      ],
+    },
   });
 
   const loadOrganizations = async () => {

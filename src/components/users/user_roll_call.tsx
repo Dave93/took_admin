@@ -15,9 +15,7 @@ const { RangePicker } = DatePicker;
 const UserRollCallList = ({ user }: { user: IUsers }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<ITimesheet[]>([]);
   const { handleSubmit, control, getValues } = useForm<{

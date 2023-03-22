@@ -7,9 +7,7 @@ import { useGetIdentity } from "@refinedev/core";
 export const BrandsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { tableProps } = useTable<IBrands>({
     meta: {
       fields: ["id", "name", "sign"],
@@ -21,8 +19,8 @@ export const BrandsList: React.FC = () => {
     },
 
     sorters: {
-      initial: []
-    }
+      initial: [],
+    },
   });
 
   return (

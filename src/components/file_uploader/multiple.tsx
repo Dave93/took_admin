@@ -18,9 +18,7 @@ interface MyInputProps {
 const FileUploaderMultiple = ({ value, onChange, modelId }: MyInputProps) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [parent, enableAnimations] = useAutoAnimate(/* optional config */);
   const [additionalFiles, setAdditionalFiles] = useState<string[]>(
     value ? value.filter((v) => v) : []

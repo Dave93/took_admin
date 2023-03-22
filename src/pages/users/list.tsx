@@ -1,4 +1,11 @@
-import { List, DateField, useTable, ShowButton, useDrawerForm, Edit } from "@refinedev/antd";
+import {
+  List,
+  DateField,
+  useTable,
+  ShowButton,
+  useDrawerForm,
+  Edit,
+} from "@refinedev/antd";
 
 import {
   Table,
@@ -14,7 +21,12 @@ import {
   Drawer,
 } from "antd";
 
-import { CrudFilters, HttpError, useGetIdentity, useTranslate } from "@refinedev/core";
+import {
+  CrudFilters,
+  HttpError,
+  useGetIdentity,
+  useTranslate,
+} from "@refinedev/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
@@ -47,9 +59,7 @@ const OnlineStatus = ({ value }: { value: boolean }) => {
 export const UsersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
 
   const queryClient = useQueryClient();
   const [terminals, setTerminals] = useState<any[]>([]);
@@ -214,11 +224,11 @@ export const UsersList: React.FC = () => {
     },
 
     pagination: {
-      pageSize: 200
+      pageSize: 200,
     },
 
     filters: {
-      defaultBehavior: "replace"
+      defaultBehavior: "replace",
     },
 
     sorters: {
@@ -227,8 +237,8 @@ export const UsersList: React.FC = () => {
           field: "first_name",
           order: "asc",
         },
-      ]
-    }
+      ],
+    },
   });
 
   const {

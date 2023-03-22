@@ -1,4 +1,10 @@
-import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import {
+  List,
+  DateField,
+  useTable,
+  EditButton,
+  ShowButton,
+} from "@refinedev/antd";
 import { Table, Switch, Space, Tag } from "antd";
 import { useGetIdentity } from "@refinedev/core";
 
@@ -18,9 +24,7 @@ const daysOfWeekRu = {
 export const WorkSchedulesList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { tableProps } = useTable<IWorkSchedules>({
     meta: {
       fields: [
@@ -54,8 +58,8 @@ export const WorkSchedulesList: React.FC = () => {
           field: "organization_id",
           order: "asc",
         },
-      ]
-    }
+      ],
+    },
   });
   return (
     <>

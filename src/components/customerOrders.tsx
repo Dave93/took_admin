@@ -18,11 +18,15 @@ dayjs.extend(duration);
 const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
 
-  const { tableProps, searchFormProps, filters, sorters: sorter, setFilters } = useTable<
+  const {
+    tableProps,
+    searchFormProps,
+    filters,
+    sorters: sorter,
+    setFilters,
+  } = useTable<
     IOrders,
     HttpError,
     {
@@ -118,7 +122,7 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
           operator: "eq",
           value: customerId,
         },
-      ]
+      ],
     },
 
     sorters: {
@@ -127,8 +131,8 @@ const CustomerOrders: FC<CustomerOrdersProps> = ({ customerId }) => {
           field: "created_at",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
   return (
     <div>

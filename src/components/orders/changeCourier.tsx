@@ -19,9 +19,7 @@ export const ChangeOrdersCouirer: FC<ChangeOrderProps> = ({
 }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [couriers, setCouriers] = useState<IUsers[]>([]);

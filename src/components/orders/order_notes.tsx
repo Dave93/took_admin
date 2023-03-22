@@ -18,9 +18,7 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
   const [isSaving, setIsSaving] = useState(false);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const saveNotes = async () => {
     setIsSaving(true);
     let createQuery = gql`

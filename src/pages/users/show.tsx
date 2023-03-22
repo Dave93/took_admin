@@ -16,9 +16,7 @@ dayjs.extend(duration);
 const UsersShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const tr = useTranslate();
 
   const { queryResult } = useShow<IUsers>({

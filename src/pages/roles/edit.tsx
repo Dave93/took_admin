@@ -11,9 +11,7 @@ const { Option } = Select;
 export const RolesEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [permissions, setPermissions] = useState<IPermissions[]>([]);
   const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
 

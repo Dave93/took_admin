@@ -1,4 +1,10 @@
-import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import {
+  List,
+  DateField,
+  useTable,
+  EditButton,
+  ShowButton,
+} from "@refinedev/antd";
 import { Table, Switch, Space } from "antd";
 import { useGetIdentity } from "@refinedev/core";
 
@@ -8,9 +14,7 @@ import { defaultDateTimeFormat } from "localConstants";
 export const DeliveryPricingList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { tableProps } = useTable<IDeliveryPricing>({
     meta: {
       fields: [
@@ -35,8 +39,8 @@ export const DeliveryPricingList: React.FC = () => {
           field: "name",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
   return (
     <>

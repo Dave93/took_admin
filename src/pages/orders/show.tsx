@@ -1,4 +1,10 @@
-import { CanAccess, useCan, useGetIdentity, useNavigation, useShow } from "@refinedev/core";
+import {
+  CanAccess,
+  useCan,
+  useGetIdentity,
+  useNavigation,
+  useShow,
+} from "@refinedev/core";
 import { Show } from "@refinedev/antd";
 
 import {
@@ -72,9 +78,7 @@ export const OrdersShow = () => {
   const map = useRef<any>(null);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [orderActions, setOrderActions] = useState<IOrderActions[]>([]);
   const [orderLocations, setOrderLocations] = useState<IGroupedLocations[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<IOrderStatus[]>([]);

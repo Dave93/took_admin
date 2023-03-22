@@ -12,9 +12,7 @@ const { TextArea } = Input;
 export const OrganizationsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps, id } = useForm<IOrganization>({
     meta: {
       fields: [

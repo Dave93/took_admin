@@ -11,9 +11,7 @@ const { Title, Text } = Typography;
 export const RolesShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [chosenPermissions, setChosenPermissions] = useState<string[]>([]);
   const { queryResult, showId } = useShow({
     meta: {

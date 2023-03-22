@@ -1,4 +1,10 @@
-import { List, DateField, useTable, EditButton, ShowButton } from "@refinedev/antd";
+import {
+  List,
+  DateField,
+  useTable,
+  EditButton,
+  ShowButton,
+} from "@refinedev/antd";
 import { Table, Switch, Space } from "antd";
 import { useGetIdentity, useTranslate } from "@refinedev/core";
 
@@ -8,9 +14,7 @@ import { defaultDateTimeFormat } from "localConstants";
 export const OrganizationList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { tableProps } = useTable<IOrganization>({
     meta: {
       fields: [
@@ -36,8 +40,8 @@ export const OrganizationList: React.FC = () => {
           field: "name",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
   const tr = useTranslate();
   return (

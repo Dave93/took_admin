@@ -11,9 +11,7 @@ import { Colorpicker } from "antd-colorpicker";
 export const OrderStatusEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps, id } = useForm<IOrderStatus>({
     meta: {
       fields: [

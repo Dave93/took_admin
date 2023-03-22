@@ -10,9 +10,7 @@ import { client } from "graphConnect";
 export const ApiTokensCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IApiTokens>({
     meta: {
       fields: ["id", "active", "token", "organization_id"],

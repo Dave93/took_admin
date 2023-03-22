@@ -1,4 +1,11 @@
-import { List, DateField, useTable, EditButton, useDrawerForm, Edit } from "@refinedev/antd";
+import {
+  List,
+  DateField,
+  useTable,
+  EditButton,
+  useDrawerForm,
+  Edit,
+} from "@refinedev/antd";
 import { Table, Switch, Space, Drawer, Form, Input } from "antd";
 import { useGetIdentity } from "@refinedev/core";
 
@@ -8,9 +15,7 @@ import { defaultDateTimeFormat } from "localConstants";
 export const PermissionsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const {
     drawerProps,
     formProps,
@@ -45,8 +50,8 @@ export const PermissionsList: React.FC = () => {
           field: "created_at",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
   return (
     <>

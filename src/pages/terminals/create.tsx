@@ -9,9 +9,7 @@ import { useEffect, useState } from "react";
 export const TerminalsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<ITerminals>({
     meta: {
       fields: [

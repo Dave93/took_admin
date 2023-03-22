@@ -10,9 +10,7 @@ import { useGetIdentity, useNotification } from "@refinedev/core";
 export const ApiTokensList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [value, copy] = useCopyToClipboard();
   const { open } = useNotification();
   const { tableProps } = useTable<IApiTokens>({

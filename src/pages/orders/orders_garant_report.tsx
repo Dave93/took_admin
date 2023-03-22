@@ -47,9 +47,7 @@ const OrdersGarantReport = () => {
   const tableRef = useRef(null);
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [garantData, setGarantData] = useState<GarantReportItem[]>([]);
   const [filteredData, setFilteredData] = useState<GarantReportItem[]>([]);

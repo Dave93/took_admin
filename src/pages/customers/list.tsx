@@ -7,9 +7,7 @@ import { ICustomers } from "interfaces";
 export const CustomersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { show } = useNavigation();
 
   const { tableProps } = useTable<ICustomers>({
@@ -28,8 +26,8 @@ export const CustomersList: React.FC = () => {
           field: "name",
           order: "asc",
         },
-      ]
-    }
+      ],
+    },
   });
   return (
     <>

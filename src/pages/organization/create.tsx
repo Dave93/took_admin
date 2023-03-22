@@ -12,9 +12,7 @@ const { TextArea } = Input;
 export const OrganizationsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IOrganization>({
     meta: {
       fields: [

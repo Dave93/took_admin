@@ -18,9 +18,7 @@ const dateFormat = "DD.MM.YYYY";
 export const WorkSchedulesReport: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { searchFormProps, tableProps, filters } = useTable<
     WorkScheduleEntriesReportForPeriod,
     HttpError,
@@ -78,8 +76,8 @@ export const WorkSchedulesReport: React.FC = () => {
           operator: "eq",
           value: dayjs().endOf("w").toDate(),
         },
-      ]
-    }
+      ],
+    },
   });
 
   const tableColumns = useMemo(() => {

@@ -13,9 +13,7 @@ import FileUploaderMultiple from "components/file_uploader/multiple";
 export const UsersEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const tr = useTranslate();
   const { formProps, saveButtonProps, redirect, id } = useForm<IUsers>({
     meta: {

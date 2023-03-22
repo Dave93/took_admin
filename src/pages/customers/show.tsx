@@ -7,9 +7,7 @@ const { Title, Text } = Typography;
 export const CustomersShow = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { queryResult } = useShow({
     meta: {
       fields: [

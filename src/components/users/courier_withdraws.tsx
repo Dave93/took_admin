@@ -19,9 +19,7 @@ const { RangePicker } = DatePicker;
 const CourierWithdraws = ({ user }: { user: IUsers }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<IManagerWithdraw[]>([]);
   const { handleSubmit, control, getValues } = useForm<{
@@ -226,9 +224,7 @@ const ManagerWithdrawTransactions = ({
 }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [data, setData] = useState<IManagerWithdrawTransactions[]>([]);
 
   const loadData = async () => {

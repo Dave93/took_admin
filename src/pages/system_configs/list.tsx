@@ -33,9 +33,7 @@ const { TabPane } = Tabs;
 export const SystemConfigsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [terminals, setTerminals] = useState<any[]>([]);
   const tr = useTranslate();

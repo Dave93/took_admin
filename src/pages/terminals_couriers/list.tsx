@@ -7,9 +7,7 @@ import { user_status } from "interfaces/enums";
 export const TerminalsCouriersListPage = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
 
   const { tableProps, searchFormProps } = useTable<
     ICouriersByTerminal,
@@ -46,7 +44,7 @@ export const TerminalsCouriersListPage = () => {
     },
 
     filters: {
-      initial: []
+      initial: [],
     },
 
     sorters: {
@@ -55,8 +53,8 @@ export const TerminalsCouriersListPage = () => {
           field: "created_at",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
 
   return (

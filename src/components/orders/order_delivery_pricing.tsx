@@ -45,9 +45,7 @@ const format = "HH:mm";
 const OrderDeliveryPricing: FC<OrderDeliveryPricingProps> = ({ order }) => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const [deliveryPricing, setDeliveryPricing] =
     useState<IDeliveryPricing | null>(null);
   const [isLoading, setIsLoading] = useState(false);

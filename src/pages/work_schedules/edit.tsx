@@ -25,9 +25,7 @@ const format = "HH:mm";
 export const WorkSchedulesEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IWorkSchedules>({
     meta: {
       fields: [

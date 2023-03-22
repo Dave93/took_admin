@@ -741,3 +741,53 @@ export class ICourierEfficiencyReportPerDayItem {
 
   hour_period?: CourierEfficiencyReportItem[];
 }
+
+export class IOrderTransactions {
+  id: string;
+
+  order_id?: string | null;
+
+  terminal_id: string;
+
+  courier_id: string;
+
+  organization_id: string;
+
+  card_number?: string | null;
+
+  amount: number;
+
+  balance_before: number;
+
+  balance_after: number;
+
+  not_paid_amount: number;
+
+  status: keyof typeof order_transaction_status;
+
+  transaction_payment_type: keyof typeof order_transaction_payment_type;
+
+  transaction_type: string;
+
+  comment?: string | null;
+
+  error_text: string | null;
+
+  created_at: Date;
+
+  created_by?: string | null;
+
+  order_transactions_created_byTousers?: users | null;
+
+  order_transactions_orders?: orders | null;
+
+  order_transactions_terminals?: terminals;
+
+  order_transactions_couriers?: users;
+
+  order_transactions_organizations?: organization;
+
+  manager_withdraw_transactions_transaction?: Array<manager_withdraw_transactions>;
+
+  _count?: Order_transactionsCount;
+}

@@ -10,9 +10,7 @@ import { Button, Card, Select, Space } from "antd";
 const WhereCourierList = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
 
   return (
     <>

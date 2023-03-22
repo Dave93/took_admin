@@ -7,9 +7,7 @@ import { IBrands } from "interfaces";
 export const BrandsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
-  }>({
-    v3LegacyAuthProviderCompatible: true
-  });
+  }>();
   const { formProps, saveButtonProps } = useForm<IBrands>({
     meta: {
       fields: ["id", "name", "api_url", "logo_path"],

@@ -1,6 +1,29 @@
-import { Create, List, ShowButton, useDrawerForm, useTable } from "@refinedev/antd";
-import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Table } from "antd";
-import { CrudFilters, HttpError, useGetIdentity, useNavigation, useTranslate } from "@refinedev/core";
+import {
+  Create,
+  List,
+  ShowButton,
+  useDrawerForm,
+  useTable,
+} from "@refinedev/antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Drawer,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Table,
+} from "antd";
+import {
+  CrudFilters,
+  HttpError,
+  useGetIdentity,
+  useNavigation,
+  useTranslate,
+} from "@refinedev/core";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { INotifications } from "interfaces";
@@ -17,7 +40,13 @@ const NotificationsList: React.FC = () => {
 
   const queryClient = useQueryClient();
 
-  const { tableProps, searchFormProps, filters, sorters: sorter, setFilters } = useTable<
+  const {
+    tableProps,
+    searchFormProps,
+    filters,
+    sorters: sorter,
+    setFilters,
+  } = useTable<
     INotifications,
     HttpError,
     {
@@ -69,7 +98,7 @@ const NotificationsList: React.FC = () => {
     },
 
     pagination: {
-      pageSize: 200
+      pageSize: 200,
     },
 
     filters: {
@@ -86,7 +115,7 @@ const NotificationsList: React.FC = () => {
         },
       ],
 
-      defaultBehavior: "replace"
+      defaultBehavior: "replace",
     },
 
     sorters: {
@@ -95,8 +124,8 @@ const NotificationsList: React.FC = () => {
           field: "created_at",
           order: "desc",
         },
-      ]
-    }
+      ],
+    },
   });
 
   const {
@@ -248,7 +277,7 @@ const NotificationsList: React.FC = () => {
           />
         </div>
         <Drawer {...drawerProps} width={800}>
-          <Create title="Добавить рассылку">
+          <Create title="Добавить рассылку" saveButtonProps={saveButtonProps}>
             <Form {...formProps} layout="vertical">
               <Row gutter={16}>
                 <Col xs={24} sm={24} md={12}>

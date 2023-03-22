@@ -529,6 +529,11 @@ function App() {
                   <Route path="create" element={<BrandsCreate />} />
                   <Route path="edit/:id" element={<BrandsEdit />} />
                 </Route>
+                <Route path="/notifications">
+                  <Route index element={<NotificationsList />} />
+                  {/* <Route path="create" element={<NotificationsCreate />} />
+                  <Route path="edit/:id" element={<NotificationsEdit />} /> */}
+                </Route>
               </Route>
               <Route
                 element={

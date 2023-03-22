@@ -34,24 +34,16 @@ const CourierTransactions = ({ user }: { user: IUsers }) => {
 
     const query = gql`
       query {
-        getCourierWithdraws(
-          startDate: "${created_at[0].toISOString()}"
-          endDate: "${created_at[1].toISOString()}"
-          courierId: "${user.id}"
+        orderTransactions(
+          where: {
+            AND: { created_at: { gt: "${created_at[0].toISOString()}" } }
+            created_at: { lt: "${created_at[1].toISOString()}" }
+            courier_id: { equals: "${user.id}" }
+          }
+          orderBy: { created_at: desc }
         ) {
-            id
-            amount
-            amount_before
-            amount_after
-            created_at
-            payed_date
-            manager_withdraw_managers {
-                first_name
-                last_name
-            }
-            manager_withdraw_terminals {
-                name
-            }
+          created_at
+          amount
         }
       }
     `;

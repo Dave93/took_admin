@@ -79,6 +79,7 @@ import CourierBalance from "pages/users/courier_balance";
 import UsersShow from "pages/users/show";
 import NotificationsList from "pages/notifications/list";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import YuriyOrdersGarantReport from "pages/orders/yuriy_orders_garant_report";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -132,9 +133,16 @@ function App() {
       {
         name: "orders_garant_report",
         meta: {
-          label: "Гарант",
+          label: "Фин. Гарант",
         },
         list: "/orders_garant_report",
+      },
+      {
+        name: "yuriy_orders_garant_report",
+        meta: {
+          label: "Гарант",
+        },
+        list: "/yuriy_orders_garant_report",
       },
       {
         name: "users",
@@ -452,6 +460,10 @@ function App() {
                 <Route
                   path="/orders_garant_report"
                   element={<OrdersGarantReport />}
+                />
+                <Route
+                  path="/yuriy_orders_garant_report"
+                  element={<YuriyOrdersGarantReport />}
                 />
                 <Route path="/users">
                   <Route index element={<UsersList />} />

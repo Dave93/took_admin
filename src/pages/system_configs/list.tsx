@@ -93,7 +93,10 @@ export const SystemConfigsList: React.FC = () => {
     );
     setIsLoading(false);
     data.systemConfigs.forEach((item: any) => {
-      if (item.name.indexOf("time") !== -1) {
+      if (
+        item.name.indexOf("time") !== -1 &&
+        !["late_order_time"].includes(item.name)
+      ) {
         setValue(item.name, dayjs(item.value));
       } else {
         if (item.name == "close_dates") {
@@ -109,14 +112,14 @@ export const SystemConfigsList: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
-        } else if (item.name == "garant_prices") {
+        } else if (item.name === "garant_prices") {
           try {
             let closeDates = JSON.parse(item.value);
             setValue(item.name, closeDates);
           } catch (error) {
             console.log(error);
           }
-        } else if (item.name == "terminal_close_days") {
+        } else if (item.name === "terminal_close_days") {
           try {
             let terminalCloseDays = JSON.parse(item.value);
             terminalCloseDays = terminalCloseDays.map((item: any) => {
@@ -129,6 +132,8 @@ export const SystemConfigsList: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
+        } else if (item.name === "yandex_delivery_payment_types") {
+          setValue(item.name, item.value.split(","));
         } else {
           setValue(item.name, item.value);
         }
@@ -311,7 +316,8 @@ export const SystemConfigsList: React.FC = () => {
                       </Form.Item>
                     </Col>
                   </Row>
-                  <Row>
+                  <Divider>Упущенные заказы</Divider>
+                  <Row gutter={16}>
                     <Col span={6}>
                       <Form.Item
                         label="Время фиксации опоздания заказа"
@@ -332,6 +338,43 @@ export const SystemConfigsList: React.FC = () => {
                               {...field}
                               addonAfter="мин."
                             />
+                          )}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Способы оплаты заказов для отправки в Яндекс.Доставку"
+                        labelCol={{ span: 14 }}
+                        wrapperCol={{ span: 10 }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Обязательно для заполнения",
+                          },
+                        ]}
+                      >
+                        <Controller
+                          name="yandex_delivery_payment_types"
+                          control={control}
+                          rules={{ required: true }}
+                          render={({ field }) => (
+                            <Select
+                              mode="multiple"
+                              allowClear
+                              style={{ width: "100%" }}
+                              placeholder="Выберите способы оплаты"
+                              {...field}
+                            >
+                              <Select.Option value="Наличными">
+                                Наличные
+                              </Select.Option>
+                              <Select.Option value="uzcard">
+                                UzCard
+                              </Select.Option>
+                              <Select.Option value="click">Click</Select.Option>
+                              <Select.Option value="payme">Payme</Select.Option>
+                            </Select>
                           )}
                         />
                       </Form.Item>

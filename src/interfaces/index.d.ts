@@ -791,3 +791,21 @@ export class IOrderTransactions {
 
   _count?: Order_transactionsCount;
 }
+
+export class IMissedOrderEntity {
+  id: string;
+
+  order_id: string;
+
+  order_number: string;
+
+  created_at: Date;
+
+  order_created_at: Date;
+
+  organization_id: string;
+
+  terminal_id: string;
+
+  system_minutes_config: number;
+}

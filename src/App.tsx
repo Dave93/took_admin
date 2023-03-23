@@ -80,6 +80,7 @@ import UsersShow from "pages/users/show";
 import NotificationsList from "pages/notifications/list";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import YuriyOrdersGarantReport from "pages/orders/yuriy_orders_garant_report";
+import MissedOrdersList from "pages/missed_orders/list";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -129,6 +130,13 @@ function App() {
         },
         list: "/orders",
         show: "/orders/show/:id",
+      },
+      {
+        name: "missed_orders",
+        meta: {
+          label: "Упущенные заказы",
+        },
+        list: "/missed_orders",
       },
       {
         name: "orders_garant_report",
@@ -456,6 +464,9 @@ function App() {
                 <Route path="/orders">
                   <Route index element={<OrdersList />} />
                   <Route path="show/:id" element={<OrdersShow />} />
+                </Route>
+                <Route path="/missed_orders">
+                  <Route index element={<MissedOrdersList />} />
                 </Route>
                 <Route
                   path="/orders_garant_report"

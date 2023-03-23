@@ -311,6 +311,32 @@ export const SystemConfigsList: React.FC = () => {
                       </Form.Item>
                     </Col>
                   </Row>
+                  <Row>
+                    <Col span={6}>
+                      <Form.Item
+                        label="Время фиксации опоздания заказа"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Обязательно для заполнения",
+                          },
+                        ]}
+                      >
+                        <Controller
+                          name="late_order_time"
+                          control={control}
+                          rules={{ required: true }}
+                          render={({ field }) => (
+                            <InputNumber
+                              size="small"
+                              {...field}
+                              addonAfter="мин."
+                            />
+                          )}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
                   <Divider>Нерабочие дни</Divider>
                   <Row gutter={16}>
                     <Col span={12}>

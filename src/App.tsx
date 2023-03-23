@@ -494,7 +494,7 @@ function App() {
                 <Route path="/terminals_couriers">
                   <Route index element={<TerminalsCouriersListPage />} />
                 </Route>
-                <Route path="/organization">
+                <Route path="/organizations">
                   <Route index element={<OrganizationList />} />
                   <Route path="create" element={<OrganizationsCreate />} />
                   <Route path="edit/:id" element={<OrganizationsEdit />} />

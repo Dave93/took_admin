@@ -17,18 +17,16 @@ import {
   Space,
   Table,
 } from "antd";
-import {
-  CrudFilters,
-  HttpError,
-  useGetIdentity,
-  useNavigation,
-  useTranslate,
-} from "@refinedev/core";
+import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { useQueryClient } from "@tanstack/react-query";
+import { client } from "graphConnect";
+import { gql } from "graphql-request";
 import dayjs from "dayjs";
-import { IMissedOrderEntity, INotifications } from "interfaces";
+import { IMissedOrderEntity, ITerminals } from "interfaces";
 import { rangePresets } from "components/dates/RangePresets";
-import { PlusOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { sortBy } from "lodash";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 
 const { RangePicker } = DatePicker;
 
@@ -36,7 +34,7 @@ const MissedOrdersList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
-  const tr = useTranslate();
+  const [terminals, setTerminals] = useState<ITerminals[]>([]);
 
   const queryClient = useQueryClient();
 
@@ -53,6 +51,7 @@ const MissedOrdersList: React.FC = () => {
       created_at: [dayjs.Dayjs, dayjs.Dayjs];
       status: string;
       role: string;
+      terminal_id: string;
     }
   >({
     queryOptions: {
@@ -61,6 +60,7 @@ const MissedOrdersList: React.FC = () => {
 
     meta: {
       fields: [
+        "id",
         "created_at",
         "order_created_at",
         "order_id",
@@ -68,6 +68,10 @@ const MissedOrdersList: React.FC = () => {
         "organization_id",
         "terminal_id",
         "system_minutes_config",
+        "terminal_name",
+        "status",
+        "payment_type",
+        "allowYandex",
       ],
       whereInputType: "missedOrdersWhereInput!",
       orderByInputType: "missedOrdersOrderByWithRelationInput!",
@@ -80,7 +84,7 @@ const MissedOrdersList: React.FC = () => {
       const localFilters: CrudFilters = [];
       queryClient.invalidateQueries(["default", "missed_orders", "list"]);
       // queryClient.invalidateQueries();
-      const { created_at, status, role } = params;
+      const { created_at, status, role, terminal_id } = params;
 
       localFilters.push(
         {
@@ -94,6 +98,15 @@ const MissedOrdersList: React.FC = () => {
           value: created_at ? created_at[1].toISOString() : undefined,
         }
       );
+
+      if (terminal_id && terminal_id.length) {
+        localFilters.push({
+          field: "terminal_id",
+          operator: "in",
+          value: terminal_id,
+        });
+      }
+
       return localFilters;
     },
 
@@ -128,18 +141,47 @@ const MissedOrdersList: React.FC = () => {
     },
   });
 
+  const getAllFilterData = async () => {
+    const query = gql`
+      query {
+        cachedTerminals {
+          id
+          name
+          organization_id
+          organization {
+            id
+            name
+          }
+        }
+      }
+    `;
+    const { cachedTerminals } = await client.request<{
+      cachedTerminals: ITerminals[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    setTerminals(sortBy(cachedTerminals, (item) => item.name));
+  };
+
+  const changeStatus = async (id: string, status: string) => {
+    const query = gql`
+      mutation ($id: String!, $status: String!) {
+        updateMissedOrder(id: $id, status: $status)
+      }
+    `;
+    await client.request(
+      query,
+      { id, status },
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    queryClient.invalidateQueries(["default", "missed_orders", "list"]);
+  };
+
+  useEffect(() => {
+    getAllFilterData();
+  }, []);
+
   const columns = [
-    {
-      title: "Действия",
-      dataIndex: "actions",
-      exportable: false,
-      width: 50,
-      render: (_text: any, record: IMissedOrderEntity): React.ReactNode => (
-        <Space>
-          <ShowButton size="small" recordItemId={record.id} hideText />
-        </Space>
-      ),
-    },
     {
       title: "№",
       dataIndex: "order_number",
@@ -150,39 +192,105 @@ const MissedOrdersList: React.FC = () => {
       ),
     },
     {
-      title: "Дата",
+      title: "Статус",
+      dataIndex: "status",
+      width: 120,
+      render: (value: any, record: IMissedOrderEntity) => {
+        if (value === "new") {
+          return (
+            <Button
+              type="primary"
+              shape="round"
+              size="small"
+              onClick={() => changeStatus(record.id, "pending")}
+            >
+              Взять в работу
+            </Button>
+          );
+        } else if (value === "pending") {
+          return (
+            <Button
+              type="primary"
+              shape="round"
+              size="small"
+              onClick={() => changeStatus(record.id, "done")}
+            >
+              Фиксировать
+            </Button>
+          );
+        } else if (value === "done") {
+          return (
+            <Button
+              type="primary"
+              shape="round"
+              size="small"
+              onClick={() => changeStatus(record.id, "new")}
+            >
+              Отменить фиксацию
+            </Button>
+          );
+        }
+      },
+    },
+    {
+      title: "Дата заказа",
+      dataIndex: "order_created_at",
+      width: 150,
+      excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
+      render: (value: any) => (
+        <div>{dayjs(value).format("DD.MM.YYYY HH:mm")}</div>
+      ),
+    },
+    {
+      title: "Дата фиксации",
       dataIndex: "created_at",
       width: 150,
       excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
-      render: (value: any) => <div>{dayjs(value).format("DD.MM.YYYY")}</div>,
+      render: (value: any) => (
+        <div>{dayjs(value).format("DD.MM.YYYY HH:mm")}</div>
+      ),
     },
     {
-      title: "Дата отправки",
-      dataIndex: "send_at",
+      title: "Минуты для фиксации",
+      dataIndex: "system_minutes_config",
       width: 150,
-      excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
-      render: (value: any) => <div>{dayjs(value).format("DD.MM.YYYY")}</div>,
     },
     {
-      title: "Заголовок",
-      dataIndex: "title",
+      title: "Номер заказа",
+      dataIndex: "order_number",
+      width: 200,
+      render: (value: any, record: any) => (
+        <Space>
+          {value}
+          <Button
+            icon={<ArrowTopRightOnSquareIcon />}
+            size="small"
+            onClick={() => window.open(`/orders/show/${record.order_id}`)}
+          />
+        </Space>
+      ),
+    },
+    {
+      title: "Филиал",
+      dataIndex: "terminal_name",
       width: 200,
     },
     {
-      title: "Текст",
-      dataIndex: "body",
+      title: "Тип оплаты",
+      dataIndex: "payment_type",
       width: 200,
     },
     {
-      title: "Статус",
-      dataIndex: "status",
-      width: 100,
+      title: "Отправить Яндексом",
+      dataIndex: "allowYandex",
+      width: 200,
+      render: (value: any) => <div>{value ? "Да" : "Не доступно"}</div>,
     },
   ];
 
   return (
     <>
-      <List title="Список рассылок">
+      <List title="Упущенные заказы">
         <Form
           layout="vertical"
           {...searchFormProps}
@@ -198,6 +306,22 @@ const MissedOrdersList: React.FC = () => {
                   showTime
                   presets={rangePresets}
                 />
+              </Form.Item>
+            </Col>
+            <Col xs={12} sm={12} md={3}>
+              <Form.Item name="terminal_id" label="Филиал">
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  allowClear
+                  mode="multiple"
+                >
+                  {terminals.map((terminal: any) => (
+                    <Select.Option key={terminal.id} value={terminal.id}>
+                      {terminal.name}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
             <Col span={2}>

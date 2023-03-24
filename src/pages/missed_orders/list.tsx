@@ -284,7 +284,22 @@ const MissedOrdersList: React.FC = () => {
       title: "Отправить Яндексом",
       dataIndex: "allowYandex",
       width: 200,
-      render: (value: any) => <div>{value ? "Да" : "Не доступно"}</div>,
+      render: (value: any) => (
+        <div>
+          {value ? (
+            <Button
+              type="primary"
+              shape="round"
+              size="small"
+              // onClick={() => changeStatus(record.id, "done")}
+            >
+              Отправить
+            </Button>
+          ) : (
+            "Не доступно"
+          )}
+        </div>
+      ),
     },
   ];
 

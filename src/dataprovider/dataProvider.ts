@@ -67,7 +67,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
       pagination = { current: 1, pageSize: 50 },
       sort,
       filters,
-      metaData,
+      meta: metaData,
     }) => {
       const { current = 1, pageSize = 50 } = pagination ?? {};
       const sortBy = generateSort(sort);

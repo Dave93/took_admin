@@ -95,6 +95,16 @@ export const useTableExport = <
     let preparingData = true;
     while (preparingData) {
       try {
+        console.log("current", {
+          resource,
+          filters,
+          sort: sorter,
+          pagination: {
+            current,
+            pageSize,
+          },
+          meta: metaData,
+        });
         const { data, total } = await getList<TData>({
           resource,
           filters,

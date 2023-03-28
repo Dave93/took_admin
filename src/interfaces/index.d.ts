@@ -808,4 +808,6 @@ export class IMissedOrderEntity {
   terminal_id: string;
 
   system_minutes_config: number;
+
+  is_courier_set: boolean;
 }

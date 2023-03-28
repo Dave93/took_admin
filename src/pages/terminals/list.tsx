@@ -36,6 +36,7 @@ export const TerminalsList: React.FC = () => {
         "latitude",
         "longitude",
         "external_id",
+        "manager_name",
         {
           organization: ["id", "name"],
         },
@@ -157,6 +158,7 @@ export const TerminalsList: React.FC = () => {
               record.organization.name
             }
           />
+          <Table.Column dataIndex="manager_name" title="Менеджер" />
           <Table.Column dataIndex="phone" title="Телефон" />
           <Table.Column dataIndex="external_id" title="Внешний идентификатор" />
           <Table.Column dataIndex="latitude" title="Широта" />

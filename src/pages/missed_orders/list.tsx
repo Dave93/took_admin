@@ -16,6 +16,7 @@ import {
   Select,
   Space,
   Table,
+  Tag,
 } from "antd";
 import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { useQueryClient } from "@tanstack/react-query";
@@ -72,6 +73,7 @@ const MissedOrdersList: React.FC = () => {
         "status",
         "payment_type",
         "allowYandex",
+        "is_courier_set",
       ],
       whereInputType: "missedOrdersWhereInput!",
       orderByInputType: "missedOrdersOrderByWithRelationInput!",
@@ -196,6 +198,13 @@ const MissedOrdersList: React.FC = () => {
       dataIndex: "status",
       width: 120,
       render: (value: any, record: IMissedOrderEntity) => {
+        if (record.is_courier_set) {
+          return (
+            <Tag color="green" style={{ width: "100%" }}>
+              Заказ принят
+            </Tag>
+          );
+        }
         if (value === "new") {
           return (
             <Button

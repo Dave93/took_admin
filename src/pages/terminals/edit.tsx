@@ -22,6 +22,8 @@ export const TerminalsEdit: React.FC = () => {
         "latitude",
         "longitude",
         "external_id",
+        "manager_name",
+        "address",
       ],
       pluralize: true,
       requestHeaders: {
@@ -95,6 +97,12 @@ export const TerminalsEdit: React.FC = () => {
             ))}
           </Select>
         </Form.Item> */}
+        <Form.Item label="Адрес" name="address">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Менеджер" name="manager_name">
+          <Input />
+        </Form.Item>
         <Form.Item label="Телефон" name="phone">
           <Input />
         </Form.Item>

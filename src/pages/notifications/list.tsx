@@ -1,5 +1,6 @@
 import {
   Create,
+  DeleteButton,
   List,
   ShowButton,
   useDrawerForm,
@@ -211,6 +212,27 @@ const NotificationsList: React.FC = () => {
       title: "Статус",
       dataIndex: "status",
       width: 100,
+    },
+    {
+      title: "Действия",
+      dataIndex: "actions",
+      width: 100,
+      render: (value: any, record: any) => (
+        <div>
+          <DeleteButton
+            {...deleteButtonProps}
+            resource="notifications"
+            recordItemId={record.id}
+            onSuccess={() => {
+              queryClient.invalidateQueries([
+                "default",
+                "notifications",
+                "list",
+              ]);
+            }}
+          />
+        </div>
+      ),
     },
   ];
 

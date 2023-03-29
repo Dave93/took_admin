@@ -53,13 +53,13 @@ export const CourierEfficiencyDetails: FC<Props> = ({ data }) => {
       width: 100,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
-    {
-      title: "Кол-во курьеров",
-      dataIndex: "courier_ids",
-      width: 100,
-      render: (value: string[] | null) =>
-        value && value.length ? value.length : 0,
-    },
+    // {
+    //   title: "Кол-во курьеров",
+    //   dataIndex: "courier_ids",
+    //   width: 100,
+    //   render: (value: string[] | null) =>
+    //     value && value.length ? value.length : 0,
+    // },
     {
       title: "Эффективность",
       dataIndex: "efficiency",

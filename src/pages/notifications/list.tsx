@@ -24,11 +24,14 @@ import {
   useNavigation,
   useTranslate,
 } from "@refinedev/core";
+import { client } from "graphConnect";
+import { gql } from "graphql-request";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { INotifications } from "interfaces";
+import { INotifications, IRoles } from "interfaces";
 import { rangePresets } from "components/dates/RangePresets";
 import { PlusOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 
 const { RangePicker } = DatePicker;
 
@@ -36,7 +39,7 @@ const NotificationsList: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
-  const tr = useTranslate();
+  const [roles, setRoles] = useState<IRoles[]>([]);
 
   const queryClient = useQueryClient();
 
@@ -159,17 +162,6 @@ const NotificationsList: React.FC = () => {
 
   const columns = [
     {
-      title: "Действия",
-      dataIndex: "actions",
-      exportable: false,
-      width: 50,
-      render: (_text: any, record: INotifications): React.ReactNode => (
-        <Space>
-          <ShowButton size="small" recordItemId={record.id} hideText />
-        </Space>
-      ),
-    },
-    {
       title: "№",
       dataIndex: "order_number",
       width: 60,
@@ -183,14 +175,18 @@ const NotificationsList: React.FC = () => {
       dataIndex: "created_at",
       width: 150,
       excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
-      render: (value: any) => <div>{dayjs(value).format("DD.MM.YYYY")}</div>,
+      render: (value: any) => (
+        <div>{dayjs(value).format("DD.MM.YYYY HH:mm")}</div>
+      ),
     },
     {
       title: "Дата отправки",
       dataIndex: "send_at",
       width: 150,
       excelRender: (value: any) => dayjs(value).format("DD.MM.YYYY HH:mm"),
-      render: (value: any) => <div>{dayjs(value).format("DD.MM.YYYY")}</div>,
+      render: (value: any) => (
+        <div>{dayjs(value).format("DD.MM.YYYY HH:mm")}</div>
+      ),
     },
     {
       title: "Заголовок",
@@ -203,11 +199,39 @@ const NotificationsList: React.FC = () => {
       width: 200,
     },
     {
+      title: "Роль",
+      dataIndex: "role",
+      width: 100,
+      render: (value: any) => {
+        const role = roles.find((role) => role.id === value);
+        return <div>{role?.name}</div>;
+      },
+    },
+    {
       title: "Статус",
       dataIndex: "status",
       width: 100,
     },
   ];
+
+  const getAllFilterData = async () => {
+    const query = gql`
+      query {
+        roles {
+          id
+          name
+        }
+      }
+    `;
+    const { roles } = await client.request<{
+      roles: IRoles[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    setRoles(roles);
+  };
+
+  useEffect(() => {
+    getAllFilterData();
+  }, []);
 
   return (
     <>
@@ -322,9 +346,11 @@ const NotificationsList: React.FC = () => {
                     rules={[{ required: true }]}
                   >
                     <Select>
-                      <Select.Option value="admin">Администратор</Select.Option>
-                      <Select.Option value="manager">Менеджер</Select.Option>
-                      <Select.Option value="user">Пользователь</Select.Option>
+                      {roles.map((role) => (
+                        <Select.Option key={role.id} value={role.id}>
+                          {role.name}
+                        </Select.Option>
+                      ))}
                     </Select>
                   </Form.Item>
                 </Col>

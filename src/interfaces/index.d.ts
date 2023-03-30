@@ -810,4 +810,6 @@ export class IMissedOrderEntity {
   system_minutes_config: number;
 
   is_courier_set: boolean;
+
+  order_status: order_status;
 }

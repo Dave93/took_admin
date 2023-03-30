@@ -74,6 +74,9 @@ const MissedOrdersList: React.FC = () => {
         "payment_type",
         "allowYandex",
         "is_courier_set",
+        {
+          order_status: ["id", "name", "color"],
+        },
       ],
       whereInputType: "missedOrdersWhereInput!",
       orderByInputType: "missedOrdersOrderByWithRelationInput!",
@@ -200,8 +203,8 @@ const MissedOrdersList: React.FC = () => {
       render: (value: any, record: IMissedOrderEntity) => {
         if (record.is_courier_set) {
           return (
-            <Tag color="green" style={{ width: "100%" }}>
-              Заказ принят
+            <Tag color={record.order_status.color}>
+              {record.order_status.name}
             </Tag>
           );
         }

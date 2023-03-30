@@ -1,4 +1,4 @@
-import { CrudFilters, CrudSorting, DataProvider } from "@refinedev/core";
+import { CrudSorting, DataProvider } from "@refinedev/core";
 import { GraphQLClient } from "graphql-request";
 import * as gql from "gql-query-builder";
 import pluralize from "pluralize";
@@ -323,13 +323,7 @@ const dataProvider = (client: GraphQLClient): DataProvider => {
             type: `${camelDeleteName}Input`,
           },
         },
-        fields: metaData?.fields ?? [
-          {
-            operation: singularResource,
-            fields: ["id"],
-            variables: {},
-          },
-        ],
+        fields: metaData?.fields ?? ["id"],
       });
 
       const response = await client.request(

@@ -23,7 +23,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import dayjs from "dayjs";
-import { IMissedOrderEntity, ITerminals } from "interfaces";
+import { IMissedOrderEntity, IOrders, ITerminals } from "interfaces";
 import { rangePresets } from "components/dates/RangePresets";
 import { useEffect, useState } from "react";
 import { sortBy } from "lodash";
@@ -77,6 +77,24 @@ const MissedOrdersList: React.FC = () => {
         "is_courier_set",
         {
           order_status: ["id", "name", "color"],
+        },
+        {
+          yandex_delivery_data: [
+            "id",
+            "created_at",
+            {
+              pricing_data: ["price", "distance_meters"],
+            },
+            {
+              order_data: [
+                "id",
+                "version",
+                "status",
+                "skip_door_to_door",
+                "skip_client_notify",
+              ],
+            },
+          ],
         },
       ],
       whereInputType: "missedOrdersWhereInput!",
@@ -176,22 +194,6 @@ const MissedOrdersList: React.FC = () => {
     await client.request(
       query,
       { id, status },
-      {
-        Authorization: `Bearer ${identity?.token.accessToken}`,
-      }
-    );
-    queryClient.invalidateQueries(["default", "missed_orders", "list"]);
-  };
-
-  const sendToYandex = async (id: string) => {
-    const query = gql`
-      mutation ($id: String!) {
-        sendOrderToYandex(id: $id)
-      }
-    `;
-    await client.request(
-      query,
-      { id },
       {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       }
@@ -307,22 +309,18 @@ const MissedOrdersList: React.FC = () => {
     {
       title: "Тип оплаты",
       dataIndex: "payment_type",
-      width: 200,
+      width: 100,
     },
     {
       title: "Отправить Яндексом",
       dataIndex: "allowYandex",
-      width: 200,
+      width: 300,
       render: (value: any, record: any) => (
         <div>
-          {value ? (
-            <SendOrderToYandex
-              id={record.id}
-              token={identity?.token.accessToken!}
-            />
-          ) : (
-            "Не доступно"
-          )}
+          <SendOrderToYandex
+            order={record as IOrders}
+            token={identity?.token.accessToken!}
+          />
         </div>
       ),
     },

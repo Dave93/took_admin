@@ -407,6 +407,10 @@ export class IOrders {
   orders_organization?: organization;
 
   orders_terminals?: terminals;
+
+  allowYandex: boolean;
+
+  yandex_delivery_data: any;
 }
 
 export class IOrderActions {

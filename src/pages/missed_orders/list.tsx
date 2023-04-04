@@ -28,6 +28,7 @@ import { rangePresets } from "components/dates/RangePresets";
 import { useEffect, useState } from "react";
 import { sortBy } from "lodash";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
+import { SendOrderToYandex } from "components/orders/sendToYandex";
 
 const { RangePicker } = DatePicker;
 
@@ -315,14 +316,10 @@ const MissedOrdersList: React.FC = () => {
       render: (value: any, record: any) => (
         <div>
           {value ? (
-            <Button
-              type="primary"
-              shape="round"
-              size="small"
-              onClick={() => sendToYandex(record.id)}
-            >
-              Отправить
-            </Button>
+            <SendOrderToYandex
+              id={record.id}
+              token={identity?.token.accessToken!}
+            />
           ) : (
             "Не доступно"
           )}

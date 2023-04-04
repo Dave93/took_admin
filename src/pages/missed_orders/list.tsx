@@ -182,6 +182,22 @@ const MissedOrdersList: React.FC = () => {
     queryClient.invalidateQueries(["default", "missed_orders", "list"]);
   };
 
+  const sendToYandex = async (id: string) => {
+    const query = gql`
+      mutation ($id: String!) {
+        sendOrderToYandex(id: $id)
+      }
+    `;
+    await client.request(
+      query,
+      { id },
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    queryClient.invalidateQueries(["default", "missed_orders", "list"]);
+  };
+
   useEffect(() => {
     getAllFilterData();
   }, []);
@@ -296,14 +312,14 @@ const MissedOrdersList: React.FC = () => {
       title: "Отправить Яндексом",
       dataIndex: "allowYandex",
       width: 200,
-      render: (value: any) => (
+      render: (value: any, record: any) => (
         <div>
           {value ? (
             <Button
               type="primary"
               shape="round"
               size="small"
-              // onClick={() => changeStatus(record.id, "done")}
+              onClick={() => sendToYandex(record.id)}
             >
               Отправить
             </Button>

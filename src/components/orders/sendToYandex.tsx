@@ -102,7 +102,6 @@ export const SendOrderToYandex = ({
   };
   if (order.allowYandex) {
     if (order.yandex_delivery_data) {
-      console.log(order.order_number);
       if (
         order.yandex_delivery_data.pricing_data &&
         (!order.yandex_delivery_data.order_data ||

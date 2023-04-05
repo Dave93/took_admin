@@ -25,6 +25,7 @@ export const OrganizationList: React.FC = () => {
         "phone",
         "webhook",
         "payment_type",
+        "allow_yandex_delivery",
       ],
       whereInputType: "organizationWhereInput!",
       orderByInputType: "organizationOrderByWithRelationInput!",
@@ -51,6 +52,11 @@ export const OrganizationList: React.FC = () => {
           <Table.Column
             dataIndex="active"
             title="Активность"
+            render={(value) => <Switch checked={value} disabled />}
+          />
+          <Table.Column
+            dataIndex="allow_yandex_delivery"
+            title="Включить Яндекс доставку"
             render={(value) => <Switch checked={value} disabled />}
           />
           <Table.Column dataIndex="name" title="Название" />

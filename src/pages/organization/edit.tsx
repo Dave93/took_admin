@@ -37,6 +37,7 @@ export const OrganizationsEdit: React.FC = () => {
         "max_order_close_distance",
         "support_chat_url",
         "icon_url",
+        "allow_yandex_delivery",
       ],
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
@@ -53,6 +54,18 @@ export const OrganizationsEdit: React.FC = () => {
         <Form.Item
           label="Активность"
           name="active"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+          valuePropName="checked"
+        >
+          <Switch />
+        </Form.Item>
+        <Form.Item
+          label="Включить Яндекс доставку"
+          name="allow_yandex_delivery"
           rules={[
             {
               required: true,

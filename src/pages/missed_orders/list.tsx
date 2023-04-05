@@ -223,7 +223,15 @@ const MissedOrdersList: React.FC = () => {
         if (record.is_courier_set) {
           return (
             <Tag color={record.order_status.color}>
-              {record.order_status.name}
+              <div
+                style={{
+                  fontWeight: 800,
+                  color: "#000",
+                  textTransform: "uppercase",
+                }}
+              >
+                {record.order_status.name}
+              </div>
             </Tag>
           );
         }

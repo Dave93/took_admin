@@ -26,6 +26,7 @@ export const OrderStatusEdit: React.FC = () => {
         "need_location",
         "on_way",
         "in_terminal",
+        "yandex_delivery_statuses",
       ],
       updateOperation: "updateOneOrderStatus",
       pluralize: true,
@@ -87,6 +88,20 @@ export const OrderStatusEdit: React.FC = () => {
               <Input />
             </Form.Item>
           </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Статусы Яндекс.Доставки"
+              name="yandex_delivery_statuses"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+
           {/* <Col span={12}>
             <Form.Item
               label="Организация"

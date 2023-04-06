@@ -22,6 +22,7 @@ export const OrderStatusList: React.FC = () => {
         "on_way",
         "in_terminal",
         "should_pay",
+        "yandex_delivery_statuses",
         {
           order_status_organization: ["id", "name"],
         },
@@ -90,6 +91,10 @@ export const OrderStatusList: React.FC = () => {
             dataIndex="should_pay"
             title="Выплатить курьеру"
             render={(value) => <Switch checked={value} disabled />}
+          />
+          <Table.Column
+            dataIndex="yandex_delivery_statuses"
+            title="Статусы в Яндекс.Доставке"
           />
           <Table.Column
             dataIndex="color"

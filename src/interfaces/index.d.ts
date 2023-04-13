@@ -736,6 +736,12 @@ export class INotifications {
   role: string;
 }
 
+export class INotificationStatistic extends INotifications {
+  deliver_status: string;
+
+  user: users;
+}
+
 export class ICourierEfficiencyReportPerDayItem {
   courier_id: string;
 

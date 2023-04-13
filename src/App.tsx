@@ -81,6 +81,11 @@ import NotificationsList from "pages/notifications/list";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import YuriyOrdersGarantReport from "pages/orders/yuriy_orders_garant_report";
 import MissedOrdersList from "pages/missed_orders/list";
+import {
+  OrderBonusPricingCreate,
+  OrderBonusPricingEdit,
+  OrderBonusPricingList,
+} from "pages/order_bonus_pricing";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -182,6 +187,15 @@ function App() {
         meta: {
           label: "Эффективность курьера",
         },
+      },
+      {
+        name: "order_bonus_pricing",
+        meta: {
+          label: "Условия бонуса за заказ",
+        },
+        list: "/order_bonus_pricing",
+        create: "/order_bonus_pricing/create",
+        edit: "/order_bonus_pricing/edit/:id",
       },
       {
         name: "notifications",
@@ -531,6 +545,11 @@ function App() {
                   <Route index element={<DeliveryPricingList />} />
                   <Route path="create" element={<DeliveryPricingCreate />} />
                   <Route path="edit/:id" element={<DeliveryPricingEdit />} />
+                </Route>
+                <Route path="/order_bonus_pricing">
+                  <Route index element={<OrderBonusPricingList />} />
+                  <Route path="create" element={<OrderBonusPricingCreate />} />
+                  <Route path="edit/:id" element={<OrderBonusPricingEdit />} />
                 </Route>
                 <Route path="/work_schedules">
                   <Route index element={<WorkSchedulesList />} />

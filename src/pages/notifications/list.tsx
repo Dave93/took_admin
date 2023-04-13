@@ -2,8 +2,8 @@ import {
   Create,
   DeleteButton,
   List,
-  ShowButton,
   useDrawerForm,
+  useModal,
   useTable,
 } from "@refinedev/antd";
 import {
@@ -13,26 +13,22 @@ import {
   Drawer,
   Form,
   Input,
+  Modal,
   Row,
   Select,
   Space,
   Table,
 } from "antd";
-import {
-  CrudFilters,
-  HttpError,
-  useGetIdentity,
-  useNavigation,
-  useTranslate,
-} from "@refinedev/core";
+import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { INotifications, IRoles } from "interfaces";
+import { INotificationStatistic, INotifications, IRoles } from "interfaces";
 import { rangePresets } from "components/dates/RangePresets";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, BarsOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { NotificationsStatistic } from "components/notifications/statistic";
 
 const { RangePicker } = DatePicker;
 
@@ -41,7 +37,6 @@ const NotificationsList: React.FC = () => {
     token: { accessToken: string };
   }>();
   const [roles, setRoles] = useState<IRoles[]>([]);
-
   const queryClient = useQueryClient();
 
   const {
@@ -98,6 +93,13 @@ const NotificationsList: React.FC = () => {
           value: created_at ? created_at[1].toISOString() : undefined,
         }
       );
+
+      localFilters.push({
+        field: "public",
+        operator: "eq",
+        value: { equals: true },
+      });
+
       return localFilters;
     },
 
@@ -117,6 +119,11 @@ const NotificationsList: React.FC = () => {
           operator: "lte",
           value: dayjs().endOf("d").toDate(),
         },
+        {
+          field: "public",
+          operator: "eq",
+          value: { equals: true },
+        },
       ],
 
       defaultBehavior: "replace",
@@ -131,6 +138,38 @@ const NotificationsList: React.FC = () => {
       ],
     },
   });
+
+  const showNotificationStatistic = async (notification_id: string) => {
+    const query = gql`
+      query {
+        notificationStatistic(
+          id: "${notification_id}"
+        ) {
+          id
+          title
+          body
+          created_at
+          send_at
+          status
+          role
+          user {
+            id
+            first_name
+            last_name
+          }
+          deliver_status
+        }
+      }
+    `;
+    const { notificationStatistic } = await client.request<{
+      notificationStatistic: INotificationStatistic[];
+    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    Modal.info({
+      // title: "This is a notification message",
+      content: <NotificationsStatistic notifications={notificationStatistic} />,
+      onOk() {},
+    });
+  };
 
   const {
     drawerProps,
@@ -218,7 +257,7 @@ const NotificationsList: React.FC = () => {
       dataIndex: "actions",
       width: 100,
       render: (value: any, record: any) => (
-        <div>
+        <Space>
           <DeleteButton
             {...deleteButtonProps}
             resource="notifications"
@@ -231,7 +270,11 @@ const NotificationsList: React.FC = () => {
               ]);
             }}
           />
-        </div>
+          <Button
+            icon={<BarsOutlined />}
+            onClick={() => showNotificationStatistic(record.id)}
+          />
+        </Space>
       ),
     },
   ];

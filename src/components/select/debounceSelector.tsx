@@ -7,6 +7,7 @@ export interface DebounceSelectProps<ValueType = any>
   extends Omit<SelectProps<ValueType | ValueType[]>, "options" | "children"> {
   fetchOptions: (search: string) => Promise<ValueType[]>;
   debounceTimeout?: number;
+  labelInValue?: boolean;
 }
 
 function DebounceSelect<
@@ -18,6 +19,7 @@ function DebounceSelect<
 >({
   fetchOptions,
   debounceTimeout = 800,
+  labelInValue = true,
   ...props
 }: DebounceSelectProps<ValueType>) {
   const [fetching, setFetching] = useState(false);
@@ -47,7 +49,7 @@ function DebounceSelect<
 
   return (
     <Select
-      labelInValue
+      labelInValue={labelInValue}
       showSearch
       filterOption={false}
       onSearch={debounceFetcher}

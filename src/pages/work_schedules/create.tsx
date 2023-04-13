@@ -1,5 +1,14 @@
 import { Create, useForm } from "@refinedev/antd";
-import { Col, Form, Input, Row, Select, Switch, TimePicker } from "antd";
+import {
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Switch,
+  TimePicker,
+} from "antd";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, IWorkSchedules } from "interfaces";
@@ -34,6 +43,7 @@ export const WorkSchedulesCreate = () => {
         "start_time",
         "end_time",
         "max_start_time",
+        "bonus_price",
       ],
       pluralize: true,
       requestHeaders: {
@@ -173,6 +183,16 @@ export const WorkSchedulesCreate = () => {
               })}
             >
               <TimePicker format={format} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Бонусная сумма за успеваемость"
+              name="bonus_price"
+            >
+              <InputNumber />
             </Form.Item>
           </Col>
         </Row>

@@ -1,5 +1,5 @@
 import { useForm, Edit } from "@refinedev/antd";
-import { Form, Input, Switch, Select, Row, Col, TimePicker } from "antd";
+import { Form, Input, Switch, Select, Row, Col, TimePicker, InputNumber } from "antd";
 import { IWorkSchedules } from "interfaces";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -38,6 +38,7 @@ export const WorkSchedulesEdit: React.FC = () => {
         "start_time",
         "end_time",
         "max_start_time",
+        "bonus_price"
       ],
       pluralize: true,
       requestHeaders: {
@@ -155,6 +156,16 @@ export const WorkSchedulesEdit: React.FC = () => {
               })}
             >
               <TimePicker format={format} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Бонусная сумма за успеваемость"
+              name="bonus_price"
+            >
+              <InputNumber  />
             </Form.Item>
           </Col>
         </Row>

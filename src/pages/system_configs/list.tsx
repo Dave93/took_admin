@@ -379,6 +379,30 @@ export const SystemConfigsList: React.FC = () => {
                         />
                       </Form.Item>
                     </Col>
+                    <Col span={6}>
+                      <Form.Item
+                        label="Максимальное время ожидания курьера"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Обязательно для заполнения",
+                          },
+                        ]}
+                      >
+                        <Controller
+                          name="yandex_courier_wait_time"
+                          control={control}
+                          rules={{ required: true }}
+                          render={({ field }) => (
+                            <InputNumber
+                              size="small"
+                              {...field}
+                              addonAfter="мин."
+                            />
+                          )}
+                        />
+                      </Form.Item>
+                    </Col>
                   </Row>
                   <Divider>Нерабочие дни</Divider>
                   <Row gutter={16}>

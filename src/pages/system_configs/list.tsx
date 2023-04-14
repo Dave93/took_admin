@@ -95,7 +95,7 @@ export const SystemConfigsList: React.FC = () => {
     data.systemConfigs.forEach((item: any) => {
       if (
         item.name.indexOf("time") !== -1 &&
-        !["late_order_time"].includes(item.name)
+        !["late_order_time", "yandex_courier_wait_time"].includes(item.name)
       ) {
         setValue(item.name, dayjs(item.value));
       } else {
@@ -400,6 +400,26 @@ export const SystemConfigsList: React.FC = () => {
                               addonAfter="мин."
                             />
                           )}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item label="Имя отправителя для Яндекс.Доставки">
+                        <Controller
+                          name="yandex_sender_name"
+                          control={control}
+                          render={({ field }) => <Input {...field} />}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Телефон отправителя для Яндекс.Доставки">
+                        <Controller
+                          name="yandex_sender_phone"
+                          control={control}
+                          render={({ field }) => <Input {...field} />}
                         />
                       </Form.Item>
                     </Col>

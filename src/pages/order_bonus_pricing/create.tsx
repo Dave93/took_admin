@@ -223,7 +223,7 @@ export const OrderBonusPricingCreate = () => {
           </Col>
           <Col span={12}>
             <Form.Item label="Филиал" name="terminal_id">
-              <Select showSearch optionFilterProp="children">
+              <Select showSearch optionFilterProp="children" allowClear>
                 {terminals.map((terminal) => (
                   <Select.Option key={terminal.id} value={terminal.id}>
                     {terminal.name}

@@ -27,6 +27,8 @@ export const OrderStatusEdit: React.FC = () => {
         "on_way",
         "in_terminal",
         "yandex_delivery_statuses",
+        "code",
+        "status_change_text",
       ],
       updateOperation: "updateOneOrderStatus",
       pluralize: true,
@@ -92,11 +94,6 @@ export const OrderStatusEdit: React.FC = () => {
             <Form.Item
               label="Статусы Яндекс.Доставки"
               name="yandex_delivery_statuses"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
             >
               <Input />
             </Form.Item>
@@ -143,6 +140,16 @@ export const OrderStatusEdit: React.FC = () => {
                 onColorResult={(color) => color.hex}
                 picker={"PhotoshopPicker"}
               />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label="Код" name="code">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label="Текст уведомления" name="status_change_text">
+              <Input />
             </Form.Item>
           </Col>
           <Col span={4}>

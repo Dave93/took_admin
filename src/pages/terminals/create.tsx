@@ -1,5 +1,5 @@
 import { Create, useForm } from "@refinedev/antd";
-import { Col, Form, Input, Row, Select, Switch } from "antd";
+import { Col, Form, Input, InputNumber, Row, Select, Switch } from "antd";
 import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
@@ -109,7 +109,7 @@ export const TerminalsCreate = () => {
                 },
               ]}
             >
-              <Input />
+              <InputNumber type="number" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -122,7 +122,7 @@ export const TerminalsCreate = () => {
                 },
               ]}
             >
-              <Input />
+              <InputNumber type="number" />
             </Form.Item>
           </Col>
         </Row>

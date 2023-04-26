@@ -61,8 +61,7 @@ export const OrderBonusPricingEdit: React.FC = () => {
         "name",
         "active",
         "created_at",
-        "start_time",
-        "end_time",
+        "max_order_time",
         "rules",
         "organization_id",
         "terminal_id",
@@ -270,46 +269,11 @@ export const OrderBonusPricingEdit: React.FC = () => {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="courier_id" label="Курьер">
-              <DebounceSelect
-                fetchOptions={fetchCourier}
-                allowClear
-                labelInValue={false}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
             <Form.Item
-              label="Время начала"
-              name="start_time"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-              getValueProps={(value) => ({
-                value: value ? dayjs(value) : "",
-              })}
+              label="Максимальное время доставки"
+              name="max_order_time"
             >
-              <TimePicker format={format} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Время окончания"
-              name="end_time"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-              getValueProps={(value) => ({
-                value: value ? dayjs(value) : "",
-              })}
-            >
-              <TimePicker format={format} />
+              <InputNumber type="number" addonAfter="мин." />
             </Form.Item>
           </Col>
         </Row>

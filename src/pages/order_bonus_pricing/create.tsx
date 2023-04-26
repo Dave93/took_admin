@@ -63,8 +63,7 @@ export const OrderBonusPricingCreate = () => {
         "name",
         "active",
         "created_at",
-        "start_time",
-        "end_time",
+        "max_order_time",
         "rules",
         "organization_id",
         "terminal_id",
@@ -244,31 +243,14 @@ export const OrderBonusPricingCreate = () => {
             </Form.Item>
           </Col>
         </Row>
+
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Время начала"
-              name="start_time"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+              label="Максимальное время доставки"
+              name="max_order_time"
             >
-              <TimePicker format={format} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Время окончания"
-              name="end_time"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <TimePicker format={format} />
+              <InputNumber type="number" addonAfter="мин." />
             </Form.Item>
           </Col>
         </Row>

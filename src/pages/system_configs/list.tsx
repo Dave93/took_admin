@@ -491,9 +491,16 @@ export const SystemConfigsList: React.FC = () => {
                         name="yandex_courier_id"
                         label="Курьер для яндекс доставки"
                       >
-                        <DebounceSelect
-                          fetchOptions={fetchCourier}
-                          allowClear
+                        <Controller
+                          name="yandex_courier_id"
+                          control={control}
+                          render={({ field }) => (
+                            <DebounceSelect
+                              fetchOptions={fetchCourier}
+                              allowClear
+                              {...field}
+                            />
+                          )}
                         />
                       </Form.Item>
                     </Col>

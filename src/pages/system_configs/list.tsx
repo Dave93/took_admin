@@ -20,13 +20,15 @@ import { useGetIdentity, useTranslate } from "@refinedev/core";
 import dayjs from "dayjs";
 import * as gql from "gql-query-builder";
 import { client } from "graphConnect";
-import { ITerminals } from "interfaces";
+import { ITerminals, IUsers } from "interfaces";
 import { useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { drive_type } from "interfaces/enums";
+import { gql as gqlq } from "graphql-request";
 import { chain } from "lodash";
 import StickyBox from "react-sticky-box";
+import DebounceSelect from "components/select/debounceSelector";
 
 const { TabPane } = Tabs;
 
@@ -208,6 +210,65 @@ export const SystemConfigsList: React.FC = () => {
       .value();
 
     setTerminals(result);
+  };
+
+  const fetchCourier = async (queryText: string) => {
+    const query = gqlq`
+        query {
+          users(where: {
+            users_roles_usersTousers_roles_user_id: {
+              some: {
+                roles: {
+                  is: {
+                    code: {
+                      equals: "courier"
+                    }
+                  }
+                }
+              }
+            },
+            status: {
+              equals: active
+            },
+            OR: [{
+              first_name: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
+            },{
+              last_name: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
+            }, {
+              phone: {
+                contains: "${queryText}"
+                mode: insensitive
+              }
+            }]
+          }) {
+            id
+            first_name
+            last_name
+            phone
+          }
+        }
+    `;
+    const { users } = await client.request<{
+      users: IUsers[];
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+
+    return users.map((user) => ({
+      key: user.id,
+      value: user.id,
+      label: `${user.first_name} ${user.last_name} (${user.phone})`,
+    }));
   };
 
   useEffect(() => {
@@ -420,6 +481,19 @@ export const SystemConfigsList: React.FC = () => {
                           name="yandex_sender_phone"
                           control={control}
                           render={({ field }) => <Input {...field} />}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={16}>
+                    <Col span={6}>
+                      <Form.Item
+                        name="courier_id"
+                        label="Курьер для яндекс доставки"
+                      >
+                        <DebounceSelect
+                          fetchOptions={fetchCourier}
+                          allowClear
                         />
                       </Form.Item>
                     </Col>

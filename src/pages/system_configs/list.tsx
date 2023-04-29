@@ -114,7 +114,7 @@ export const SystemConfigsList: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
-        } else if (item.name === "garant_prices") {
+        } else if (["garant_prices", "yandex_courier_id"].includes(item.name)) {
           try {
             let closeDates = JSON.parse(item.value);
             setValue(item.name, closeDates);
@@ -154,7 +154,12 @@ export const SystemConfigsList: React.FC = () => {
         });
       } else {
         if (
-          ["close_dates", "garant_prices", "terminal_close_days"].includes(key)
+          [
+            "close_dates",
+            "garant_prices",
+            "terminal_close_days",
+            "yandex_courier_id",
+          ].includes(key)
         ) {
           formData.push({
             name: key,
@@ -487,10 +492,7 @@ export const SystemConfigsList: React.FC = () => {
                   </Row>
                   <Row gutter={16}>
                     <Col span={6}>
-                      <Form.Item
-                        name="yandex_courier_id"
-                        label="Курьер для яндекс доставки"
-                      >
+                      <Form.Item label="Курьер для яндекс доставки">
                         <Controller
                           name="yandex_courier_id"
                           control={control}

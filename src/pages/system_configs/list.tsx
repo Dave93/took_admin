@@ -488,7 +488,7 @@ export const SystemConfigsList: React.FC = () => {
                   <Row gutter={16}>
                     <Col span={6}>
                       <Form.Item
-                        name="courier_id"
+                        name="yandex_courier_id"
                         label="Курьер для яндекс доставки"
                       >
                         <DebounceSelect

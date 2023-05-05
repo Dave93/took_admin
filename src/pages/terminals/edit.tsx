@@ -24,6 +24,7 @@ export const TerminalsEdit: React.FC = () => {
         "external_id",
         "manager_name",
         "address",
+        "fuel_bonus",
       ],
       pluralize: true,
       requestHeaders: {
@@ -60,6 +61,18 @@ export const TerminalsEdit: React.FC = () => {
         <Form.Item
           label="Активность"
           name="active"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+          valuePropName="checked"
+        >
+          <Switch />
+        </Form.Item>
+        <Form.Item
+          label="Выдавать на топливо"
+          name="fuel_bonus"
           rules={[
             {
               required: true,

@@ -135,7 +135,7 @@ const MissedOrdersList: React.FC = () => {
     },
 
     pagination: {
-      pageSize: 200,
+      pageSize: 800,
     },
 
     filters: {

@@ -37,6 +37,7 @@ export const TerminalsList: React.FC = () => {
         "longitude",
         "external_id",
         "manager_name",
+        "fuel_bonus",
         {
           organization: ["id", "name"],
         },
@@ -163,6 +164,11 @@ export const TerminalsList: React.FC = () => {
           <Table.Column dataIndex="external_id" title="Внешний идентификатор" />
           <Table.Column dataIndex="latitude" title="Широта" />
           <Table.Column dataIndex="longitude" title="Долгота" />
+          <Table.Column
+            dataIndex="fuel_bonus"
+            title="Выдавать на топливо"
+            render={(value) => <Switch checked={value} disabled />}
+          />
           <Table.Column
             dataIndex="created_at"
             title="Дата создания"

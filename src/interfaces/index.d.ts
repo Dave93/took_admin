@@ -411,6 +411,8 @@ export class IOrders {
   allowYandex: boolean;
 
   yandex_delivery_data: any;
+
+  bonus: number;
 }
 
 export class IOrderActions {

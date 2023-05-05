@@ -132,6 +132,7 @@ export const OrdersList: React.FC = () => {
         "payment_type",
         "finished_date",
         "pre_distance",
+        "bonus",
         {
           orders_organization: ["id", "name"],
         },
@@ -483,6 +484,15 @@ export const OrdersList: React.FC = () => {
       ),
     },
     {
+      title: "Бонус",
+      dataIndex: "bonus",
+      width: 90,
+      excelRender: (value: any, record: IOrders) => +record.bonus,
+      render: (value: any, record: IOrders) => (
+        <span>{new Intl.NumberFormat("ru").format(record.bonus)}</span>
+      ),
+    },
+    {
       title: "Дистанция",
       dataIndex: "pre_distance",
       width: 100,
@@ -519,6 +529,7 @@ export const OrdersList: React.FC = () => {
         "payment_type",
         "finished_date",
         "pre_distance",
+        "bonus",
         {
           orders_organization: ["id", "name"],
         },

@@ -925,6 +925,11 @@ export const OrdersList: React.FC = () => {
                 (sum, record) => sum + record.delivery_price,
                 0
               );
+              let totalBonus = 0;
+              totalBonus = pageData.reduce(
+                (sum, record) => sum + record.bonus,
+                0
+              );
               const deliveredOrdersCount = pageData.filter(
                 (record) => record.finished_date !== null
               ).length;
@@ -961,9 +966,12 @@ export const OrdersList: React.FC = () => {
                         <b>{`${totalHours}:${totalMins}`} </b>
                       </Table.Summary.Cell>
                       <Table.Summary.Cell index={13}>
-                        <b>{`${totalDistances.toFixed(2)} км`} </b>
+                        <b>{new Intl.NumberFormat("ru").format(totalBonus)} </b>
                       </Table.Summary.Cell>
                       <Table.Summary.Cell index={14}>
+                        <b>{`${totalDistances.toFixed(2)} км`} </b>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={15}>
                         <b>{new Intl.NumberFormat("ru").format(total)} </b>
                       </Table.Summary.Cell>
                     </Table.Summary.Row>

@@ -25,6 +25,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
+import { MdDirectionsBike } from "react-icons/md";
 
 const { Search } = Input;
 export const RollCallList = () => {
@@ -167,6 +168,8 @@ export const RollCallList = () => {
                     {courier.first_name} {courier.last_name}{" "}
                     {courier.drive_type == "foot" ? (
                       <FaWalking />
+                    ) : courier.drive_type == "bike" ? (
+                      <MdDirectionsBike />
                     ) : (
                       <AiFillCar />
                     )}

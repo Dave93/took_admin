@@ -31,6 +31,7 @@ import { chain, filter, orderBy, sortBy, sumBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
+import { MdDirectionsBike } from "react-icons/md";
 import {
   ArrowDownIcon,
   ArrowTopRightOnSquareIcon,

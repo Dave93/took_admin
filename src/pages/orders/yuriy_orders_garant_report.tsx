@@ -31,6 +31,7 @@ import { chain, filter, sortBy } from "lodash";
 import { drive_type, user_status } from "interfaces/enums";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
+import { MdDirectionsBike } from "react-icons/md";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 
 import utc from "dayjs/plugin/utc";
@@ -210,7 +211,13 @@ const YuriyOrdersGarantReport = () => {
         return (
           <>
             {record.courier}
-            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
+            {record.drive_type == "foot" ? (
+              <FaWalking />
+            ) : record.drive_type == "bike" ? (
+              <MdDirectionsBike />
+            ) : (
+              <AiFillCar />
+            )}
           </>
         );
       },

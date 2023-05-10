@@ -24,6 +24,7 @@ import { Excel } from "components/export/src";
 import { rangePresets } from "components/dates/RangePresets";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
+import { MdDirectionsBike } from "react-icons/md";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { CourierEfficiencyDetails } from "components/orders/courierEfficiencyDetails";
 
@@ -107,7 +108,13 @@ const CourierEfficiency = () => {
         return (
           <>
             {record.first_name} {record.last_name}{" "}
-            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
+            {record.drive_type == "foot" ? (
+              <FaWalking />
+            ) : record.drive_type == "bike" ? (
+              <MdDirectionsBike />
+            ) : (
+              <AiFillCar />
+            )}
           </>
         );
       },

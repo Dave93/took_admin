@@ -18,6 +18,7 @@ import { Excel } from "components/export/src";
 import { sortBy } from "lodash";
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
+import { MdDirectionsBike } from "react-icons/md";
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -166,7 +167,13 @@ const CourierBalance = () => {
         return (
           <div>
             {value.first_name} {value.last_name}{" "}
-            {record.drive_type == "foot" ? <FaWalking /> : <AiFillCar />}
+            {record.drive_type == "foot" ? (
+              <FaWalking />
+            ) : record.drive_type == "bike" ? (
+              <MdDirectionsBike />
+            ) : (
+              <AiFillCar />
+            )}
           </div>
         );
       },

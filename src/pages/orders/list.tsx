@@ -133,6 +133,7 @@ export const OrdersList: React.FC = () => {
         "finished_date",
         "pre_distance",
         "bonus",
+        "cooked_time",
         {
           orders_organization: ["id", "name"],
         },
@@ -458,6 +459,16 @@ export const OrdersList: React.FC = () => {
       excelRender: (value: any, record: IOrders) => +record.order_price,
       render: (value: any, record: IOrders) => (
         <span>{new Intl.NumberFormat("ru").format(record.order_price)}</span>
+      ),
+    },
+    {
+      title: "Дата выпечки",
+      dataIndex: "cooked_time",
+      width: 110,
+      excelRender: (value: any, record: IOrders) =>
+        value ? dayjs(value).format("DD.MM.YYYY HH:mm") : "",
+      render: (value: any, record: IOrders) => (
+        <span>{value ? dayjs(value).format("DD.MM.YYYY HH:mm") : ""}</span>
       ),
     },
     {
@@ -960,18 +971,18 @@ export const OrdersList: React.FC = () => {
                       </Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={1}
-                        colSpan={10}
+                        colSpan={11}
                       ></Table.Summary.Cell>
-                      <Table.Summary.Cell index={12}>
+                      <Table.Summary.Cell index={13}>
                         <b>{`${totalHours}:${totalMins}`} </b>
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={13}>
+                      <Table.Summary.Cell index={14}>
                         <b>{new Intl.NumberFormat("ru").format(totalBonus)} </b>
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={14}>
+                      <Table.Summary.Cell index={15}>
                         <b>{`${totalDistances.toFixed(2)} км`} </b>
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={15}>
+                      <Table.Summary.Cell index={16}>
                         <b>{new Intl.NumberFormat("ru").format(total)} </b>
                       </Table.Summary.Cell>
                     </Table.Summary.Row>

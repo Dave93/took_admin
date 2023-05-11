@@ -114,6 +114,7 @@ export const OrdersShow = () => {
         "operator_notes",
         "delivery_schedule",
         "later_time",
+        "cooked_time",
         {
           orders_organization: ["id", "name"],
         },
@@ -510,6 +511,13 @@ export const OrdersShow = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Дистанция">
                   {record?.pre_distance} км
+                </Descriptions.Item>
+                <Descriptions.Item label="Время доставки">
+                  {record?.cooked_time
+                    ? dayjs
+                        .duration(record?.cooked_time)
+                        .format("DD.MM.YYYY HH:mm")
+                    : "Не указано"}
                 </Descriptions.Item>
                 <Descriptions.Item label="Время доставки">
                   {dayjs

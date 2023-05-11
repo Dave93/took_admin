@@ -31,7 +31,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { chain, sortBy } from "lodash";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, LinkOutlined } from "@ant-design/icons";
 import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
 import { defaultDateTimeFormat } from "localConstants";
 import { useEffect, useState } from "react";
@@ -543,6 +543,11 @@ export const UsersList: React.FC = () => {
             render={(_text, record): React.ReactNode => {
               return (
                 <Space>
+                  <Button
+                    size="small"
+                    icon={<LinkOutlined />}
+                    onClick={() => navigator.clipboard.writeText(record.id)}
+                  />
                   <Button
                     size="small"
                     icon={<EditOutlined />}

@@ -24,6 +24,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import CourierWithdrawModal from "components/orders/courier_withdraw_modal";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
+import CourierDriveTypeIcon from "components/users/courier_drive_type_icon";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -167,13 +168,7 @@ const CourierBalance = () => {
         return (
           <div>
             {value.first_name} {value.last_name}{" "}
-            {record.drive_type == "foot" ? (
-              <FaWalking />
-            ) : record.drive_type == "bike" ? (
-              <MdDirectionsBike />
-            ) : (
-              <AiFillCar />
-            )}
+            <CourierDriveTypeIcon driveType={record.drive_type} />
           </div>
         );
       },

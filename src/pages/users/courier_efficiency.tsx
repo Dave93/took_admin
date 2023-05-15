@@ -27,6 +27,7 @@ import { AiFillCar } from "react-icons/ai";
 import { MdDirectionsBike } from "react-icons/md";
 import { formatPhoneNumberIntl } from "react-phone-number-input";
 import { CourierEfficiencyDetails } from "components/orders/courierEfficiencyDetails";
+import CourierDriveTypeIcon from "components/users/courier_drive_type_icon";
 
 const { RangePicker } = DatePicker;
 
@@ -108,13 +109,7 @@ const CourierEfficiency = () => {
         return (
           <>
             {record.first_name} {record.last_name}{" "}
-            {record.drive_type == "foot" ? (
-              <FaWalking />
-            ) : record.drive_type == "bike" ? (
-              <MdDirectionsBike />
-            ) : (
-              <AiFillCar />
-            )}
+            <CourierDriveTypeIcon driveType={record.drive_type} />
           </>
         );
       },

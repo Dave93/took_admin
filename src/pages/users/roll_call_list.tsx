@@ -26,6 +26,7 @@ import {
 import { FaWalking } from "react-icons/fa";
 import { AiFillCar } from "react-icons/ai";
 import { MdDirectionsBike } from "react-icons/md";
+import CourierDriveTypeIcon from "components/users/courier_drive_type_icon";
 
 const { Search } = Input;
 export const RollCallList = () => {
@@ -166,13 +167,7 @@ export const RollCallList = () => {
                       color={courier.is_online ? "green" : "red"}
                     />
                     {courier.first_name} {courier.last_name}{" "}
-                    {courier.drive_type == "foot" ? (
-                      <FaWalking />
-                    ) : courier.drive_type == "bike" ? (
-                      <MdDirectionsBike />
-                    ) : (
-                      <AiFillCar />
-                    )}
+                    <CourierDriveTypeIcon driveType={courier.drive_type} />
                   </Flex>
                   <Space>
                     {courier.app_version && `v${courier.app_version}`}

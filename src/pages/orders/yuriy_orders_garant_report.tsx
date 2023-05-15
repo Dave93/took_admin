@@ -36,6 +36,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import CourierDriveTypeIcon from "components/users/courier_drive_type_icon";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -211,13 +212,7 @@ const YuriyOrdersGarantReport = () => {
         return (
           <>
             {record.courier}
-            {record.drive_type == "foot" ? (
-              <FaWalking />
-            ) : record.drive_type == "bike" ? (
-              <MdDirectionsBike />
-            ) : (
-              <AiFillCar />
-            )}
+            <CourierDriveTypeIcon driveType={record.drive_type} />
           </>
         );
       },

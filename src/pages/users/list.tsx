@@ -77,6 +77,7 @@ export const UsersList: React.FC = () => {
       roles: string;
       status: string;
       id?: IUsers;
+      drive_type: string[];
     }
   >({
     meta: {
@@ -125,6 +126,7 @@ export const UsersList: React.FC = () => {
         roles,
         status,
         id,
+        drive_type,
       } = values;
       const filters: CrudFilters = [];
       queryClient.invalidateQueries(["default", "users", "list"]);
@@ -219,6 +221,16 @@ export const UsersList: React.FC = () => {
           value: { custom: { equals: status } },
         });
       }
+
+      if (drive_type && drive_type.length) {
+        filters.push({
+          field: "drive_type",
+          operator: "in",
+          value: drive_type,
+        });
+      }
+
+      console.log("drive_type", drive_type);
 
       return filters;
     },
@@ -442,6 +454,17 @@ export const UsersList: React.FC = () => {
                     },
                   ]}
                 />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="drive_type" label="Тип доставки">
+                <Select allowClear mode="multiple">
+                  {Object.keys(drive_type).map((type: string) => (
+                    <Select.Option key={type} value={type}>
+                      {tr(`deliveryPricing.driveType.${type}`)}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
             <Col span={6}>

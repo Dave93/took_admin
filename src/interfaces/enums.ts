@@ -2,6 +2,7 @@ export enum drive_type {
   car = "car",
   bike = "bike",
   foot = "foot",
+  bycicle = "bycicle",
 }
 
 export enum organization_system_type {

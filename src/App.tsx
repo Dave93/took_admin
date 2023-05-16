@@ -86,6 +86,11 @@ import {
   OrderBonusPricingEdit,
   OrderBonusPricingList,
 } from "pages/order_bonus_pricing";
+import {
+  DailyGarantCreate,
+  DailyGarantEdit,
+  DailyGarantList,
+} from "pages/daily_garant";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -196,6 +201,15 @@ function App() {
         list: "/order_bonus_pricing",
         create: "/order_bonus_pricing/create",
         edit: "/order_bonus_pricing/edit/:id",
+      },
+      {
+        name: "daily_garant",
+        meta: {
+          label: "Дневной гарант",
+        },
+        list: "/daily_garant",
+        create: "/daily_garant/create",
+        edit: "/daily_garant/edit/:id",
       },
       {
         name: "notifications",
@@ -575,6 +589,11 @@ function App() {
                   <Route index element={<NotificationsList />} />
                   {/* <Route path="create" element={<NotificationsCreate />} />
                   <Route path="edit/:id" element={<NotificationsEdit />} /> */}
+                </Route>
+                <Route path="/daily_garant">
+                  <Route index element={<DailyGarantList />} />
+                  <Route path="create" element={<DailyGarantCreate />} />
+                  <Route path="edit/:id" element={<DailyGarantEdit />} />
                 </Route>
               </Route>
               <Route

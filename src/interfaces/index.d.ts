@@ -370,6 +370,8 @@ export class IOrders {
 
   finished_date: Date | null;
 
+  cooked_time: Date | null;
+
   delivery_comment: string | null;
 
   delivery_phone: string;
@@ -824,4 +826,24 @@ export class IMissedOrderEntity {
   is_courier_set: boolean;
 
   order_status: order_status;
+}
+
+export class IDailyGarant {
+  id: string;
+
+  name: string;
+
+  date: Date;
+
+  amount: number;
+
+  late_minus_sum: number;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  daily_garant_daily_garant_tasks?: Array<daily_garant_tasks>;
+
+  _count?: Daily_garantCount;
 }

@@ -324,6 +324,19 @@ export const OrdersShow = () => {
     window.location.reload();
   };
 
+  const cookingTime = useMemo(() => {
+    if (record?.cooked_time) {
+      const ft = dayjs(record.created_at);
+      const tt = dayjs(record.cooked_time);
+      const mins = tt.diff(ft, "minutes", true);
+      const totalHours = parseInt((mins / 60).toString());
+      const totalMins = dayjs().minute(mins).format("mm");
+      return `${totalHours}:${totalMins}`;
+    } else {
+      return "Не заполнена выпечка";
+    }
+  }, [record]);
+
   useEffect(() => {
     loadOrderStatuses();
     loadOrderLocations();
@@ -512,12 +525,15 @@ export const OrdersShow = () => {
                 <Descriptions.Item label="Дистанция">
                   {record?.pre_distance} км
                 </Descriptions.Item>
-                <Descriptions.Item label="Время доставки">
+                <Descriptions.Item label="Дата выпечки">
                   {record?.cooked_time
                     ? dayjs
                         .duration(record?.cooked_time)
                         .format("DD.MM.YYYY HH:mm")
                     : "Не указано"}
+                </Descriptions.Item>
+                <Descriptions.Item label="Время выпечки">
+                  {cookingTime}
                 </Descriptions.Item>
                 <Descriptions.Item label="Время доставки">
                   {dayjs

@@ -59,17 +59,19 @@ const { RangePicker } = DatePicker;
 interface IOrdersListProps {
   startDate: Date;
   endDate: Date;
+  emptyMessage?: string;
 }
 
 const IOrdersListPropsDuration: FC<IOrdersListProps> = ({
   startDate,
   endDate,
+  emptyMessage,
 }) => {
   const duration = useMemo(() => {
     if (startDate && endDate) {
       return `${dayjs(endDate).diff(startDate, "minute")} минут`;
     } else {
-      return "Доставка не завершена";
+      return emptyMessage ?? "Доставка не завершена";
     }
   }, [startDate, endDate]);
   return (
@@ -469,6 +471,30 @@ export const OrdersList: React.FC = () => {
         value ? dayjs(value).format("DD.MM.YYYY HH:mm") : "",
       render: (value: any, record: IOrders) => (
         <span>{value ? dayjs(value).format("DD.MM.YYYY HH:mm") : ""}</span>
+      ),
+    },
+    {
+      title: "Время выпечки",
+      dataIndex: "cooked_time",
+      width: 100,
+      excelRender: (value: any, record: IOrders) => {
+        if (record?.cooked_time) {
+          const ft = dayjs(record.created_at);
+          const tt = dayjs(record.cooked_time);
+          const mins = tt.diff(ft, "minutes", true);
+          const totalHours = parseInt((mins / 60).toString());
+          const totalMins = dayjs().minute(mins).format("mm");
+          return `${totalHours}:${totalMins}`;
+        } else {
+          return "Не заполнена выпечка";
+        }
+      },
+      render: (value: any, record: IOrders) => (
+        <IOrdersListPropsDuration
+          startDate={record?.created_at}
+          endDate={record?.cooked_time!}
+          emptyMessage="Не заполнена выпечка"
+        />
       ),
     },
     {

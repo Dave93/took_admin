@@ -4,7 +4,13 @@ import { useGetIdentity, useTranslate } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import * as gqlb from "gql-query-builder";
-import { IRoles, ITerminals, IUsers, IWorkSchedules } from "interfaces";
+import {
+  IDailyGarant,
+  IRoles,
+  ITerminals,
+  IUsers,
+  IWorkSchedules,
+} from "interfaces";
 import { drive_type, user_status } from "interfaces/enums";
 import { useEffect, useState } from "react";
 import { chain, sortBy } from "lodash";
@@ -28,6 +34,7 @@ export const UsersCreate = () => {
         "latitude",
         "longitude",
         "max_active_order_count",
+        "daily_garant_id",
         {
           users_terminals: [
             {
@@ -46,6 +53,7 @@ export const UsersCreate = () => {
   const [roles, setRoles] = useState<IRoles[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [work_schedules, setWorkSchedules] = useState<any[]>([]);
+  const [daily_garant, setDailyGarant] = useState<IDailyGarant[]>([]);
 
   const fetchAllData = async () => {
     const query = gql`
@@ -70,13 +78,19 @@ export const UsersCreate = () => {
             name
           }
         }
+        cachedDailyGarant {
+          id
+          name
+        }
       }
     `;
-    const { roles, cachedTerminals, workSchedules } = await client.request<{
-      roles: IRoles[];
-      cachedTerminals: ITerminals[];
-      workSchedules: IWorkSchedules[];
-    }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
+    const { roles, cachedTerminals, workSchedules, cachedDailyGarant } =
+      await client.request<{
+        roles: IRoles[];
+        cachedTerminals: ITerminals[];
+        workSchedules: IWorkSchedules[];
+        cachedDailyGarant: IDailyGarant[];
+      }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
 
     var workScheduleResult = chain(workSchedules)
       .groupBy("organization.name")
@@ -90,6 +104,7 @@ export const UsersCreate = () => {
       .value();
 
     setWorkSchedules(workScheduleResult);
+    setDailyGarant(cachedDailyGarant);
     setTerminals(sortBy(cachedTerminals, ["name"]));
     setRoles(roles);
   };
@@ -311,6 +326,17 @@ export const UsersCreate = () => {
           </Col>
         </Row>
         <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Дневной гарант" name="daily_garant_id">
+              <Select allowClear>
+                {daily_garant.map((daily_garant: any) => (
+                  <Select.Option key={daily_garant.id} value={daily_garant.id}>
+                    {daily_garant.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
           <Col span={12}>
             <Form.Item
               label="Максимальное количество активных заказов"

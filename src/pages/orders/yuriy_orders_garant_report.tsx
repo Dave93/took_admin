@@ -620,7 +620,7 @@ const YuriyOrdersGarantReport = () => {
 
                 let createQuery = gql`
                   mutation (
-                    $data: usersUpdateInput!
+                    $data: usersUncheckedUpdateInput!
                     $where: usersWhereUniqueInput!
                   ) {
                     updateUser(data: $data, where: $where) {

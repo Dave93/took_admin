@@ -314,6 +314,7 @@ export const UsersList: React.FC = () => {
         },
       ],
       pluralize: true,
+      updateInputName: "usersUncheckedUpdateInput",
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
@@ -647,7 +648,7 @@ export const UsersList: React.FC = () => {
 
                   let createQuery = gql`
                     mutation (
-                      $data: usersUpdateInput!
+                      $data: usersUncheckedUpdateInput!
                       $where: usersWhereUniqueInput!
                     ) {
                       updateUser(data: $data, where: $where) {

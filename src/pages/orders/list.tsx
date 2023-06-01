@@ -266,7 +266,7 @@ export const OrdersList: React.FC = () => {
     },
 
     pagination: {
-      pageSize: 200,
+      pageSize: 1000,
     },
 
     filters: {

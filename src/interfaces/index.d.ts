@@ -324,6 +324,8 @@ export class IOrderStatus {
 
   waiting: boolean;
 
+  color: string;
+
   order_status_organization?: organization;
 }
 

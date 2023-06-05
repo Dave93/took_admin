@@ -154,6 +154,7 @@ export const OrdersShow = () => {
                 sort: asc}) {
                 id
                 name
+                color
             }
         }`;
       const { orderStatuses } = await client.request<{
@@ -388,6 +389,14 @@ export const OrdersShow = () => {
                                 <Button
                                   type="link"
                                   size="small"
+                                  style={{
+                                    background: item.color
+                                      ? item.color
+                                      : "#fff",
+                                    color: "#000",
+                                    fontWeight: 800,
+                                    textTransform: "uppercase",
+                                  }}
                                   onClick={() => {
                                     updateOrderStatus(item.id);
                                   }}

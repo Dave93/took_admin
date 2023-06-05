@@ -10,12 +10,15 @@ import {
   DatePicker,
   Tag,
   Input,
+  Popover,
+  List as AntdList,
 } from "antd";
 import type { TableRowSelection } from "antd/es/table/interface";
 
 import {
   CrudFilters,
   HttpError,
+  useCan,
   useExport,
   useGetIdentity,
   useNavigation,
@@ -92,6 +95,9 @@ export const OrdersList: React.FC = () => {
   const [organizations, setOrganizations] = useState<IOrganization[]>([]);
   const [terminals, setTerminals] = useState<any[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<any[]>([]);
+  const [orderChangeStatuses, setOrderChangeStatuses] = useState<
+    IOrderStatus[]
+  >([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const queryClient = useQueryClient();
@@ -296,6 +302,61 @@ export const OrdersList: React.FC = () => {
     },
   });
 
+  const loadOrderChangeStatuses = async (organizationId: string) => {
+    let organizations: any = {};
+    setOrderChangeStatuses([]);
+
+    const query = gql`
+        query {
+            orderStatuses(where: {
+                organization_id: {
+                    equals: "${organizationId}"
+                }
+            }, orderBy: {
+                sort: asc}) {
+                id
+                name
+                color
+            }
+        }`;
+    const { orderStatuses } = await client.request<{
+      orderStatuses: IOrderStatus[];
+    }>(
+      query,
+      {},
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    setOrderChangeStatuses(orderStatuses);
+  };
+
+  const updateOrderStatus = async (showId: string, id: string) => {
+    const query = gql`
+      mutation ($id: String!, $status: String!) {
+        updateOrderStatus(orderId: $id, orderStatusId: $status) {
+          created_at
+        }
+      }
+    `;
+    await client.request(
+      query,
+      {
+        id: showId,
+        status: id,
+      },
+      {
+        Authorization: `Bearer ${identity?.token.accessToken}`,
+      }
+    );
+    queryClient.invalidateQueries(["default", "orders", "list"]);
+  };
+
+  const { data: orderCanEdit } = useCan({
+    resource: "orders",
+    action: "edit",
+  });
+
   const columns = [
     {
       title: "Действия",
@@ -341,19 +402,72 @@ export const OrdersList: React.FC = () => {
       dataIndex: "order_status_id",
       width: 120,
       excelRender: (value: any, record: any) => record.orders_order_status.name,
-      render: (value: any, record: any) => (
-        <Tag color={record.orders_order_status.color}>
-          <div
-            style={{
-              fontWeight: 800,
-              color: "#000",
-              textTransform: "uppercase",
+      render: (value: any, record: any) =>
+        orderCanEdit?.can ? (
+          <Popover
+            placement="bottom"
+            title="Выберите статус"
+            onOpenChange={(open) => {
+              loadOrderChangeStatuses(record.orders_organization.id);
             }}
+            content={() => (
+              <div>
+                <AntdList
+                  size="small"
+                  dataSource={orderChangeStatuses}
+                  renderItem={(item) => (
+                    <AntdList.Item>
+                      <Button
+                        type="link"
+                        size="small"
+                        style={{
+                          background: item.color ? item.color : "#fff",
+                          color: "#000",
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                        }}
+                        onClick={() => {
+                          updateOrderStatus(record.id, item.id);
+                        }}
+                      >
+                        {item.name}
+                      </Button>
+                    </AntdList.Item>
+                  )}
+                />
+              </div>
+            )}
+            trigger="click"
           >
-            {record.orders_order_status.name}
-          </div>
-        </Tag>
-      ),
+            <Button
+              size="small"
+              block
+              style={{
+                marginTop: 8,
+                background: record.orders_order_status.color
+                  ? record.orders_order_status.color
+                  : "#fff",
+                color: "#000",
+                fontWeight: 800,
+                textTransform: "uppercase",
+              }}
+            >
+              {record.orders_order_status.name}
+            </Button>
+          </Popover>
+        ) : (
+          <Tag color={record.orders_order_status.color}>
+            <div
+              style={{
+                fontWeight: 800,
+                color: "#000",
+                textTransform: "uppercase",
+              }}
+            >
+              {record.orders_order_status.name}
+            </div>
+          </Tag>
+        ),
     },
     {
       title: "Организация",
@@ -997,7 +1111,7 @@ export const OrdersList: React.FC = () => {
                       </Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={1}
-                        colSpan={11}
+                        colSpan={12}
                       ></Table.Summary.Cell>
                       <Table.Summary.Cell index={13}>
                         <b>{`${totalHours}:${totalMins}`} </b>

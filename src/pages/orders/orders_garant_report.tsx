@@ -122,6 +122,7 @@ const OrdersGarantReport = () => {
             balance
             garant_days
             balance_to_pay
+            bonus_total
             drive_type
             possible_garant_price
             terminal_name
@@ -545,23 +546,17 @@ const OrdersGarantReport = () => {
               className="w-full text-left border garant-table"
               ref={tableRef}
             >
-              <thead className="  uppercase bg-gray-50 dark:bg-gray-700">
+              <thead className="  uppercase bg-gray-50">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     №
                   </th>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     Курьер
                   </th>
                   <th
                     scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700 cursor-pointer"
+                    className="px-2 py-3 bg-gray-50 cursor-pointer"
                     onClick={() => {
                       setTableOrdering("delivery_price");
                     }}
@@ -582,9 +577,12 @@ const OrdersGarantReport = () => {
                         )}
                     </div>
                   </th>
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
+                    Бонус
+                  </th>
                   <th
                     scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700 cursor-pointer"
+                    className="px-2 py-3 bg-gray-50 cursor-pointer"
                     onClick={() => {
                       setTableOrdering("balance_to_pay");
                     }}
@@ -605,41 +603,26 @@ const OrdersGarantReport = () => {
                         )}
                     </div>
                   </th>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     Кол-во заказов
                   </th>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     Дата начала
                   </th>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     Дата последнего заказа
                   </th>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     Дата создания
                   </th>
-                  <th
-                    scope="col"
-                    className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
-                  >
+                  <th scope="col" className="px-2 py-3 bg-gray-50">
                     Кол-во отработанных дней
                   </th>
                   {organizations.length > 0 &&
                     organizations.map((org: any) => (
                       <th
                         scope="col"
-                        className="px-2 py-3 bg-gray-50 dark:bg-gray-700"
+                        className="px-2 py-3 bg-gray-50"
                         key={org.id}
                         colSpan={org.terminal_count}
                       >
@@ -653,13 +636,18 @@ const OrdersGarantReport = () => {
                   ? resultData.map((child: any, index: number) => (
                       <tr
                         key={child.courier_id}
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600"
+                        className="bg-white border-b hover:bg-gray-50"
                       >
                         <td className="px-2 py-2">{index + 1}</td>
                         <td className="px-2 py-2">{child.courier}</td>
                         <td className="px-2 py-2">
                           {new Intl.NumberFormat("ru-RU").format(
                             child.delivery_price
+                          )}
+                        </td>
+                        <td className="px-2 py-2">
+                          {new Intl.NumberFormat("ru-RU").format(
+                            child.bonus_total
                           )}
                         </td>
                         <td align="right" className="px-2 py-2">
@@ -716,7 +704,7 @@ const OrdersGarantReport = () => {
                     ))
                   : resultData.map((item: any, index: number) => (
                       <Fragment key={item.name}>
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <tr className="bg-white border-b  hover:bg-gray-50">
                           <th
                             colSpan={9 + totalColspan}
                             align="left"
@@ -728,13 +716,18 @@ const OrdersGarantReport = () => {
                         {item.children.map((child: any, index: number) => (
                           <tr
                             key={child.courier_id}
-                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  hover:bg-gray-50 dark:hover:bg-gray-600"
+                            className="bg-white border-b hover:bg-gray-50"
                           >
                             <td className="px-2 py-2">{index + 1}</td>
                             <td className="px-2 py-2">{child.courier}</td>
                             <td className="px-2 py-2">
                               {new Intl.NumberFormat("ru-RU").format(
                                 child.delivery_price
+                              )}
+                            </td>
+                            <td className="px-2 py-2">
+                              {new Intl.NumberFormat("ru-RU").format(
+                                child.bonus_total
                               )}
                             </td>
                             <td align="right" className="px-2 py-2">
@@ -793,11 +786,12 @@ const OrdersGarantReport = () => {
                               ))}
                           </tr>
                         ))}
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                          <th colSpan={3} align="right" className="px-2 py-2">
+                        <tr className="bg-white border-b hover:bg-gray-50">
+                          <th colSpan={2} align="right" className="px-2 py-2">
                             Итого
                           </th>
-                          <th align="right" className="px-2 py-2">
+
+                          <th colSpan={3} align="right" className="px-2 py-2">
                             {new Intl.NumberFormat("ru-RU").format(
                               item.total_balance_to_pay
                             )}

@@ -106,6 +106,7 @@ const YuriyOrdersGarantReport = () => {
             actual_day_offs
             delivery_price
             garant_price
+            bonus_total
             earned
             balance
             garant_days
@@ -283,6 +284,13 @@ const YuriyOrdersGarantReport = () => {
       dataIndex: "delivery_price",
       excelRender: (value: any) => value,
       sorter: (a: any, b: any) => a.delivery_price - b.delivery_price,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
+      title: "Сумма бонусов",
+      dataIndex: "bonus_total",
+      excelRender: (value: any) => value,
+      sorter: (a: any, b: any) => a.bonus_total - b.bonus_total,
       render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
     },
     {

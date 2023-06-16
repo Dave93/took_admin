@@ -67,6 +67,7 @@ export const OrderBonusPricingEdit: React.FC = () => {
         "terminal_id",
         "min_distance_km",
         "courier_id",
+        "terminal_ids",
       ],
       pluralize: true,
       updateInputName: "order_bonus_pricingUncheckedUpdateInput",
@@ -258,6 +259,24 @@ export const OrderBonusPricingEdit: React.FC = () => {
           <Col span={12}>
             <Form.Item label="Филиал" name="terminal_id">
               <Select showSearch optionFilterProp="children" allowClear>
+                {terminals.map((terminal) => (
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item label="Филиалы" name="terminal_ids">
+              <Select
+                showSearch
+                optionFilterProp="children"
+                allowClear
+                mode="multiple"
+              >
                 {terminals.map((terminal) => (
                   <Select.Option key={terminal.id} value={terminal.id}>
                     {terminal.name}

@@ -828,6 +828,8 @@ export class IMissedOrderEntity {
   is_courier_set: boolean;
 
   order_status: order_status;
+
+  order_price: number;
 }
 
 export class IDailyGarant {

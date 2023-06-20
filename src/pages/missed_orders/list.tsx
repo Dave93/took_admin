@@ -7,6 +7,7 @@ import {
 } from "@refinedev/antd";
 import {
   Button,
+  Checkbox,
   Col,
   DatePicker,
   Drawer,
@@ -18,7 +19,12 @@ import {
   Table,
   Tag,
 } from "antd";
-import { CrudFilters, HttpError, useGetIdentity } from "@refinedev/core";
+import {
+  CrudFilters,
+  HttpError,
+  SortOrder,
+  useGetIdentity,
+} from "@refinedev/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
@@ -54,6 +60,7 @@ const MissedOrdersList: React.FC = () => {
       status: string;
       role: string;
       terminal_id: string;
+      need_action: boolean;
     }
   >({
     queryOptions: {
@@ -75,6 +82,7 @@ const MissedOrdersList: React.FC = () => {
         "payment_type",
         "allowYandex",
         "is_courier_set",
+        "order_price",
         {
           order_status: ["id", "name", "color"],
         },
@@ -107,8 +115,11 @@ const MissedOrdersList: React.FC = () => {
     onSearch: async (params) => {
       const localFilters: CrudFilters = [];
       queryClient.invalidateQueries(["default", "missed_orders", "list"]);
+
+      console.log("params", params);
+
       // queryClient.invalidateQueries();
-      const { created_at, status, role, terminal_id } = params;
+      const { created_at, status, role, terminal_id, need_action } = params;
 
       localFilters.push(
         {
@@ -128,6 +139,14 @@ const MissedOrdersList: React.FC = () => {
           field: "terminal_id",
           operator: "in",
           value: terminal_id,
+        });
+      }
+
+      if (need_action) {
+        localFilters.push({
+          field: "order_status_id",
+          operator: "eq",
+          value: { equals: "new" },
         });
       }
 
@@ -315,6 +334,15 @@ const MissedOrdersList: React.FC = () => {
       width: 200,
     },
     {
+      title: "Стоимость заказа",
+      dataIndex: "order_price",
+      width: 150,
+      // sorter: (a: any, b: any) => a.order_price - b.order_price,
+      // defaultSortOrder: "descend" as SortOrder | undefined,
+      excelRender: (value: any) => +value,
+      render: (value: string) => new Intl.NumberFormat("ru-RU").format(+value),
+    },
+    {
       title: "Тип оплаты",
       dataIndex: "payment_type",
       width: 100,
@@ -368,6 +396,15 @@ const MissedOrdersList: React.FC = () => {
                     </Select.Option>
                   ))}
                 </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={12} sm={12} md={3}>
+              <Form.Item
+                name="need_action"
+                label="Взять в работу"
+                valuePropName="checked"
+              >
+                <Checkbox />
               </Form.Item>
             </Col>
             <Col span={2}>

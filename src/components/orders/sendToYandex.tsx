@@ -42,6 +42,8 @@ export const SendOrderToYandex = ({
     }
 
     await sleep(300);
+    queryClient.invalidateQueries(["default", "missed_orders", "list"]);
+    await sleep(100);
     setIsLoading(false);
     queryClient.invalidateQueries(["default", "missed_orders", "list"]);
   };
@@ -96,8 +98,10 @@ export const SendOrderToYandex = ({
         message: e.message,
       });
     }
-    setIsLoading(false);
     await sleep(500);
+    queryClient.invalidateQueries(["default", "missed_orders", "list"]);
+    await sleep(100);
+    setIsLoading(false);
     queryClient.invalidateQueries(["default", "missed_orders", "list"]);
   };
   if (order.allowYandex) {

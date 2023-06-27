@@ -83,6 +83,7 @@ const MissedOrdersList: React.FC = () => {
         "allowYandex",
         "is_courier_set",
         "order_price",
+        "pre_distance",
         {
           order_status: ["id", "name", "color"],
         },
@@ -332,6 +333,13 @@ const MissedOrdersList: React.FC = () => {
       title: "Филиал",
       dataIndex: "terminal_name",
       width: 200,
+    },
+    {
+      title: "Дистанция",
+      dataIndex: "pre_distance",
+      width: 100,
+      render: (value: any, record: any) =>
+        `${+record.pre_distance.toFixed(2)} км`,
     },
     {
       title: "Стоимость заказа",

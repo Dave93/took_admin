@@ -35,6 +35,7 @@ import { useEffect, useState } from "react";
 import { sortBy } from "lodash";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { SendOrderToYandex } from "components/orders/sendToYandex";
+import { TrySendMultiYandex } from "components/orders/trySendMultiYandex";
 
 const { RangePicker } = DatePicker;
 
@@ -362,6 +363,10 @@ const MissedOrdersList: React.FC = () => {
       render: (value: any, record: any) => (
         <div>
           <SendOrderToYandex
+            order={record as IOrders}
+            token={identity?.token.accessToken!}
+          />
+          <TrySendMultiYandex
             order={record as IOrders}
             token={identity?.token.accessToken!}
           />

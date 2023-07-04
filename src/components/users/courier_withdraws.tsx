@@ -217,7 +217,7 @@ const CourierWithdraws = ({ user }: { user: IUsers }) => {
   );
 };
 
-const ManagerWithdrawTransactions = ({
+export const ManagerWithdrawTransactions = ({
   record,
 }: {
   record: IManagerWithdraw;

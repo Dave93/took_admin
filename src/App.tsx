@@ -91,6 +91,7 @@ import {
   DailyGarantEdit,
   DailyGarantList,
 } from "pages/daily_garant";
+import { ManagerWithdrawList } from "pages/manager_withdraw";
 const gqlDataProvider = dataProvider(client);
 
 const { Link } = routerProvider;
@@ -185,6 +186,13 @@ function App() {
           label: "Кошелёк",
         },
         list: "/courier_balance",
+      },
+      {
+        name: "manager_withdraw",
+        meta: {
+          label: "Выплаты курьеров",
+        },
+        list: "/manager_withdraw",
       },
       {
         name: "courier_efficiency",
@@ -504,6 +512,9 @@ function App() {
                   path="/yuriy_orders_garant_report"
                   element={<YuriyOrdersGarantReport />}
                 />
+                <Route path="/manager_withdraw">
+                  <Route index element={<ManagerWithdrawList />} />
+                </Route>
                 <Route path="/users">
                   <Route index element={<UsersList />} />
                   <Route path="show/:id" element={<UsersShow />} />

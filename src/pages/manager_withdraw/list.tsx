@@ -524,16 +524,16 @@ export const ManagerWithdrawList: React.FC = () => {
                 <>
                   <Table.Summary fixed>
                     <Table.Summary.Row>
-                      <Table.Summary.Cell index={0} colSpan={3}>
+                      <Table.Summary.Cell index={0} colSpan={5}>
                         Итого
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={3}>
+                      <Table.Summary.Cell index={5}>
                         {new Intl.NumberFormat("ru-RU").format(total)}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={4}>
+                      <Table.Summary.Cell index={6}>
                         {new Intl.NumberFormat("ru-RU").format(amountBefore)}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={5}>
+                      <Table.Summary.Cell index={7}>
                         {new Intl.NumberFormat("ru-RU").format(amountAfter)}
                       </Table.Summary.Cell>
                     </Table.Summary.Row>

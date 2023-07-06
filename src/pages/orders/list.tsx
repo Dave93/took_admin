@@ -681,6 +681,7 @@ export const OrdersList: React.FC = () => {
         "finished_date",
         "pre_distance",
         "bonus",
+        "cooked_time",
         {
           orders_organization: ["id", "name"],
         },
@@ -1084,7 +1085,11 @@ export const OrdersList: React.FC = () => {
               const deliveredOrdersCount = pageData.filter(
                 (record) => record.finished_date !== null
               ).length;
+              const cookedOrdersCount = pageData.filter(
+                (record) => record.cooked_time !== null
+              ).length;
               let totalMinutes = 0;
+              let totalCookedMinutes = 0;
               pageData.forEach((record) => {
                 if (record.finished_date) {
                   const ft = dayjs(record.created_at);
@@ -1092,10 +1097,26 @@ export const OrdersList: React.FC = () => {
                   const mins = tt.diff(ft, "minutes", true);
                   totalMinutes += mins;
                 }
+
+                if (record.cooked_time) {
+                  const ft = dayjs(record.created_at);
+                  const tt = dayjs(record.cooked_time);
+                  const mins = tt.diff(ft, "minutes", true);
+                  totalCookedMinutes += mins;
+                }
               });
               totalMinutes = totalMinutes / deliveredOrdersCount;
+              totalCookedMinutes = totalCookedMinutes / cookedOrdersCount;
               const totalHours = parseInt((totalMinutes / 60).toString());
               const totalMins = dayjs().minute(totalMinutes).format("mm");
+
+              const totalCookedHours = parseInt(
+                (totalCookedMinutes / 60).toString()
+              );
+              const totalCookedMins = dayjs()
+                .minute(totalCookedMinutes)
+                .format("mm");
+
               const totalDistances = pageData.reduce(
                 (sum, record) => sum + record.pre_distance,
                 0
@@ -1111,8 +1132,11 @@ export const OrdersList: React.FC = () => {
                       </Table.Summary.Cell>
                       <Table.Summary.Cell
                         index={1}
-                        colSpan={12}
+                        colSpan={11}
                       ></Table.Summary.Cell>
+                      <Table.Summary.Cell index={12}>
+                        <b>{`${totalCookedHours}:${totalCookedMins}`} </b>
+                      </Table.Summary.Cell>
                       <Table.Summary.Cell index={13}>
                         <b>{`${totalHours}:${totalMins}`} </b>
                       </Table.Summary.Cell>

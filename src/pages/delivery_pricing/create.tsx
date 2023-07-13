@@ -110,16 +110,7 @@ export const DeliveryPricingCreate = () => {
       <Form {...formProps} layout="vertical">
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item
-              label="Активность"
-              name="active"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-              valuePropName="checked"
-            >
+            <Form.Item label="Активность" name="active" valuePropName="checked">
               <Switch />
             </Form.Item>
           </Col>

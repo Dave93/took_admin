@@ -261,9 +261,15 @@ export const ManagerWithdrawTransactions = ({
       dataIndex: "manager_withdraw_transactions_transaction",
       key: "manager_withdraw_transactions_transaction",
       exportable: true,
-      render: (value: string, record: any) =>
-        record.manager_withdraw_transactions_transaction
-          .order_transactions_orders.order_number,
+      render: (value: string, record: any) => {
+        if (
+          !record.manager_withdraw_transactions_transaction
+            .order_transactions_orders
+        )
+          return "";
+        return record.manager_withdraw_transactions_transaction
+          .order_transactions_orders.order_number;
+      },
     },
     {
       title: "Дата зачисления в кошелёк",
@@ -280,11 +286,17 @@ export const ManagerWithdrawTransactions = ({
       dataIndex: "manager_withdraw_transactions_transaction",
       key: "manager_withdraw_transactions_transaction",
       exportable: true,
-      render: (value: string, record: any) =>
-        dayjs(
+      render: (value: string, record: any) => {
+        if (
+          !record.manager_withdraw_transactions_transaction
+            .order_transactions_orders
+        )
+          return "";
+        return dayjs(
           record.manager_withdraw_transactions_transaction
             .order_transactions_orders.created_at
-        ).format("DD.MM.YYYY HH:mm"),
+        ).format("DD.MM.YYYY HH:mm");
+      },
     },
     {
       title: "Выплачено",

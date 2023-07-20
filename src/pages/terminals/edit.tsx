@@ -1,15 +1,17 @@
 import { useForm, Edit } from "@refinedev/antd";
-import { Form, Input, Switch, Row, Col, InputNumber } from "antd";
+import { Form, Input, Switch, Row, Col, InputNumber, Select } from "antd";
 import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, ITerminals } from "interfaces";
 import { useEffect, useState } from "react";
+import { sortBy } from "lodash";
 
 export const TerminalsEdit: React.FC = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+  const [terminals, setTerminals] = useState<ITerminals[]>([]);
   const { formProps, saveButtonProps } = useForm<ITerminals>({
     meta: {
       fields: [
@@ -18,6 +20,7 @@ export const TerminalsEdit: React.FC = () => {
         "active",
         "created_at",
         "organization_id",
+        "linked_terminal_id",
         "phone",
         "latitude",
         "longitude",
@@ -27,28 +30,27 @@ export const TerminalsEdit: React.FC = () => {
         "fuel_bonus",
       ],
       pluralize: true,
+      updateInputName: "terminalsUncheckedUpdateInput",
       requestHeaders: {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
   });
 
-  const [organizations, setOrganizations] = useState<IOrganization[]>([]);
-
   const fetchOrganizations = async () => {
     const query = gql`
       query {
-        cachedOrganizations {
+        cachedTerminals {
           id
           name
         }
       }
     `;
 
-    const { cachedOrganizations } = await client.request<{
-      cachedOrganizations: IOrganization[];
+    const { cachedTerminals } = await client.request<{
+      cachedTerminals: ITerminals[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
-    setOrganizations(cachedOrganizations);
+    setTerminals(sortBy(cachedTerminals, (item) => item.name));
   };
 
   useEffect(() => {
@@ -144,6 +146,19 @@ export const TerminalsEdit: React.FC = () => {
               ]}
             >
               <InputNumber type="number" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <Form.Item label="Филиал" name="linked_terminal_id">
+              <Select showSearch optionFilterProp="children">
+                {terminals.map((terminal) => (
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>

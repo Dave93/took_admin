@@ -36,6 +36,7 @@ import { sortBy } from "lodash";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { SendOrderToYandex } from "components/orders/sendToYandex";
 import { TrySendMultiYandex } from "components/orders/trySendMultiYandex";
+import { ResentToYandex } from "components/orders/resendToYandex";
 
 const { RangePicker } = DatePicker;
 
@@ -361,7 +362,7 @@ const MissedOrdersList: React.FC = () => {
       dataIndex: "allowYandex",
       width: 300,
       render: (value: any, record: any) => (
-        <div>
+        <Space direction="vertical">
           <SendOrderToYandex
             order={record as IOrders}
             token={identity?.token.accessToken!}
@@ -370,7 +371,11 @@ const MissedOrdersList: React.FC = () => {
             order={record as IOrders}
             token={identity?.token.accessToken!}
           />
-        </div>
+          {/* <ResentToYandex
+            order={record as IOrders}
+            token={identity?.token.accessToken!}
+          /> */}
+        </Space>
       ),
     },
   ];

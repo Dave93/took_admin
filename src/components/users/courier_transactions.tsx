@@ -112,6 +112,7 @@ const CourierTransactions = ({
           balance_after
           comment
           not_paid_amount
+          transaction_type
           order_transactions_orders {
               order_number
           }
@@ -150,6 +151,13 @@ const CourierTransactions = ({
       key: "created_at",
       exportable: true,
       render: (value: string) => dayjs(value).format("DD.MM.YYYY HH:mm"),
+    },
+    {
+      title: "Тип транзакции",
+      dataIndex: "transaction_type",
+      key: "transaction_type",
+      exportable: true,
+      render: (value: string) => value,
     },
     {
       title: "Статус",

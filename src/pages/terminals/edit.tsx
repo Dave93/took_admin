@@ -166,6 +166,7 @@ export const TerminalsEdit: React.FC = () => {
             <Form.Item
               label="Минуты до отправки Яндексом"
               name="time_to_yandex"
+              extra="Если не указать минуты или указать 0, то по-умолчанию будет 15 мин."
             >
               <InputNumber />
             </Form.Item>

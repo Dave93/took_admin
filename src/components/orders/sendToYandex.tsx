@@ -81,7 +81,7 @@ export const SendOrderToYandex = ({
       setIsLoading(true);
       const query = gql`
         mutation ($id: String!) {
-          sendOrderToYandex(id: $id)
+          sendToYandexWithApprove(id: $id)
         }
       `;
       await client.request(
@@ -165,7 +165,7 @@ export const SendOrderToYandex = ({
           loading={isLoading}
           onClick={() => sendToYandex(order.id)}
         >
-          Оценить доставку
+          Отправить Яндексом
         </Button>
       );
     }

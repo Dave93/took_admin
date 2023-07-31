@@ -28,6 +28,7 @@ export const TerminalsEdit: React.FC = () => {
         "manager_name",
         "address",
         "fuel_bonus",
+        "time_to_yandex",
       ],
       pluralize: true,
       updateInputName: "terminalsUncheckedUpdateInput",
@@ -149,7 +150,7 @@ export const TerminalsEdit: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
+        <Row gutter={24}>
           <Col span={12}>
             <Form.Item label="Филиал" name="linked_terminal_id">
               <Select showSearch optionFilterProp="children">
@@ -159,6 +160,14 @@ export const TerminalsEdit: React.FC = () => {
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Минуты до отправки Яндексом"
+              name="time_to_yandex"
+            >
+              <InputNumber />
             </Form.Item>
           </Col>
         </Row>

@@ -5,11 +5,13 @@ import { client } from "graphConnect";
 import { gql } from "graphql-request";
 import { IOrganization, ITerminals } from "interfaces";
 import { useEffect, useState } from "react";
+import { sortBy } from "lodash";
 
 export const TerminalsCreate = () => {
   const { data: identity } = useGetIdentity<{
     token: { accessToken: string };
   }>();
+  const [terminals, setTerminals] = useState<ITerminals[]>([]);
   const { formProps, saveButtonProps } = useForm<ITerminals>({
     meta: {
       fields: [
@@ -39,13 +41,19 @@ export const TerminalsCreate = () => {
           id
           name
         }
+        cachedTerminals {
+          id
+          name
+        }
       }
     `;
 
-    const { cachedOrganizations } = await client.request<{
+    const { cachedOrganizations, cachedTerminals } = await client.request<{
       cachedOrganizations: IOrganization[];
+      cachedTerminals: ITerminals[];
     }>(query, {}, { Authorization: `Bearer ${identity?.token.accessToken}` });
     setOrganizations(cachedOrganizations);
+    setTerminals(sortBy(cachedTerminals, (item) => item.name));
   };
 
   useEffect(() => {
@@ -123,6 +131,27 @@ export const TerminalsCreate = () => {
               ]}
             >
               <InputNumber type="number" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item label="Филиал" name="linked_terminal_id">
+              <Select showSearch optionFilterProp="children">
+                {terminals.map((terminal) => (
+                  <Select.Option key={terminal.id} value={terminal.id}>
+                    {terminal.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Минуты до отправки Яндексом"
+              name="time_to_yandex"
+            >
+              <InputNumber />
             </Form.Item>
           </Col>
         </Row>

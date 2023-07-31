@@ -38,6 +38,7 @@ export const TerminalsList: React.FC = () => {
         "external_id",
         "manager_name",
         "fuel_bonus",
+        "time_to_yandex",
         {
           organization: ["id", "name"],
         },

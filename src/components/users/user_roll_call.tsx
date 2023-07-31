@@ -46,6 +46,7 @@ const UserRollCallList = ({ user }: { user: IUsers }) => {
             date
             is_late
             created_at
+            late_minutes
         }
       }
     `;
@@ -78,6 +79,13 @@ const UserRollCallList = ({ user }: { user: IUsers }) => {
       key: "is_late",
       exportable: true,
       render: (value: boolean) => (value ? "Да" : "Нет"),
+    },
+    {
+      title: "Минуты опоздания",
+      dataIndex: "late_minutes",
+      key: "late_minutes",
+      exportable: true,
+      render: (value: string) => value,
     },
   ];
 

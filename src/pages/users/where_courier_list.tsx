@@ -1,7 +1,7 @@
 import { useGetIdentity } from "@refinedev/core";
 import { client } from "graphConnect";
 import { gql } from "graphql-request";
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import { Map, Placemark, YMaps } from "@pbe/react-yandex-maps";
 
 import useSWR from "swr";
@@ -26,6 +26,7 @@ interface IWhereCourierListViewProps {
 }
 
 const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
+  const map = useRef<any>(null);
   const [zoom, setZoom] = useState(12);
   const [center, setCenter] = useState([41.311151, 69.279737]);
   const mapState = useMemo(() => ({ center: center, zoom }), [zoom, center]);
@@ -121,8 +122,20 @@ const WhereCourierListView: FC<IWhereCourierListViewProps> = (props) => {
           </div>
         </Card>
       </div>
-      <YMaps>
-        <Map state={mapState} width="100%" height="85vh">
+      <YMaps
+        query={{
+          lang: "ru_RU",
+          load: "package.full",
+          coordorder: "latlong",
+        }}
+      >
+        <Map
+          state={mapState}
+          width="100%"
+          height="85vh"
+          instanceRef={(ref) => (map.current = ref)}
+          modules={["control.ZoomControl"]}
+        >
           {!isLoading && !error && data && (
             <>
               {data.map((courier: any) => (

@@ -32,7 +32,9 @@ export const OrderBonusPricingList: React.FC = () => {
         Authorization: `Bearer ${identity?.token.accessToken}`,
       },
     },
-
+    pagination: {
+      pageSize: 200,
+    },
     sorters: {
       initial: [
         {

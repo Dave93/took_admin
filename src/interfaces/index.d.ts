@@ -851,3 +851,19 @@ export class IDailyGarant {
 
   _count?: Daily_garantCount;
 }
+
+export class IConstructedBonusPricing {
+  id!: string;
+
+  name!: string;
+
+  organization_id!: string;
+
+  pricing!: any;
+
+  created_at!: Date;
+
+  updated_at!: Date;
+
+  constructed_bonus_pricing_organization?: organization;
+}

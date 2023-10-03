@@ -7,7 +7,6 @@ import "./styles/main.css";
 import routerProvider, {
   CatchAllNavigate,
   NavigateToResource,
-  UnsavedChangesNotifier,
 } from "@refinedev/react-router-v6";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { useTranslation } from "react-i18next";
@@ -92,9 +91,12 @@ import {
   DailyGarantList,
 } from "pages/daily_garant";
 import { ManagerWithdrawList } from "pages/manager_withdraw";
+import {
+  ConstructedBonusPricingCreate,
+  ConstructedBonusPricingEdit,
+  ConstructedBonusPricingList,
+} from "pages/constructed_bonus_pricing";
 const gqlDataProvider = dataProvider(client);
-
-const { Link } = routerProvider;
 
 const httpLink = new HttpLink({
   uri: `https://${process.env.REACT_APP_GRAPHQL_API_DOMAIN!}/graphql`,
@@ -209,6 +211,15 @@ function App() {
         list: "/order_bonus_pricing",
         create: "/order_bonus_pricing/create",
         edit: "/order_bonus_pricing/edit/:id",
+      },
+      {
+        name: "constructed_bonus_pricing",
+        meta: {
+          label: "Новые Условия бонуса за заказ",
+        },
+        list: "/constructed_bonus_pricing",
+        create: "/constructed_bonus_pricing/create",
+        edit: "/constructed_bonus_pricing/edit/:id",
       },
       {
         name: "daily_garant",
@@ -575,6 +586,17 @@ function App() {
                   <Route index element={<OrderBonusPricingList />} />
                   <Route path="create" element={<OrderBonusPricingCreate />} />
                   <Route path="edit/:id" element={<OrderBonusPricingEdit />} />
+                </Route>
+                <Route path="/constructed_bonus_pricing">
+                  <Route index element={<ConstructedBonusPricingList />} />
+                  <Route
+                    path="create"
+                    element={<ConstructedBonusPricingCreate />}
+                  />
+                  <Route
+                    path="edit/:id"
+                    element={<ConstructedBonusPricingEdit />}
+                  />
                 </Route>
                 <Route path="/work_schedules">
                   <Route index element={<WorkSchedulesList />} />

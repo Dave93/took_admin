@@ -163,7 +163,7 @@ export const SendOrderToYandex = ({
           shape="round"
           size="small"
           loading={isLoading}
-          onClick={() => sendToYandex(order.id)}
+          onClick={() => approveYandex(order.id)}
         >
           Отправить Яндексом
         </Button>

@@ -142,6 +142,7 @@ export const OrdersList: React.FC = () => {
         "pre_distance",
         "bonus",
         "cooked_time",
+        "fuel_bonus",
         {
           orders_organization: ["id", "name"],
         },
@@ -644,6 +645,15 @@ export const OrdersList: React.FC = () => {
       ),
     },
     {
+      title: "Бонус за топливо",
+      dataIndex: "fuel_bonus",
+      width: 90,
+      excelRender: (value: any, record: IOrders) => +record.fuel_bonus,
+      render: (value: any, record: IOrders) => (
+        <span>{new Intl.NumberFormat("ru").format(record.fuel_bonus)}</span>
+      ),
+    },
+    {
       title: "Дистанция",
       dataIndex: "pre_distance",
       width: 100,
@@ -682,6 +692,7 @@ export const OrdersList: React.FC = () => {
         "pre_distance",
         "bonus",
         "cooked_time",
+        "fuel_bonus",
         {
           orders_organization: ["id", "name"],
         },

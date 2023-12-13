@@ -417,6 +417,8 @@ export class IOrders {
   yandex_delivery_data: any;
 
   bonus: number;
+
+  fuel_bonus: number;
 }
 
 export class IOrderActions {

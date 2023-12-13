@@ -19,6 +19,7 @@ import {
   Col,
   InputNumber,
   Drawer,
+  Switch,
 } from "antd";
 
 import {
@@ -101,6 +102,7 @@ export const UsersList: React.FC = () => {
         "longitude",
         "status",
         "app_version",
+        "is_fuelable",
         {
           users_terminals: [
             {
@@ -291,6 +293,7 @@ export const UsersList: React.FC = () => {
         "doc_files",
         "order_start_date",
         "daily_garant_id",
+        "is_fuelable",
         {
           users_terminals: [
             {
@@ -566,6 +569,11 @@ export const UsersList: React.FC = () => {
           <Table.Column dataIndex="longitude" title="Долгота" /> */}
           <Table.Column dataIndex="app_version" title="Версия приложения" />
           <Table.Column
+            dataIndex="is_fuelable"
+            title="Бонус за бензин"
+            render={(val) => <div>{val ? "Вкл." : "Выкл."}</div>}
+          />
+          <Table.Column
             dataIndex="created_at"
             title="Дата создания"
             render={(value) => (
@@ -731,6 +739,13 @@ export const UsersList: React.FC = () => {
             title="Редактирование разрешения"
           >
             <Form {...formProps} layout="vertical">
+              <Form.Item
+                label="Бонус за бензин"
+                name="is_fuelable"
+                valuePropName="checked"
+              >
+                <Switch />
+              </Form.Item>
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item

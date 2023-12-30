@@ -143,6 +143,7 @@ export const OrdersList: React.FC = () => {
         "bonus",
         "cooked_time",
         "fuel_bonus",
+        "new_year_bonus",
         {
           orders_organization: ["id", "name"],
         },
@@ -654,6 +655,15 @@ export const OrdersList: React.FC = () => {
       ),
     },
     {
+      title: "Новогодний бонус",
+      dataIndex: "new_year_bonus",
+      width: 90,
+      excelRender: (value: any, record: IOrders) => +record.new_year_bonus,
+      render: (value: any, record: IOrders) => (
+        <span>{new Intl.NumberFormat("ru").format(record.new_year_bonus)}</span>
+      ),
+    },
+    {
       title: "Дистанция",
       dataIndex: "pre_distance",
       width: 100,
@@ -693,6 +703,7 @@ export const OrdersList: React.FC = () => {
         "bonus",
         "cooked_time",
         "fuel_bonus",
+        "new_year_bonus",
         {
           orders_organization: ["id", "name"],
         },
@@ -1132,6 +1143,16 @@ export const OrdersList: React.FC = () => {
                 (sum, record) => sum + record.pre_distance,
                 0
               );
+
+              const totalFuelBonus = pageData.reduce(
+                (sum, record) => sum + record.fuel_bonus,
+                0
+              );
+
+              const totalNewYearBonus = pageData.reduce(
+                (sum, record) => sum + record.new_year_bonus,
+                0
+              );
               // return `${totalHours}:${totalMins}`;
 
               return (
@@ -1155,9 +1176,21 @@ export const OrdersList: React.FC = () => {
                         <b>{new Intl.NumberFormat("ru").format(totalBonus)} </b>
                       </Table.Summary.Cell>
                       <Table.Summary.Cell index={15}>
-                        <b>{`${totalDistances.toFixed(2)} км`} </b>
+                        <b>
+                          {new Intl.NumberFormat("ru").format(totalFuelBonus)}{" "}
+                        </b>
                       </Table.Summary.Cell>
                       <Table.Summary.Cell index={16}>
+                        <b>
+                          {new Intl.NumberFormat("ru").format(
+                            totalNewYearBonus
+                          )}{" "}
+                        </b>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={17}>
+                        <b>{`${totalDistances.toFixed(2)} км`} </b>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={18}>
                         <b>{new Intl.NumberFormat("ru").format(total)} </b>
                       </Table.Summary.Cell>
                     </Table.Summary.Row>

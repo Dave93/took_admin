@@ -419,6 +419,8 @@ export class IOrders {
   bonus: number;
 
   fuel_bonus: number;
+
+  new_year_bonus: number;
 }
 
 export class IOrderActions {

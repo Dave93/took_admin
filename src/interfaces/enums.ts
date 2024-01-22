@@ -3,6 +3,7 @@ export enum drive_type {
   bike = "bike",
   foot = "foot",
   bycicle = "bycicle",
+  bike2 = "bike2",
 }
 
 export enum organization_system_type {
